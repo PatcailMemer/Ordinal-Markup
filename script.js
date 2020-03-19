@@ -24,12 +24,12 @@ document.getElementById("music").loop=true
 document.getElementById("music").volume=0.5
 document.getElementById("music").muted=false
 var sPath = window.location.origin;
-if (sPath != "https://ordinal-markup.glitch.me" && sPath != "http://ordinal-markup.glitch.me") {
-  document.getElementById("bootLeg").style.display="block"
-  fake=1
-} else {
+//if (sPath != "https://ordinal-markup.glitch.me" && sPath != "http://ordinal-markup.glitch.me") {
+  //document.getElementById("bootLeg").style.display="block"
+  //fake=1
+//} else {
   fake=0
-}
+//}
 
 function reset() {
   game={
