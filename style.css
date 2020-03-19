@@ -1,0 +1,244 @@
+/* CSS files add styling rules to your content */
+
+.tabButton {
+  font-family: sans-serif;
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 5px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  width: 120px;
+  height: 40px;
+  font-size: 15pt;
+  font-weight: bold;
+}
+
+.tabButton:hover {
+  background: #DFDFDF
+}
+
+.infinityTabButton {
+  font-family: sans-serif;
+  color: #FFFFFF;
+  background: #000000;
+  border-radius: 5px;
+  border-color: #000000;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  width: 120px;
+  height: 40px;
+  font-size: 15pt;
+  font-weight: bold;
+  border: solid #B67F33
+}
+
+.infinityTabButton:hover {
+  background: #B67F33;
+  color: #000000;
+}
+
+.boosterTabButton {
+  font-family: sans-serif;
+  color: #0000FF;
+  background: #000000;
+  border-radius: 5px;
+  border-color: #0000FF;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  width: 120px;
+  height: 40px;
+  font-size: 15pt;
+  font-weight: bold;
+  border: solid #0000FF
+}
+
+.boosterTabButton:hover {
+  background: #FFFFFF;
+  color: #000080;
+}
+
+.normalButton {
+  font-family: sans-serif;
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+}
+
+.normalButton:hover {
+  background: #EFEFEF
+}
+
+.infinityButton {
+  font-family: sans-serif;
+  color: #FFFFFF;
+  background: #000000;
+  border-radius: 2px;
+  border-color: #B67F33;
+  border-width: 2px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+}
+
+.infinityButton:hover {
+  background: #B67F33;
+  color: #000000;
+}
+
+.treeButton {
+  font-family: sans-serif;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  margin: center;
+  width: 200px;
+  height: 100px;
+  font-size: 18px
+}
+
+.center {
+  margin: auto;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translate(-50%);
+  transform: translate(-50%);
+}
+
+#boostersText {
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  font-size: 20pt;
+  display: inline;
+  left: 50%;
+  -ms-transform: translate(-50%);
+  transform: translate(-50%);
+  font-weight: bold;
+}
+
+#refundBoosters {
+  font-family: sans-serif;
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translate(-50%,42px);
+  transform: translate(-50%,42px);
+  font-size: 14pt
+}
+
+#refundBoosters:hover {
+  background: #EFEFEF
+}
+
+.locked {
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+}
+
+.canbuy {
+  color: #0000FF;
+  background: #000000;
+  border-radius: 2px;
+  border-color: #0000FF;
+  transition-duration: 0.1s;
+}
+
+.canbuy:hover {
+  background: #008000;
+  color: #0000C0;
+}
+
+.bought {
+  color: #000000;
+  background: #00FF00;
+  border-radius: 2px;
+  border-color: #000000;
+}
+
+.boosterButton {
+  font-family: sans-serif;
+  color: #8080FF;
+  background: #000000;
+  border-radius: 2px;
+  border-color: #0000FF;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  border: solid #0000FF
+}
+
+.boosterButton:hover {
+  background: #FFFFFF;
+  color: #000080;
+}
+
+.challenge {
+  height: 150px;
+  width: 300px;
+  font-size: 15px;
+  border-width: 3px;
+}
+
+.running {
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+  color: #000080;
+}
+
+#finishChallenge {
+  height: 100px;
+  width: 200px;
+  font-size: 20px;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+#bootLeg {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: black;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center
+}
+
+#bootLegText {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  font-size: 30pt;
+  font-weight: bold;
+  color: white;
+}
