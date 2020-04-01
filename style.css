@@ -216,7 +216,43 @@
   opacity: 0;
 }
 
-#bootLeg {
+invisible {
+  opacity: 0;
+}
+
+.collapseTabButton {
+  font-family: sans-serif;
+  color: lightgreen;
+  background: #000000;
+  border-radius: 5px;
+  border-weight: 10px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  width: 120px;
+  height: 40px;
+  font-size: 15pt;
+  font-weight: bold;
+  border: solid green
+}
+
+
+.collapse {
+  font-family: sans-serif;
+  color: lightgreen;
+  background: black;
+  border-radius: 2px;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  border: solid green
+}
+
+.collapse:hover {
+  background: green;
+  color: white;
+}
+
+#collapseScreen {
   margin: auto;
   width: 100%;
   height: 100%;
@@ -231,14 +267,94 @@
   text-align: center
 }
 
-#bootLegText {
+#collapseScreenText {
   margin: 0;
   position: absolute;
   top: 50%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  font-size: 30pt;
+  font-size: 100pt;
   font-weight: bold;
-  color: white;
+  font-family: Comic Sans MS, arial, sans-serif;
+  color: lightgreen;
 }
+
+#cardinalTable td {width: 30%; text-align: center;}
+
+.slugMile {
+  background: green;
+  border-color: #00FF00;
+  border-radius: 5px;
+  border-weight: 10px;
+}
+
+.notSlugMile {
+  background: grey;
+  border-color: #000000;
+  border-radius: 5px;
+  border-weight: 10px;
+}
+
+
+#slugTable td {
+  width: 150px;
+  font-family: sans-serif;
+  text-align: center;
+  color: white;
+  height: 150px;
+  display: inline-block;
+}
+
+#slugTable tr:nth-child(1) td:nth-child(1) p {
+  font-size: 10pt;
+}
+#slugTable tr:nth-child(1) td:nth-child(2) p {
+  font-size: 10pt;
+}
+
+#slugTable tr:nth-child(1) td:nth-child(3) p {
+  font-size: 10pt;
+}
+
+#slugTable p {
+  margin: 5px;
+}
+
+.trueCenter {
+  margin: auto;
+  display: block;
+  text-align:center;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+
+.long {
+  width: 100%
+}
+
+#alephOmegaUps {
+  margin: auto;
+  display: block;
+  text-align:center;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+  width: 815px
+}
+
+#factorBoostProgBar {
+  width: 100%;
+  height: 20px;
+  background: #a0a0a0;
+}
+
+#factorBoostProg {
+  height: 20px;
+  background: #00ff00;
+  color: #000000;
+  text-align: center;
+  width: 50%;
+  font-size: 13pt;
+}
+
