@@ -325,6 +325,7 @@ var calculate = window.setInterval(function() {
 }, game.msint)
 
 function loop(ms) {
+  if (game.collapseUnlock==0) game.leastBoost=Infinity
   game.collapseTime += ms/1000
   game.base=10-game.factorShifts+(game.challenge==3||game.challenge==7?5:0)+(game.challenge==4||game.challenge==7?game.factorShifts:0)
   if (game.base >= 8 && game.upgrades.includes(9)) game.base -= 4
