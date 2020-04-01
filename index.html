@@ -7,10 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    <div id="theme"><link rel="stylesheet" href="dark.css"></div>
+    <link rel="stylesheet" href="/style.css">
+    <div id="theme"><link rel="stylesheet" href="/dark.css"></div>
     <!-- import the webpage's javascript file -->
-    <script src="script.js" defer></script>
+    <script src="/ExpantaNum.js" defer></script>
+    <script src="/script.js" defer></script>
   </head>  
   <body>
     <audio src="https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884" id="music"></audio>
@@ -21,6 +22,7 @@
     <button onclick="Tab(4)" class="tabButton">Milestones</button><text class="invisible">0</text>
     <button onclick="Tab(5)" id="infinityTabButton" class="infinityTabButton">Infinity</button><text class="invisible">0</text>
     <button onclick="Tab(6)" id="boosterTabButton" class="boosterTabButton">Boosters</button><text class="invisible">0</text>
+    <button onclick="Tab(7)" id="collapseTabButton" class="collapseTabButton">Collapse</button><text class="invisible">0</text>
     <p></p>
     <div id="Tab1">
       <button onclick="increment(1)" class="normalButton">Increase Ordinal by 1</button>
@@ -43,6 +45,7 @@
       <p></p>
       <button onclick="changeMusic()" class="normalButton" id="changeMusic">Music: OFF</button>
       <button onclick="changeColor()" class="normalButton" id="changeColor">Color: OFF</button>
+      <p><i>This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a></i></p>
     </div>
     <div id="Tab3">
       <p>Your highest Ordinal was w [WIP]</p>
@@ -54,22 +57,21 @@
     </div>
     <div id="Tab4">
       <ol>
-        <li>Reach ω</li>
+        <li>Reach the number 20</li>
         <li>Perform an Infinity</li>
         <li>Perform a Factor Shift</li>
-        <li>Buy Factor 1</li>
-        <li>Buy Factor 2</li>
-        <li>Buy Factor 3</li>
-        <li>Reach 1.000e10 OP</li>
-        <li>Reach 1.000e20 OP</li>
-        <li>Reach 1.000e100 OP</li>
+        <li>Buy a Factor</li>
+        <li>Reach Base 4</li>
         <li>Get your ordinal to ω^ω^ω</li>
-        <li>Reach ψ(Ω<sup>ω</sup>) OP</li>
         <li>Perform a Factor Boost</li>
-        <li>Have an upgrade on the 2nd row</li>
+        <li>Buy 3 Booster Upgrades</li>
         <li>Unlock Challenges</li>
-        <li>Complete a challenge 3 times</li>
+        <li>Complete a Challenge</li>
         <li>Unlock Incrementy</li>
+        <li>Extend Incrementy</li>
+        <li>Get four Extended Incrementy Upgrades</li>
+        <li>Unlock the next layer</li>
+        <li>Obtain one of each Aleph</li>
       </ol>
     </div>
     <div id="Tab5">
@@ -88,7 +90,7 @@
         <button onclick="buylim(1)" id="buylim" class="infinityButton">Buy Maximize Autobuyer for 100 OP</button>
         <button onclick="maxall()" class="infinityButton">Max All</button>
       </div>
-      <div id="subTab2">
+      <div id="subTab2" class="long">
         <div id="factorList">Factors: <button onclick="maxFactors()" class="infinityButton">Max All</button>
           <ul id="factorListMain">
             <li>Factor 1: x2 <button onclick="buyFactor(0)">Increase Factor 1 for 10 OP</button></li>
@@ -106,9 +108,11 @@
         <p class="invisible">.</p>
         <text id="factorShift">Factor Shift (0): Requires 200 OP</text> <button onclick="factorShift()" class="infinityButton">Do a Factor Shift</button>
         <p>When you Factor Shift, you gain a new factor and the base decreases by 1</p>
-        <div id="factorBoostText">
+        <div id="factorBoostText" class="long">
         <text id="factorBoost">Factor Boost (0): Requires g10 (10) OP</text> <button onclick="factorBoost()" class="boosterButton" id="gainBoosters">Gain 2 Boosters</button>
-        <p>When you Factor Boost, you gain boosters to spend on upgrades</p>
+          <p>You are currently bulking in a set of <text id="bulking">0</text></p>
+          <p><text id="nextBulkTime">32d 15h 48m 9s</text></p>
+          <p><div id="factorBoostProgBar"><div id="factorBoostProg"></div></div></p>
         </div>
         <div id="completeChallenge">
           <button class="boosterButton" id="finishChallenge" onclick="completeChallenge()">Complete the challenge!<br>100 OP</button>
@@ -127,7 +131,7 @@
       <button onclick="bsubTab(3)" class="boosterButton" id="challengeSubTab">Challenges</button>
       <button onclick="bsubTab(4)" class="boosterButton" id="incrementySubTab">Incrementy</button>
       <p></p>
-      <div id="bsubTab1"><text id="boostersText">You have 1 Boosters</text>
+      <div id="bsubTab1"><div id="bsubTab1sub"><text id="boostersText">You have 1 Boosters</text>
       <button id="refundBoosters" onclick="refund()">Refund back 0 boosters, but reset all factor shifts</button>
       <div>
         <br>
@@ -135,7 +139,7 @@
         <br>
         <br>
         <br>
-        <table class="center">
+        <table class="trueCenter long" style="width: 810px"><tbody class="trueCenter long">
         <tr>
           <td><button class="treeButton locked" id="bup1" onclick="bup(1)">Each Factor is twice as powerful<br><br>1 Booster</button></td>
           <td><button class="treeButton locked" id="bup2" onclick="bup(2)">Unlock autoclicker for maxing all<br><br>1 Booster</button></td>
@@ -158,10 +162,10 @@
           <td><button class="treeButton locked" id="bup13" onclick="bup(13)">In odd numbered challenges, Dynamic factor is squared<br>53 Boosters</button></td>
           <td><button class="treeButton locked" id="bup14" onclick="bup(14)">Dynamic decreases 1.00e29 times slower<br><br>74 Boosters</button></td>
           <td><button class="treeButton locked" id="bup15" onclick="bup(15)">Infinity gives 666666x OP if the base is less than six<br>66 Boosters</button></td>
-          <td><button class="treeButton locked" id="bup16" onclick="bup(16)"><b>Unlock the next layer<br>Need 324 Boosters and 22 Challenge Completions</b></button></td>
+          <td><button class="treeButton locked" id="bup16" onclick="bup(16)"><b>Unlock the next layer<br>Need 324 Boosters and 23 Challenge Completions</b></button></td>
         </tr>
-        </table></div>
-      </div>
+        </tbody></table><p style="text-align: center"><i>You may have to rotate your phone on mobile to see all of the upgrades. The right column of upgrades doesn't consume your boosters.</i></p></div>
+      </div></div>
       <div id="bsubTab2">
         <text><b>Tier 2 Automation</b></text>
         <p id="maxAllAuto">Your Max All Autobuyer is clicking the Max All button 1 times per second</p>
@@ -184,11 +188,11 @@
         </tr>
         <tr>
           <td><button class="challenge boosterButton" onclick="enterChallenge(5)" id="challenge5">Challenge 5<br>You can do a maximum of 2 factor shifts<p></p><text id="challenge5Goal">Goal: 1.000e33 OP</text><br>Reward: Factor 5 boosts Tier 1 and 2<br>Currently: <text id="challenge5Effect">x1.00 (0/3)</text></button></td>
-          <td><button class="challenge boosterButton" onclick="enterChallenge(6)" id="challenge6" style="font-size: 10pt">Challenge 6<br>Dynamic drops by 1.00e30 per second, OP resets right before each Infinity, and you can't buy Booster Upgrades<p></p><text id="challenge6Goal">Goal: 1.000e33 OP</text><br>Reward: Factor 6 boosts Tier 1 and 2<br>Currently: <text id="challenge6Effect">x1.00 (0/3)</text></button></td>
+          <td><button class="challenge boosterButton" onclick="enterChallenge(6)" id="challenge6" style="font-size: 10pt">Challenge 6<br>Dynamic drops by 1.00e30 per second, keep no OP on Infinity, and you can't buy Booster Upgrades<p></p><text id="challenge6Goal">Goal: 1.000e33 OP</text><br>Reward: Factor 6 boosts Tier 1 and 2<br>Currently: <text id="challenge6Effect">x1.00 (0/3)</text></button></td>
         </tr>
         <tr>
           <td><button class="challenge boosterButton" onclick="enterChallenge(7)" id="challenge7" style="font-size: 10pt">Challenge 7<br><b>ALL PREVIOUS CHALLENGES AT ONCE,</b> and Challenge 6 Completions multiply OP gain from Infinities<p></p><text id="challenge7Goal">Goal: 1.000e33 OP</text><br>Reward: Factor 7 boosts Tier 1 and 2<br>Currently: <text id="challenge7Effect">x1.00 (0/3)</text></button></td>
-          <td><button class="challenge boosterButton" onclick="enterChallenge8()" id="challenge8" style="font-size: 8pt">Challenge 8<br>There's exponentially rising decrementy dividing Tier 1 production, immediately Refund if you have any Booster Upgrades, all challenge effects are disabled, Challenge 7 completions multiply OP, keep 1.5% of OP on Infinity<p></p><text id="challenge8Goal">Goal: 1.000e33 OP</text><br>Reward: Dynamic Factor Cap boosts Tier 1 and 2<br>Currently: <text id="challenge8Effect">x1.00 (0/3)</text></button></td>
+          <td><button class="challenge boosterButton" onclick="enterChallenge8()" id="challenge8" style="font-size: 8pt">Challenge 8<br>There's exponentially rising decrementy dividing Tier 1 production, immediately Refund if you have any Booster Upgrades, all challenge effects are disabled, Challenge 7 completions multiply OP, keep no OP on Infinity, you can do a maximum of 1000 manual successor clicks per infinity<p></p><text id="challenge8Goal">Goal: 1.000e33 OP</text><br>Reward: Dynamic Factor Cap boosts Tier 1 and 2<br>Currently: <text id="challenge8Effect">x1.00 (0/3)</text></button></td>
         </tr> 
         </table>
       </div>
@@ -204,13 +208,13 @@
           </tr>
           <tr>
             <td><button class="treeButton boosterButton" id="iup4" onclick="iup(4)">Manifolds are 3x as effective, and boost Tier 2 under 1e8<br>Cost: 1.00e17</button></td>
-            <td><button class="treeButton boosterButton" id="iup5" onclick="iup(5)">Manifolds are 26% more effective<br><br>Cost: 1.00e23</button></td>
-            <td><button class="treeButton boosterButton" id="iup6" onclick="iup(6)">Reduce manifold requirement scaling<br><br>Cost: 1.00e24</button></td>
+            <td><button class="treeButton boosterButton" id="iup5" onclick="iup(5)">Manifolds are 26% more effective<br><br>Cost: 2.00e22</button></td>
+            <td><button class="treeButton boosterButton" id="iup6" onclick="iup(6)">Reduce manifold requirement scaling<br><br>Cost: 4.00e23</button></td>
           </tr>
           <tr>
             <td><button class="treeButton boosterButton" id="iup7" onclick="iup(7)">Dynamic increases 100x faster<br><br>Cost: 1.00e19</button></td>
-            <td><button class="treeButton boosterButton" id="iup8" onclick="iup(8)">Dynamic Factor Cap multiply incrementy gain and cap<br>Cost: 1.00e25</button></td>
-            <td><button class="treeButton boosterButton" id="iup9" onclick="iup(9)">Incrementy also boosts Tier 1<br><br>Cost: 1.00e27</button></td>
+            <td><button class="treeButton boosterButton" id="iup8" onclick="iup(8)">Dynamic Factor Cap multiply incrementy gain<br>Cost: 2.00e25</button></td>
+            <td><button class="treeButton boosterButton" id="iup9" onclick="iup(9)">Incrementy also boost Tier 1 and slow down decrementy<br>Cost: 4.00e27</button></td>
           </tr>
         </table></div>
         <div id="manifoldShift">
@@ -221,8 +225,90 @@
         </div>
       </div>
     </div>
-    <div id="bootLeg" style="display: none">
-      <text id="bootLegText">It turns out someone is trying to steal the game! Please go to <a onclick="gotoReal()">https://ordinal-markup.glitch.me/</a></text>
+    <div id="collapseScreen" style="display: none">
+      <text id="collapseScreenText">YOU HAVE COLLAPSED!</text>
+    </div>
+    <div id="Tab7" style="width: 100%; height: 100%">
+      <div>
+      <button onclick="csubTab(1)" class="collapse">Aleph Power</button>
+      <button onclick="csubTab(2)" class="collapse">Sluggish Milestones</button>
+      <button onclick="csubTab(3)" class="collapse">Aleph Upgrades</button>
+      </div>
+      <div id="csubTab1" style="width: 100%">
+        <p id="cardinalText" style="font-size: 20pt;text-align: center;font-weight: bold">You have 1 cardinal</p>
+        <button id="collapseButton" class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 40px" onclick="collapse()"><text style="margin: 10px">Reach the BHO to collapse!</text></button>
+        <br>
+        <br>
+        <table id="cardinalTable" style="width: 100%">
+          <tr>
+            <td>
+              <text style="font-size: 16pt;font-weight: bold" id="cardText1">You have 1 ℵ<sub>0</sub></text>
+              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(1,1,0)">Assign 1</button><invisible>0</invisible>
+              <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(1,1,1)">Assign all</button></p>
+              <br><br><br>
+              <text id="cardPow1">You have 100 ℵ<sub>0</sub> Power (+1/s)</text><br><br>Translated to a
+              <p style="font-size: 20pt;font-weight: bold" id="cardMult1">x100.00</p>multiplier to Tier 1 automation
+            </td>
+            <td>
+              <text style="font-size: 16pt;font-weight: bold" id="cardText2">You have 1 ℵ<sub>1</sub></text>
+              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(2,1,0)">Assign 1</button><invisible>0</invisible>
+              <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(2,1,1)">Assign all</button></p>
+              <br><br><br>
+              <text id="cardPow2">You have 100 ℵ<sub>1</sub> Power (+1/s)</text><br><br>Translated to a
+              <p style="font-size: 20pt;font-weight: bold" id="cardMult2">x100.00</p>multiplier to Tier 2 automation
+            </td>
+            <td>
+              <text style="font-size: 16pt;font-weight: bold" id="cardText3">You have 1 ℵ<sub>2</sub></text>
+              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(3,1,0)">Assign 1</button><invisible>0</invisible>
+              <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(3,1,1)">Assign all</button></p>
+              <br><br><br>
+              <text id="cardPow3">You have 100 ℵ<sub>2</sub> Power (+1/s)</text><br><br>Translated to a<br>
+              <p style="font-size: 20pt;font-weight: bold" id="cardMult3">x100.00</p>multiplier to OP gain
+            </td>
+          </tr>
+        </table>
+        <br>
+        <p style="text-align: center"><i>Cardinals are based on the amount of Factor Boost and the time, where a faster collapse yields more cardinals. Time is capped between 10 seconds and 100,000 seconds</i></p>
+      </div>
+      <div id="csubTab2" style="width: 100%">
+        <h1 style="text-align: center">Sluggish Milestones</h1>
+        <h4 style="font-weight:normal;text-align: center">Complete the collapse in the required amount of Boosts or less to recieve a prize!<br>Each prize also starts you with an extra Booster<br><text style="color:red">Only the first three Sluggish Milestones are implemented. The rest are subject to change.</text></h4>
+        <table id="slugTable" style="width: auto;display: block" class="long trueCenter">
+          <tbody class="long trueCenter">
+          <tr class="trueCenter long">
+            <td id="slug0"><br>∞ Boosts<br><br><p>You gain 1% of OP gained per second if your OP is less than your pending OP</p></td>
+            <td id="slug1"><br>20 Boosts<br><br><p>Start runs with one of each challenge completed except for Challenge 8</p></td>
+            <td id="slug2"><br>15 Boosts<br><br><p>Gain 15 OP per second, Infinity requirement is now 100, and you can bulk complete challenges</p></td>
+            <td id="slug3"><br>12 Boosts<br><br><p>Unlock Auto Shifting</p></td>
+            <td id="slug4"><br>10 Boosts<br><br><p>Unlock Auto Boosting</p></td>
+            <td id="slug5"><br>8 Boosts<br><br><p>Every 2 Sluggish Milestones start you with a Factor Shift</p></td>
+          </tr>
+          <tr class="trueCenter long">
+            <td id="slug6"><br>6 Boosts<br><br><p>You can complete Challenge 8 multiple times</p></td>
+            <td id="slug7"><br>5 Boosts<br><br><p>You keep Manifolds on collapse</p></td>
+            <td id="slug8"><br>4 Boosts<br><br><p>Unlock Distribute All</p></td>
+            <td id="slug9"><br>3 Boosts<br><br><p>Unlock Presets</p></td>
+            <td id="slug10"><br>2 Boosts<br><br><p>Start runs with an extra Factor Shift</p></td>
+            <td id="slug11"><br>1 Boosts<br><br><p>Unlock ???</p></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="csubTab3" style="width: 100%">
+        <h1 id="alephOmegaText" style="font-size: 20pt;text-align: center;font-weight: bold">You have 1 ℵ<sub>ω</sub></h1>
+        <div class="trueCenter"><button class="collapse" style="height: 30px" onclick="getAlephOmega()">Buy ℵ<sub>ω</sub> for 1 of each ℵ</button>
+        <button class="collapse" style="height: 30px;display:none">Buy 50%</button></div>
+        <br>
+        <table id="alephOmegaUps"><tbody class="trueCenter">
+          <tr>
+            <td><button class="treeButton collapse" id="aup1" onclick="aup(1)">Dynamic boosts Tier 2<br><br>Cost: 1 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup2" onclick="aup(2)">Tier 1 autobuyers multiply each other by sqrt(x)<br>Cost: 2 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup3" onclick="aup(3)">???<br><br>Cost: ???</button></td>
+            <td><button class="treeButton collapse" id="aup4" onclick="aup(4)">???<br><br>Cost: ???</button></td>
+          </tr>
+        </tbody></table>
+      </div>
     </div>
   </body>
 </html>
+
