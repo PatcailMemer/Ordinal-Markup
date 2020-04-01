@@ -344,7 +344,7 @@ function loop(ms) {
   }
   if (game.leastBoost <= 20) {
     for (let i=0;i<7;i++) {
-      if (game.challengeCompletion[i]<1) game.challengeCompletion[i]=1
+      //if (game.challengeCompletion[i]<1) game.challengeCompletion[i]=1
     }
   }
   let assCount
