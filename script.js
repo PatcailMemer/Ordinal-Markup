@@ -32,7 +32,7 @@ const aupCost=[1,2,Infinity,Infinity]
 let AF=0
 const d=new Date()
 if (d.getMonth()==3&&d.getDate()==1&&!(d.getFullYear()==Number(localStorage.ordinalMarkupAF))) {
-  AF=0
+  AF=1
   console.log("April Fools!")
   localStorage.setItem("ordinalMarkupAF",d.getFullYear().toString())
 } else {
