@@ -362,6 +362,7 @@ function render() {
   for (let i=0;i<6;i++) {
     document.getElementById("slug"+i).classList.remove("slugMile")
     document.getElementById("slug"+i).classList.add("notSlugMile")
+	  //yeet
   }
   for (let i=0;i<calcSlugMile();i++) {
     document.getElementById("slug"+i).classList.add("slugMile")
