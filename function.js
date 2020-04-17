@@ -12,7 +12,7 @@ function getAlephOmega() {
 }
 
 function getHalfAlephOmega() {
-  let bulk=game.assCard[0].points.min(game.assCard[1].points).min(game.assCard[2].points).floor().divide(2)
+  let bulk=game.assCard[0].points.min(game.assCard[1].points).min(game.assCard[2].points).divide(2).floor()
   game.assCard[0].points = game.assCard[0].points.minus(bulk)
   game.assCard[1].points = game.assCard[1].points.minus(bulk)
   game.assCard[2].points = game.assCard[2].points.minus(bulk)
