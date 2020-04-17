@@ -12,7 +12,7 @@ let game
 let factorShiftCosts=[200, 1000, 10000, 350000, 1e12, 1e21, 1e100, 1.095e272, Infinity]
 let factorCostExp=[2,2,2,3,3,6,30,100]
 const bupUpgradeCosts=[1,1,1,12,5,4,8,36,72,73,16,108,53,74,66,324]
-const slugMile=[10**10,20,15,12,10,8,6,5,4,3,2,1,-1]
+const slugMile=[10**10,20,15,12,10,1,-1]
 let totalMult = 1
 let buptotalMute = 1
 const challengeGoals=[[10**32,10**223,10**270*5],[10**270*5,V(10)+10**270,V(17)+10**270],[10**200,10**214,1e256],[10**33,5e113,1.5e119],[10**122,3.33e136,1e210],[1.02e33,1e44,4.75e108],[1.05e13,4.18e18,1.02e20],[3.000e10,6.00e10,2.4e11,Infinity]]
@@ -120,8 +120,9 @@ function loop(ms) {
   changeDynamic(ms)
   if (game.dynamic<0) game.dynamic = 0
   if (game.chal8==1) game.decrementy += getDecrementyRate(ms)
+  if (game.leastBoost<=1.5&&game.limAuto==0) game.limAuto=1
   totalMult = factorMult*(game.upgrades.includes(6)?(10+Math.max(game.boosters,0)**0.9):1)*bfactorMult*calcDynamic()*(game.iups[8]==1?((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2]):1)/(game.chal8==1?(10**(game.decrementy*(0.95**game.dups[0]))):1)*game.assCard[0].mult.toNumber()*(1.2**game.dups[2])*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
-  buptotalMute = (game.upgrades.includes(6)?(10+Math.max(game.boosters,0)**0.9):1)*bfactorMult*((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2])*game.assCard[1].mult.toNumber()*(game.aups.includes(1)?Math.max(calcDynamic(),1):1)*(1.2**game.dups[2])*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
+  buptotalMute = (game.upgrades.includes(6)?(10+Math.max(game.boosters,0)**0.9):1)*bfactorMult*((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2])*game.assCard[1].mult.toNumber()*(game.aups.includes(1)?Math.max(getManifoldEffect(),1):1)*(1.2**game.dups[2])*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
   succAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.limAuto),1):1)
   limAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.succAuto),1):1)
   let chal8Tip = (calcOrdPoints()>=1e30)
@@ -169,7 +170,7 @@ function loop(ms) {
   changeDynamic(ms)
   if (game.dynamic<0) game.dynamic = 0
   if (ms>0) {
-  if (game.upgrades.includes(2) && game.autoOn.max==1) {
+  if ((game.upgrades.includes(2)||game.leastBoost<=1.5) && game.autoOn.max==1) {
     game.bAutoLoop.max += ms
     if (game.bAutoLoop.max >= (1000/buptotalMute)) {
       game.bAutoLoop.max -= (1000/buptotalMute)
@@ -288,9 +289,9 @@ function render() {
   document.getElementById("factorBoost").innerHTML = "Factor Boost (" + game.factorBoosts + "): Requires g<sub>" + displayOrd(V(game.factorBoosts+3)) + "</sub> (10) OP"
   document.getElementById("gainBoosters").textContent = "Gain " + (game.OP>=V(game.factorBoosts+3)?getFactorBoostGain():(game.factorBoosts+1)) + " Boosters (B)"
   document.getElementById("dynamicMult").textContent = "Your Dynamic Multiplier is x" + ((game.dynamic*getManifoldEffect())**(game.upgrades.includes(13) && game.challenge % 2 == 1?2:1)).toFixed(3)
-  document.getElementById("maxAllAuto").innerHTML = "Your Max All Autobuyer is clicking the Max All button " + (game.upgrades.includes(2) && game.autoOn.max==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you can't Factor Shift"
+  document.getElementById("maxAllAuto").innerHTML = "Your Max All Autobuyer is clicking the Max All button " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) && game.autoOn.max==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you can't Factor Shift"
   document.getElementById("infinityAuto").innerHTML = "Your Infinity Autobuyer is clicking the Infinity button " + (game.upgrades.includes(3) && game.autoOn.inf==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you're past " + displayOrd(10**270*4)
-  document.getElementById("autoMaxButton").textContent = "Max All Autobuyer: " + (game.upgrades.includes(2) ? (game.autoOn.max==1 ? "ON" : "OFF") : "LOCKED")
+  document.getElementById("autoMaxButton").textContent = "Max All Autobuyer: " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) ? (game.autoOn.max==1 ? "ON" : "OFF") : "LOCKED")
   document.getElementById("autoInfButton").textContent = "Infinity Autobuyer: " + (game.upgrades.includes(3) ? (game.autoOn.inf==1 ? "ON" : "OFF") : "LOCKED")
   document.getElementById("bup6 current").textContent = (10+game.boosters**0.9).toFixed(2)
   document.getElementById("runChal").textContent = (game.chal8==1?"You're currently running Challenge 8":(game.challenge==0?"You're currently not in a challenge":"You're currently running Challenge "+game.challenge))
@@ -358,7 +359,7 @@ function render() {
   document.getElementById("cardText3").innerHTML = "You have " + beautify(game.assCard[2].points) + " ℵ<sub>2</sub>"
   document.getElementById("cardPow3").innerHTML = "You have " + beautify(game.assCard[2].power) + " ℵ<sub>2</sub> Power (+" + beautify(game.assCard[2].points.pow(2)) + "/s)"
   document.getElementById("cardMult3").textContent = "x" + beautify(game.assCard[2].mult,3)
-  for (let i=0;i<12;i++) {
+  for (let i=0;i<6;i++) {
     document.getElementById("slug"+i).classList.remove("slugMile")
     document.getElementById("slug"+i).classList.add("notSlugMile")
   }
@@ -479,8 +480,6 @@ function resetEverythingCollapseDoes() {
   game.challenge=0
   game.challengeCompletion=[0,0,0,0,0,0,0]
   game.incrementy=EN(0)
-  game.manifolds=0
-  game.iups=[0,0,0,0,0,0,0,0,0]
   game.chal8=0
   game.chal8Comp=0
   game.decrementy=0
@@ -488,8 +487,12 @@ function resetEverythingCollapseDoes() {
   game.collapseUnlock=1
   game.collapseTime=0
   game.reachedBHO=0
+  if (game.leastBoost>=1.5) {
+  game.manifolds=0
+  game.iups=[0,0,0,0,0,0,0,0,0]
   game.dups = [0,0,0,0,0,0,0,0,0]
   game.darkManifolds = 0
+  }
 }
 
 function collapse(manmade=0) {
@@ -1187,7 +1190,7 @@ function V(n) {
 }
 
 function toggleAutoMax() {
-  if (game.upgrades.includes(2)) {
+  if (game.upgrades.includes(2)||game.leastBoost<=1.5) {
     game.autoOn.max=1-game.autoOn.max
   }
   render()
@@ -1378,7 +1381,7 @@ function project(x) {
   document.getElementById("factorBoostProg").style.width="100%"
   document.getElementById("factorBoostProg").innerHTML="100.00%"
   } else {
-  document.getElementById("nextBulkTime").innerHTML=(game.OP<1e270?"Reach " + beautify(5e270) + " to see when you can boost!":(game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?"You can't bulk past the BHO!":"Next boost in bulk will take " + (game.upgrades.includes(2)&&(game.upgrades.includes(3)||game.leastBoost<=25)?time(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/x/(1e270))):(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/1/(1e270))) + " click cycles")))
+  document.getElementById("nextBulkTime").innerHTML=(game.OP<1e270?"Reach " + beautify(5e270) + " to see when you can boost!":(game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?"You can't bulk past the BHO!":"Next boost in bulk will take " + ((game.upgrades.includes(2)||game.leastBoost<=1.5)&&(game.upgrades.includes(3)||game.leastBoost<=25)?time(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/x/(1e270))):(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/1/(1e270))) + " click cycles")))
   document.getElementById("bulking").innerHTML = getFactorBulk()
   document.getElementById("factorBoostProg").style.width = (game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?100:game.OP/V(game.factorBoosts+getFactorBulk()+3)*100) + "%"
   document.getElementById("factorBoostProg").innerHTML = (game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?100:game.OP/V(game.factorBoosts+getFactorBulk()+3)*100).toFixed(2) + "%"
@@ -1465,4 +1468,12 @@ function maxInfStuff() {
   if (game.limAuto==0) buylim()
   maxFactors()
   maxall()
+}
+
+function distributeCard() {
+  let bulk=game.cardinals.divide(3).floor()
+  game.cardinals=game.cardinals.minus(bulk.times(3))
+  game.assCard[0].points=game.assCard[0].points.add(bulk)
+  game.assCard[1].points=game.assCard[1].points.add(bulk)
+  game.assCard[2].points=game.assCard[2].points.add(bulk)
 }
