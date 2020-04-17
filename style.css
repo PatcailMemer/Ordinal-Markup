@@ -309,11 +309,19 @@ invisible {
 #slugTable tr:nth-child(1) td:nth-child(1) p {
   font-size: 10pt;
 }
-#slugTable tr:nth-child(1) td:nth-child(2) p {
+/* #slugTable tr:nth-child(1) td:nth-child(2) p {
+  font-size: 10pt;
+} */
+
+#slugTable tr:nth-child(1) td:nth-child(3) p {
   font-size: 10pt;
 }
 
-#slugTable tr:nth-child(1) td:nth-child(3) p {
+#slugTable tr:nth-child(1) td:nth-child(6) p {
+  font-size: 10pt;
+}
+
+#slugTable tr:nth-child(2) td:nth-child(1) p {
   font-size: 10pt;
 }
 
@@ -358,3 +366,19 @@ invisible {
   font-size: 13pt;
 }
 
+.darkButton {
+  color: #ffffff;
+	background: radial-gradient(#222,#000);
+	border-width: 2px;
+  border-color: #808080;
+	border-radius: 2px;
+	transition-duration: 0.2s;
+	cursor: pointer;
+}
+
+.darkButton:hover {
+  border-color: #000000;
+  background: #000000;
+}
+
+#subTab4 td button {font-size: 12pt}
