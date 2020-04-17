@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="mobile.css">
     <link rel="stylesheet" href="style.css">
     <div id="theme"><link rel="stylesheet" href="dark.css"></div>
     <!-- import the webpage's javascript file -->
@@ -22,12 +23,12 @@
     <audio src="https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884" id="music"></audio>
     <b id="decrementyText">There is 1 decrementy</b>
     <h1 id="hardy" style="font-size: 30pt;font-weight: bold">H<sub>0</sub> (10)=10</h1>
-    <button onclick="Tab(1)" class="tabButton">Ordinals</button><text class="invisible">0</text>
-    <button onclick="Tab(2)" class="tabButton">Options</button><text class="invisible">0</text>
-    <button onclick="Tab(4)" class="tabButton">Objectives</button><text class="invisible">0</text>
-    <button onclick="Tab(5)" id="infinityTabButton" class="infinityTabButton">Infinity</button><text class="invisible">0</text>
-    <button onclick="Tab(6)" id="boosterTabButton" class="boosterTabButton">Boosters</button><text class="invisible">0</text>
-    <button onclick="Tab(7)" id="collapseTabButton" class="collapseTabButton">Collapse</button><text class="invisible">0</text>
+    <button onclick="Tab(1)" class="tabButton">Ordinals</button><text class="invisible invisTab">0</text>
+    <button onclick="Tab(2)" class="tabButton">Options</button><text class="invisible invisTab">0</text>
+    <button onclick="Tab(4)" class="tabButton">Objectives</button><text class="invisible invisTab">0</text>
+    <button onclick="Tab(5)" id="infinityTabButton" class="infinityTabButton">Infinity</button><text class="invisible invisTab">0</text>
+    <button onclick="Tab(6)" id="boosterTabButton" class="boosterTabButton">Boosters</button><text class="invisible invisTab">0</text>
+    <button onclick="Tab(7)" id="collapseTabButton" class="collapseTabButton">Collapse</button><text class="invisible invisTab">0</text>
     <p></p>
     <div id="Tab1">
       <button onclick="increment(1)" class="normalButton">Increase Ordinal by 1</button>
@@ -39,8 +40,7 @@
       <button onclick="exporty()" class="normalButton" style="border:2px solid #00FF00">Export your game file</button>
       <button onclick="importy()" class="normalButton" style="border:2px solid #0080FF">Import your game file</button>
       <button onclick="resetConf()" style="color:#FF0000;border:2px solid #FF0000">RESET YOUR GAME</button>
-      <p>Game autosaves every ten seconds<button onclick="changeOfflineProg()" class="normalButton" id="changeOffline" style="margin-left:10px">Offline Progress: ON</button></p>
-      <p><a href="howtoplay.html">How to play</a> | <a href="https://discordapp.com/invite/RerPeNA">Discord</a></p>
+      <button onclick="changeOfflineProg()" class="normalButton" id="changeOffline" style="margin-left:10px">Offline Progress: ON</button>
       <button onclick="changeInt()" class="normalButton" id="changeInt">Millisecond Interval: 50ms</button>
       <button onclick="changeOrdLengthLess()" class="normalButton" id="changeOrdLengthLess">Maximum Ordinal Length below e0: 50ms</button>
       <button onclick="changeOrdLengthMore()" class="normalButton" id="changeOrdLengthMore">Maximum Ordinal Length above e0: 50ms</button>
@@ -50,6 +50,7 @@
       <p></p>
       <button onclick="changeMusic()" class="normalButton" id="changeMusic">Music: OFF</button>
       <button onclick="changeColor()" class="normalButton" id="changeColor">Color: OFF</button>
+      <p><a href="howtoplay.html">How to play</a> | <a href="https://discordapp.com/invite/RerPeNA">Discord</a> | Game autosaves every ten seconds</p>
       <p><i>This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a></i></p>
     </div>
     <div id="Tab3">
@@ -96,10 +97,10 @@ Only to find the exact same climb once more.</p>
     <div id="Tab5">
       <text id="ordinalPointsDisplay">You have 100 Ordinal Points</text><text class="invisible">____</text><button onclick="infinity(1)" id="infinityButton2" class="infinityButton">Reach 10240 to Infinity</button>
       <p></p>
-      <button onclick="subTab(1)" class="infinityButton">Autoclickers</button>
-      <button onclick="subTab(2)" class="infinityButton">Factors</button>
-      <button onclick="subTab(3)" class="infinityButton" id="dynamicFactorButton">Dynamic Factors</button>
-      <button onclick="subTab(4)" class="darkButton" id="darkUpButton">Dark Upgrades</button>
+      <button onclick="subTab(1)" class="infinityButton subtab">Autoclickers</button>
+      <button onclick="subTab(2)" class="infinityButton subtab">Factors</button>
+      <button onclick="subTab(3)" class="infinityButton subtab" id="dynamicFactorButton">Dynamic Factors</button>
+      <button onclick="subTab(4)" class="darkButton subtab" id="darkUpButton">Dark Upgrades</button>
       <p></p>
       <div id="subTab1">
         <b>Tier 1 Automation</b>
@@ -176,10 +177,10 @@ Only to find the exact same climb once more.</p>
       </div>
     </div>
     <div id="Tab6" style="width: 100%">
-      <button onclick="bsubTab(1)" class="boosterButton">Upgrades</button>
-      <button onclick="bsubTab(2)" class="boosterButton">Autobuyers</button>
-      <button onclick="bsubTab(3)" class="boosterButton" id="challengeSubTab">Challenges</button>
-      <button onclick="bsubTab(4)" class="boosterButton" id="incrementySubTab">Incrementy</button>
+      <button onclick="bsubTab(1)" class="boosterButton subtab">Upgrades</button>
+      <button onclick="bsubTab(2)" class="boosterButton subtab">Autobuyers</button>
+      <button onclick="bsubTab(3)" class="boosterButton subtab" id="challengeSubTab">Challenges</button>
+      <button onclick="bsubTab(4)" class="boosterButton subtab" id="incrementySubTab">Incrementy</button>
       <p></p>
       <div id="bsubTab1"><div id="bsubTab1sub"><text id="boostersText">You have 1 Boosters</text>
       <button id="refundBoosters" onclick="refund()">Refund back 0 boosters, but reset all factor shifts</button>
@@ -214,7 +215,7 @@ Only to find the exact same climb once more.</p>
           <td><button class="treeButton locked" id="bup15" onclick="bup(15)">Infinity gives 666666x OP if the base is less than six<br>66 Boosters</button></td>
           <td><button class="treeButton locked" id="bup16" onclick="bup(16)"><b>Unlock the next layer<br>Need 324 Boosters and 23 Challenge Completions</b></button></td>
         </tr>
-        </tbody></table><p style="text-align: center"><i>You may have to rotate your phone on mobile to see all of the upgrades. The right column of upgrades doesn't consume your boosters.</i></p></div>
+        </tbody></table><p style="text-align: center"><i id="mobileMessage">You may have to rotate your phone on mobile to see all of the upgrades. The right column of upgrades doesn't consume your boosters.</i></p></div>
       </div></div>
       <div id="bsubTab2">
         <text><b>Tier 2 Automation</b></text>
@@ -280,40 +281,38 @@ Only to find the exact same climb once more.</p>
     </div>
     <div id="Tab7" style="width: 100%; height: 100%">
       <div>
-      <button onclick="csubTab(1)" class="collapse">Aleph Power</button>
-      <button onclick="csubTab(2)" class="collapse">Sluggish Milestones</button>
-      <button onclick="csubTab(3)" class="collapse">Aleph Upgrades</button>
-      <button onclick="csubTab(4)" class="collapse" id="autoPrestigeSubTab">Autoprestigers</button>
+      <button onclick="csubTab(1)" class="collapse subtab">Aleph Power</button>
+      <button onclick="csubTab(2)" class="collapse subtab">Sluggish Milestones</button>
+      <button onclick="csubTab(3)" class="collapse subtab">Aleph Upgrades</button>
+      <button onclick="csubTab(4)" class="collapse subtab" id="autoPrestigeSubTab">Autoprestigers</button>
       </div>
       <div id="csubTab1" style="width: 100%">
         <p id="cardinalText" style="font-size: 20pt;text-align: center;font-weight: bold">You have 1 cardinal</p>
         <button id="collapseButton" class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 60px" onclick="collapse(1)"><text style="margin: 10px">Reach the BHO to collapse!</text></button>
         <p id="collapseCardHelp" style="text-align:center">Next Cardinal in 3 Factor Boosts (5.896s in collapse)</p>
+        <button class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 40px" onclick="distributeCard()">Distribute All Cardinals</button>
         <br>
-        <table id="cardinalTable" style="width: 100%">
+        <table id="cardinalTable" style="width: 100%" cellspacing="0" cellpadding="0">
           <tr>
             <td>
               <text style="font-size: 16pt;font-weight: bold" id="cardText1">You have 1 ℵ<sub>0</sub></text>
-              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(1,1,0)">Assign 1</button><invisible>0</invisible>
+              <p class="assignButtons"><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(1,1,0)">Assign 1</button><invisible class="invisTab">0</invisible>
               <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(1,1,1)">Assign all</button></p>
-              <br><br><br>
               <text id="cardPow1">You have 100 ℵ<sub>0</sub> Power (+1/s)</text><br><br>Translated to a
               <p style="font-size: 20pt;font-weight: bold" id="cardMult1">x100.00</p>multiplier to Tier 1 automation<p id="cardExtra1" class="invisible">and ??</p>
             </td>
             <td>
               <text style="font-size: 16pt;font-weight: bold" id="cardText2">You have 1 ℵ<sub>1</sub></text>
-              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(2,1,0)">Assign 1</button><invisible>0</invisible>
+              <p class="assignButtons"><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(2,1,0)">Assign 1</button><invisible class="invisTab">0</invisible>
               <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(2,1,1)">Assign all</button></p>
-              <br><br><br>
               <text id="cardPow2">You have 100 ℵ<sub>1</sub> Power (+1/s)</text><br><br>Translated to a
               <p style="font-size: 20pt;font-weight: bold" id="cardMult2">x100.00</p>multiplier to Tier 2 automation<p id="cardExtra2" class="invisible">and Dynamic Factor Cap</p>
             </td>
             <td>
               <text style="font-size: 16pt;font-weight: bold" id="cardText3">You have 1 ℵ<sub>2</sub></text>
-              <p><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(3,1,0)">Assign 1</button><invisible>0</invisible>
+              <p class="assignButtons"><button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(3,1,0)">Assign 1</button><invisible class="invisTab">0</invisible>
               <button class="collapse" style="font-size: 14pt;width: 125px;height: 40px" onclick="assign(3,1,1)">Assign all</button></p>
-              <br><br><br>
-              <text id="cardPow3">You have 100 ℵ<sub>2</sub> Power (+1/s)</text><br><br>Translated to a<br>
+              <text id="cardPow3">You have 100 ℵ<sub>2</sub> Power (+1/s)</text><br><br>Translated to a
               <p style="font-size: 20pt;font-weight: bold" id="cardMult3">x100.00</p>multiplier to OP gain<p id="cardExtra3" class="invisible">and Incrementy gain</p>
             </td>
           </tr>
@@ -331,16 +330,10 @@ Only to find the exact same climb once more.</p>
             <td id="slug1"><br>20 Boosts<br><br><p>Challenges with no completions give a reduced boost (x^0.25)</p></td>
             <td id="slug2"><br>15 Boosts<br><br><p>Gain 15 OP per second, Infinity requirement is now 100, and you can bulk complete challenges</p></td>
             <td id="slug3"><br>12 Boosts<br><br><p>Unlock Tier 3 automation</p></td>
-            <td id="slug4"><br>10 Boosts<br><br><p>Unlock Tier 3 automation upgrades</p></td>
-            <td id="slug5"><br>8 Boosts<br><br><p>You can complete Challenge 8 an unlimited amount of times (for a boost)</p></td>
+            <td id="slug4"><br>10 Boosts<br><br><p>Unlock upgrades for Tier 3 automation</p></td>
           </tr>
           <tr class="trueCenter long">
-            <td id="slug6"><br>6 Boosts<br><br><p>You keep Normal and Dark Incrementy Upgrades on collapse</p></td>
-            <td id="slug7"><br>5 Boosts<br><br><p>You keep Normal and Dark Manifolds on collapse</p></td>
-            <td id="slug8"><br>4 Boosts<br><br><p>Unlock Distribute All and Presets</p></td>
-            <td id="slug9"><br>3 Boosts<br><br><p>???</p></td>
-            <td id="slug10"><br>2 Boosts<br><br><p>???</p></td>
-            <td id="slug11"><br>1 Boost<br><br><p>Redacted</p></td>
+            <td id="slug5" style="width: 775px"><br>1 Boost<br><p>You keep all Incrementy Upgrades, Dark Upgrades, Manifolds, and Dark Manifolds on collapse, Unlock [Redacted] and Distribute All, you get a free Maximize Autobuyer and you always have a Max All Autobuyer, you can [Redacted], and unlock the [Redacted]<p></td>
           </tr>
           </tbody>
         </table>
@@ -352,7 +345,7 @@ Only to find the exact same climb once more.</p>
         <br>
         <table id="alephOmegaUps"><tbody class="trueCenter">
           <tr>
-            <td><button class="treeButton collapse" id="aup1" onclick="aup(1)">Dynamic boosts Tier 2<br><br>Cost: 1 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup1" onclick="aup(1)">Manifolds boost Tier 2<br><br>Cost: 1 ℵ<sub>ω</sub></button></td>
             <td><button class="treeButton collapse" id="aup2" onclick="aup(2)">Tier 1 autoclickers boost each other<br><br>Cost: 2 ℵ<sub>ω</sub></button></td>
             <td><button class="treeButton collapse" id="aup3" onclick="aup(3)">Unlock Dark Upgrades in the Infinity Tab<br><br>Cost: 4 ℵ<sub>ω</sub></button></td>
             <td><button class="treeButton collapse" id="aup4" onclick="aup(4)">OP boost Tier 1 and 2 by<br><br>Cost: 8 ℵ<sub>ω</sub></button></td>
@@ -364,6 +357,7 @@ Only to find the exact same climb once more.</p>
             <td><button class="treeButton collapse" id="aup8" onclick="aup(8)">Redacted<br><br>Cost: 4.29e9 ℵ<sub>ω</sub></button></td>
           </tr>
         </tbody></table>
+        <p style="text-align: center"><i id="mobileMessageAleph">You may have to rotate your phone on mobile to see all of the upgrades.</i></p>
       </div>
       <div id="csubTab4">
         <p><b>Tier 3 Automation <text style="color:red">(Offline Progression for Autoprestige isn't implemented yet)</text></b></p>
