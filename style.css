@@ -116,14 +116,10 @@
 }
 
 #boostersText {
-  margin: 0;
-  position: absolute;
+  margin: auto;
   text-align: center;
   font-size: 20pt;
   display: inline;
-  left: 50%;
-  -ms-transform: translate(-50%);
-  transform: translate(-50%);
   font-weight: bold;
 }
 
@@ -136,12 +132,34 @@
   border-width:1.5px;
   cursor: pointer;
   transition-duration: 0.1s;
-  margin: 0;
-  position: absolute;
-  left: 50%;
-  -ms-transform: translate(-50%,42px);
-  transform: translate(-50%,42px);
+  margin: auto;
   font-size: 14pt
+}
+
+#refundConfirmation {
+  font-family: sans-serif;
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  margin: auto;
+  font-size: 12pt
+}
+
+#refundFB {
+  font-family: sans-serif;
+  color: #000000;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: #000000;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  margin: auto;
+  font-size: 12pt
 }
 
 #refundBoosters:hover {
@@ -235,6 +253,10 @@ invisible {
   border: solid green
 }
 
+.collapseTabButton:hover {
+  background: green;
+  color: #FFFFFF;
+}
 
 .collapse {
   font-family: sans-serif;
@@ -296,7 +318,6 @@ invisible {
   border-weight: 10px;
 }
 
-
 #slugTable td {
   width: 150px;
   font-family: sans-serif;
@@ -306,22 +327,20 @@ invisible {
   display: inline-block;
 }
 
+
 #slugTable tr:nth-child(1) td:nth-child(1) p {
   font-size: 10pt;
 }
+
+#slugTable tr:nth-child(1) td:nth-child(2) p {
+  font-size: 11pt;
+}
+
 /* #slugTable tr:nth-child(1) td:nth-child(2) p {
   font-size: 10pt;
 } */
 
 #slugTable tr:nth-child(1) td:nth-child(3) p {
-  font-size: 10pt;
-}
-
-#slugTable tr:nth-child(1) td:nth-child(6) p {
-  font-size: 10pt;
-}
-
-#slugTable tr:nth-child(2) td:nth-child(1) p {
   font-size: 10pt;
 }
 
@@ -339,7 +358,7 @@ invisible {
 
 
 .long {
-  width: 100%
+  width: 100%;
 }
 
 #alephOmegaUps {
@@ -348,7 +367,11 @@ invisible {
   text-align:center;
   margin-top: 5pt;
   margin-bottom: 5pt;
-  width: 815px
+  width: 815px;
+}
+
+.assignButtons {
+  margin-bottom: calc(18px * 3);
 }
 
 #factorBoostProgBar {
@@ -368,17 +391,48 @@ invisible {
 
 .darkButton {
   color: #ffffff;
-	background: radial-gradient(#222,#000);
+	background: radial-gradient(#333,#000);
 	border-width: 2px;
   border-color: #808080;
 	border-radius: 2px;
-	transition-duration: 0.2s;
+	transition-duration: 0.1s;
 	cursor: pointer;
 }
 
 .darkButton:hover {
-  border-color: #000000;
-  background: #000000;
+  border-color: transparent;
+  background: transparent;
 }
 
 #subTab4 td button {font-size: 12pt}
+
+.singularity {
+  color: #ffffff;
+	background: radial-gradient(#333,#000);
+	border-width: 2px;
+  border: solid green;
+	border-radius: 2px;
+	transition-duration: 0.1s;
+	cursor: pointer;
+}
+
+.singularity:hover {
+  border-color: transparent;
+  background: transparent;
+}
+
+.singSacr {
+  font-family: sans-serif;
+  border-width:1.5px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+  margin: center;
+  width: 200px;
+  height: 100px;
+  font-size: 18px
+}
+
+.thicc {
+  font-size: 20px;
+  height: 60px;
+}

@@ -11,25 +11,29 @@ let infinityButtonText = 0
 let game
 let factorShiftCosts=[200, 1000, 10000, 350000, 1e12, 1e21, 1e100, 1.095e272, Infinity]
 let factorCostExp=[2,2,2,3,3,6,30,100]
-const bupUpgradeCosts=[1,1,1,12,5,4,8,36,72,73,16,108,53,74,66,324]
+const bupUpgradeCosts=[1,1,1,12,5,4,8,36,72,73,16,108,53,74,66,324,Infinity,Infinity,8e8,5e11,Infinity,Infinity,Infinity,Infinity]
 const slugMile=[10**10,20,15,12,10,1,-1]
 let totalMult = 1
 let buptotalMute = 1
-const challengeGoals=[[10**32,10**223,10**270*5],[10**270*5,V(10)+10**270,V(17)+10**270],[10**200,10**214,1e256],[10**33,5e113,1.5e119],[10**122,3.33e136,1e210],[1.02e33,1e44,4.75e108],[1.05e13,4.18e18,1.02e20],[3.000e10,6.00e10,2.4e11,Infinity]]
+const challengeGoals=[[10**32,10**223,10**270*5],[10**270*5,V(10)+10**270,V(17)+10**270],[10**200,10**214,1e256],[10**33,5e113,1.5e119],[10**122,3.33e136,1e218],[1.02e33,1e44,4.75e108],[1.05e13,4.18e18,1.02e20],[3.000e10,6.00e10,2.4e11,Infinity]]
 const challengeCurve=[0,0.5,0.75,1]
 let partOP = 0
+let factorBoostLoop = 0
+let cardinalLoop = ExpantaNum(0)
 let collapseAnimation = 0
 const iupCosts=[10**5,10**3,10**9,10**17,2e22,4e23,10**19,2e25,4e27]
 const dupCosts=[5,1000,9,Infinity,Infinity,Infinity,Infinity,Infinity,Infinity]
 let ordColor = "no" //yes
 let EN = ExpantaNum
+const get = x => document.getElementById(x) 
 const musicLink=[
 "https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884",
-"https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FHypnothis.mp3?v=1584285594822"
+"https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FHypnothis.mp3?v=1584285594822",
+"https://cdn.glitch.com/310d7aca-4728-445f-9084-db26ceccd7b5%2Fsb_horizons.mp3?v=1587776723308"
 ]
-const musicName = ['OFF', "Going Down by Jake Chudnow", "Hypnothis by Kevin Macleod"]
+const musicName = ['OFF', "Going Down by Jake Chudnow", "Hypnothis by Kevin Macleod", "Horizon by Scott Buckley (<a href='https://soundcloud.com/scottbuckley'>https://soundcloud.com/scottbuckley</a>) - CC BY 3.0"]
 const BHO = V(27)
-const aupCost=[1,2,4,8,16,256,65536,2**32]
+const aupCost=[1,2,4,8,16,256,65536,2**32,2**64,2**128,2**256,2**512]
 let AF=0
 const d=new Date()
 if (d.getMonth()==3&&d.getDate()==1&&!(d.getFullYear()==Number(localStorage.ordinalMarkupAF))) {
@@ -40,21 +44,19 @@ if (d.getMonth()==3&&d.getDate()==1&&!(d.getFullYear()==Number(localStorage.ordi
   AF=0
 }
 reset()
-document.getElementById("music").loop=true
-document.getElementById("music").volume=0.5
-document.getElementById("music").muted=false
+get("music").loop=true
+get("music").volume=0.5
+get("music").muted=false
 
 
 Tab(1)
 reset()
-updateFactors()
 load()
 render()
-updateFactors()
 
 function increment(manmade=0) {
-  if (manmade==0 || game.manualClicksLeft >= 0.5 || game.chal8 == 0) {
-    if (manmade==1 && game.chal8 == 1) game.manualClicksLeft -= 1
+  if (manmade==0 || game.manualClicksLeft >= 0.5) {
+    if (manmade==1 && (game.chal8 == 1 || game.challenge==6||game.challenge==7)) game.manualClicksLeft -= 1
     if (game.ord % game.base == game.base-1) {
       game.over += 1
     } else {
@@ -90,7 +92,7 @@ var calculate = window.setInterval(function() {
   clickCoolDown -= 1
 }, game.msint)
 
-function loop(ms) {
+function loop(ms,off=0) {
   if (game.incrementy.lt(0)) game.incrementy=EN(0)
   if (game.collapseUnlock==0) game.leastBoost=Infinity
   if (isNaN(game.leastBoost)) game.leastBoost=Infinity
@@ -98,21 +100,32 @@ function loop(ms) {
   if (game.leastBoost=="null") game.leastBoost=Infinity
   if (typeof game.leastBoost=="undefined") game.leastBoost=Infinity
   game.collapseTime += ms/1000
-  game.base=10-game.factorShifts+(game.challenge==3||game.challenge==7?5:0)+(game.challenge==4||game.challenge==7?game.factorShifts:0)
-  if (game.base >= 8 && game.upgrades.includes(9)) game.base -= 4
-  if (game.upgrades.includes(10)&&game.OP<=1e270) game.base = 5
+  game.base=calcBase()
   game.lastTick=Date.now()
+  game.qolSM.nc8=get("nonC8Auto").value
+  game.qolSM.c8=get("C8Auto").value
+  game.qolSM.ttnc=get("ttnc").value
+  if (game.challenge != 0&&game.leastBoost<=1.5&&game.qolSM.acc==1) {
+    if (game.OP>=challengeGoals[game.challenge-1][Number(game.qolSM.nc8)-1]) {
+      completeChallenge()
+    }
+  }
+  if (game.chal8==1&&game.leastBoost<=1.5&&game.qolSM.acc==1) {
+    if (game.OP>=getChal8Goal(Number(game.qolSM.c8)-1)) {
+      completeChallenge()
+    }
+  }
   if (game.chal8==1 && calcRefund()>0) confirm("You failed Challenge 8 because you had booster upgrades on you!")
   if (game.chal8==1 && calcRefund()>0) refund()
-  if (game.collapseUnlock==1) game.boosters=game.factorBoosts*(game.factorBoosts+1)/2 - calcRefund() + calcSlugMile()
+  game.boosters=game.factorBoosts*(game.factorBoosts+1)/2 - calcRefund() + calcSlugMile()
   if (game.leastBoost <= 1e10 && game.OP < calcTotalOPGain()) {
     game.OP += (calcTotalOPGain()>=10**270?Infinity:calcTotalOPGain()/100000*ms)
     if (game.OP > calcTotalOPGain()) game.OP = calcTotalOPGain()
   }
   let assCount
   for (assCount in game.assCard) {
-    game.assCard[assCount].power = game.assCard[assCount].power.add(game.assCard[assCount].points.pow(2).times(0.001*ms))
-    game.assCard[assCount].mult = game.assCard[assCount].power.add(10).log10()
+    game.assCard[assCount].power = game.assCard[assCount].power.add(game.assCard[assCount].points.pow(game.assCard[assCount].points.log10().pow(0.5).max(2)).times(0.001*ms))
+    game.assCard[assCount].mult = game.assCard[assCount].power.add(10).log10().times(game.aups.includes(7)&&assCount==1?game.alephOmega.add(1).pow(1/32):1)
   }
   if (game.upgrades.includes(8)) {
     game.incrementy = game.incrementy.add(getIncrementyRate(ms/2))
@@ -121,8 +134,8 @@ function loop(ms) {
   if (game.dynamic<0) game.dynamic = 0
   if (game.chal8==1) game.decrementy += getDecrementyRate(ms)
   if (game.leastBoost<=1.5&&game.limAuto==0) game.limAuto=1
-  totalMult = factorMult*(game.upgrades.includes(6)?(10+Math.max(game.boosters,0)**0.9):1)*bfactorMult*calcDynamic()*(game.iups[8]==1?((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2]):1)/(game.chal8==1?(10**(game.decrementy*(0.95**game.dups[0]))):1)*game.assCard[0].mult.toNumber()*(1.2**game.dups[2])*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
-  buptotalMute = (game.upgrades.includes(6)?(10+Math.max(game.boosters,0)**0.9):1)*bfactorMult*((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2])*game.assCard[1].mult.toNumber()*(game.aups.includes(1)?Math.max(getManifoldEffect(),1):1)*(1.2**game.dups[2])*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
+  totalMult = factorMult*calcTotalMultWOFactor()
+  buptotalMute = bfactorMult*calcBupTotalMultWOFactor()*calcIncrementyMult()*(game.aups.includes(4)?Math.log10(Math.log10(1e10+game.OP)):1)
   succAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.limAuto),1):1)
   limAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.succAuto),1):1)
   let chal8Tip = (calcOrdPoints()>=1e30)
@@ -184,30 +197,26 @@ function loop(ms) {
     if (game.bAutoLoop.inf >= (1000/buptotalMute)) {
       game.bAutoLoop.inf -= (1000/buptotalMute)
       if (game.OP+game.ord >= 10**265 && game.challenge != 1 && game.challenge != 7) infinity()
+      if (game.OP+game.ord <= 10**265 && totalMult <= 0.01 && game.leastBoost <= 1.5) infinity()
     }
   }
   if (game.bAutoLoop.max >= (1000/buptotalMute) && (game.bAutoLoop.inf >= (1000/buptotalMute) || game.leastBoost <= 1e10)) {
     let bupCom = Math.min(game.bAutoLoop.max/(1000/buptotalMute),(game.leastBoost <= 1e10?Infinity:game.bAutoLoop.inf/(1000/buptotalMute)))
     game.bAutoLoop.max = game.bAutoLoop.max % (1000/buptotalMute)
     game.bAutoLoop.inf = game.bAutoLoop.inf % (1000/buptotalMute)
-    if (game.ord+game.OP > 10**265 && game.challenge != 1 && game.challenge != 7) game.OP += bupCom*10**270
-    if (game.ord+game.OP > 10**265 && game.challenge != 1 && game.challenge != 7) game.ord += bupCom*10**270
+    increaseOrdTier2(bupCom)
   }
   }
-  if (game.upgrades.includes(7)) {
-    partOP += ms*(game.upgrades.includes(5)?5**(game.challenge==1 || game.challenge==7?4:1):1)/50*game.assCard[2].mult.toNumber()
+  if (game.upgrades.includes(7)||game.leastBoost<=15) {
+    partOP += ms/1000*calcOPPS()
     game.OP += Math.floor(partOP)
     partOP = partOP % 1
   }
-  if (game.leastBoost<=15) {
-    partOP += ms*(game.upgrades.includes(5)?5**(game.challenge==1 || game.challenge==7?4:1):1)/1000*15*game.assCard[2].mult.toNumber()
-    game.OP += Math.floor(partOP)
-    partOP = partOP % 1
-  }
-  if (game.OP>V(27)) game.OP=V(27)
-  if (game.ord>V(27)) game.ord=V(27)
+  if (game.OP>BHO*getSingLevel()) game.OP=BHO*getSingLevel()
+  if (game.ord>BHO*getSingLevel()) game.ord=BHO*getSingLevel()
   if (game.upgrades.includes(8)) {
     game.incrementy = game.incrementy.add(getIncrementyRate(ms/2))
+    if (getIncrementyRate(1000).gte(game.maxIncrementyRate) && game.challenge % 2 == 0) game.maxIncrementyRate=getIncrementyRate(1000)
   }
   game.cAutoLoop.shift += (game.leastBoost<=12&&game.cAutoOn.shift==1?ms/1000*game.shiftAuto.toNumber():0)
   if (game.cAutoLoop.shift>=1) {
@@ -216,11 +225,22 @@ function loop(ms) {
   }
   game.cAutoLoop.boost += (game.leastBoost<=12&&game.cAutoOn.boost==1?ms/1000*game.boostAuto.toNumber():0)
   if (game.cAutoLoop.boost>=1) {
-    if (game.OP>=V(27)) factorBoost()
+    if (game.OP>=BHO&&game.challenge==0&&!(game.factorBoosts<=slugMile[slugMile.findIndex(mile => {return mile<game.leastBoost})])) factorBoost()
     game.cAutoLoop.boost = game.cAutoLoop.boost % 1
   }
-  let themeSave="<link rel=\"stylesheet\" href=\"" + (game.theme==0?"light":"dark") + ".css\">"
-  if (document.getElementById("theme").innerHTML != themeSave) document.getElementById("theme").innerHTML = themeSave
+  if (game.aups.includes(8)) cardinalLoop=cardinalLoop.add(game.mostCardOnce.times(ms/33333))
+  if (cardinalLoop.gte(1)) {
+    game.cardinals=game.cardinals.add(cardinalLoop.floor())
+    cardinalLoop=cardinalLoop.mod(1)
+  }
+  if (game.challenge==0&&game.chal8==0&&(!game.upgrades.includes(10))&&game.cAutoOn.shift==1&&game.cAutoOn.boost==1&&game.leastBoost<=12&&calcFactorBoostTime()<=ms*0.022) {
+    factorBoostLoop += ((1/calcFactorBoostTime()) - 1/(ms*0.022))*ms/1000
+    game.factorBoosts += Math.floor(factorBoostLoop)
+    factorBoostLoop = factorBoostLoop % 1
+  }
+  if (game.qolSM.ca==1&&game.collapseTime>=game.qolSM.ttnc&&game.reachedBHO==1&&off==0) collapse()
+  let themeSave="<link rel=\"stylesheet\" href=\"" + ["light","dark","space"][game.theme] + ".css\">"
+  if (get("theme").innerHTML != themeSave) get("theme").innerHTML = themeSave
   if (game.OP>=V(27)||game.ord >= V(27)||game.factorBoosts >= 25) game.reachedBHO=1
   project(buptotalMute)
   if (ms>0) render()
@@ -231,218 +251,244 @@ function loop(ms) {
 function render() {
   let outSize = fghexp((game.ord % (game.base**3)+0.1)/(game.base**2),Math.pow(2,Math.floor((game.ord % (game.base**2)+0.1)/game.base))*(game.base+game.over+(game.ord % game.base)))
   ordColor = "no"
-  let ordSub = (game.ord<=10**100?displayOrd(game.ord,game.base,game.over,0,0,0,game.colors):displayOrd(Math.round(game.ord/(10**270)+1)*10**270-10**270,3,0,0,0,0,game.colors))
-  document.getElementById("hardy").innerHTML=colorWrap("H",ordColor)+"<sub>" + ordSub + "</sub><text class=\"invisible\">l</text>"+colorWrap("(" + game.base + ")" + (game.ord >= (game.base**3) || outSize >= 10**264 || (game.ord>=5 && game.base==2) ? "" : "=" + beautify(outSize)),ordColor)
-  game.canInf = (game.ord >= (game.base**3) || outSize >= (game.leastBoost<=15?100:10240) || outSize >= Infinity)
+  let ordSub = (game.ord<=10**200?(getFBps()>=10?displayOrd(0,game.base,0,0,0,0,game.colors):displayOrd(game.ord,game.base,game.over,0,0,0,game.colors)):displayOrd(Math.round(game.ord/(10**270)+1)*10**270-10**270,3,0,0,0,0,game.colors))
+  get("hardy").innerHTML=colorWrap("H",ordColor)+"<sub>" + ordSub + "</sub><text class=\"invisible\">l</text>"+colorWrap("(" + game.base + ")" + (game.ord >= (game.base**3) || outSize >= 10**264 || (game.ord>=5 && game.base==2) ? (getFBps()>=10?"=" + game.base:"") : "=" + beautify(outSize)),ordColor)
+  game.canInf = (game.ord >= (game.base**3) || outSize >= (game.leastBoost<=15?(game.leastBoost<=1.5?10:100):10240) || outSize >= Infinity)
   if (game.infUnlock==1) {
-    document.getElementById("infinityTabButton").style.display="inline-block"
+    get("infinityTabButton").style.display="inline-block"
   } else {
-    document.getElementById("infinityTabButton").style.display="none"
+    get("infinityTabButton").style.display="none"
   }
   if (game.boostUnlock==1) {
-    document.getElementById("boosterTabButton").style.display="inline-block"
+    get("boosterTabButton").style.display="inline-block"
     if (game.challenge==0 && game.chal8==0) {
-      document.getElementById("factorBoostText").style.display="inline-block"
-      document.getElementById("completeChallenge").style.display="none"
+      get("factorBoostText").style.display="inline-block"
+      get("completeChallenge").style.display="none"
     } else {
-      document.getElementById("factorBoostText").style.display="none"
-      document.getElementById("completeChallenge").style.display="inline-block"
-      document.getElementById("finishChallenge").innerHTML="Complete the challenge!<br>" + beautify((game.chal8==1?challengeGoals[7][game.chal8Comp]:challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) + " OP"
+      get("factorBoostText").style.display="none"
+      get("completeChallenge").style.display="inline-block"
+      get("finishChallenge").innerHTML="Complete the challenge!<br>" + beautify((game.chal8==1?getChal8Goal(game.chal8Comp):challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) + " OP"
     }
   } else {
-    document.getElementById("boosterTabButton").style.display="none"
-    document.getElementById("factorBoostText").style.display="none"
-    document.getElementById("completeChallenge").style.display="none"
+    get("boosterTabButton").style.display="none"
+    get("factorBoostText").style.display="none"
+    get("completeChallenge").style.display="none"
   }
   if (game.dynamicUnlock==1) {
-    document.getElementById("dynamicFactorButton").style.display="inline-block"
+    get("dynamicFactorButton").style.display="inline-block"
   } else {
-    document.getElementById("dynamicFactorButton").style.display="none"
+    get("dynamicFactorButton").style.display="none"
   }
-  if (game.canInf) {
+  if (getFBps()<10&&game.canInf) {
     infinityButtonText=beautify(calcTotalOPGain())
-    if (document.getElementById("infinityButton").innerHTML != "Infinity to gain " + infinityButtonText + " Ordinal Points (I)") document.getElementById("infinityButton").innerHTML = "Infinity to gain " + infinityButtonText + " Ordinal Points (I)"
-    if (document.getElementById("infinityButton2").innerHTML != "+" + infinityButtonText) document.getElementById("infinityButton2").innerHTML = "+" + infinityButtonText
+    if (get("infinityButton").innerHTML != "Infinity to gain " + infinityButtonText + " Ordinal Points (I)") get("infinityButton").innerHTML = "Infinity to gain " + infinityButtonText + " Ordinal Points (I)"
+    if (get("infinityButton2").innerHTML != "+" + infinityButtonText) get("infinityButton2").innerHTML = "+" + infinityButtonText
   } else {
-    document.getElementById("infinityButton").innerHTML = "Reach " + (game.leastBoost<=15?100:10240) +" to Infinity"
-    document.getElementById("infinityButton2").innerHTML = "Reach " + (game.leastBoost<=15?100:10240) +" to Infinity"
+    get("infinityButton").innerHTML = "Reach " + (game.leastBoost<=15?(game.leastBoost<=1.5?10:100):10240) +" to Infinity"
+    get("infinityButton2").innerHTML = "Reach " + (game.leastBoost<=15?(game.leastBoost<=1.5?10:100):10240) +" to Infinity"
   }
-  document.getElementById("challengeSubTab").style.display=(game.upgrades.includes(4) ? "inline-block" : "none")
-  document.getElementById("incrementySubTab").style.display=(game.upgrades.includes(8) ? "inline-block" : "none")
-  document.getElementById("ordinalPointsDisplay").innerHTML = "You have " + beautify(game.OP) + " Ordinal Points"
-  document.getElementById("succAutoAmount").innerHTML = "You have " + logbeautify(game.succAuto) + " successor autoclickers, clicking the successor button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.succAuto*totalMult*succAutoMult)) + " times per second" 
-  document.getElementById("limAutoAmount").innerHTML = "You have " + logbeautify(game.limAuto) + "  maximize autoclickers, clicking the maximize button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.limAuto*totalMult*limAutoMult)) + " times per second"
-  document.getElementById("buysucc").innerHTML = "Buy Successor Autobuyer for " + (game.challenge==1||game.challenge==7?(game.succAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.succAuto,100*2**game.succAuto))) + " OP"
-  document.getElementById("buylim").innerHTML = "Buy Maximize Autobuyer for " + (game.challenge==1||game.challenge==7?(game.limAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.limAuto,100*2**game.limAuto))) + "  OP"
-  document.getElementById("factorShift").innerHTML = "Factor Shift (" + game.factorShifts + "): Requires " + ((game.challenge==5||game.challenge==7) && game.factorShifts >= 2?"Infinity":(game.factorShifts==7?(game.boostUnlock?"Infinity":"Graham's number (g<sub>ψ(Ω<sup>Ω</sup>ω)</sub> (10))"):beautify(factorShiftCosts[game.factorShifts]))) +" OP"
-  document.getElementById("noFactors").style.display=(game.factors.length==0 ? "inline-block" : "none")
-  document.getElementById("factorList").style.display=(game.factors.length==0 ? "none" : "inline-block")
+  get("challengeSubTab").style.display=(game.upgrades.includes(4) ? "inline-block" : "none")
+  get("incrementySubTab").style.display=(game.upgrades.includes(8) ? "inline-block" : "none")
+  get("ordinalPointsDisplay").innerHTML = "You have " + beautify(game.OP) + " Ordinal Points"
+  get("succAutoAmount").innerHTML = "You have " + logbeautify(game.succAuto) + " successor autoclickers, clicking the successor button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.succAuto*totalMult*succAutoMult)) + " times per second" 
+  get("limAutoAmount").innerHTML = "You have " + logbeautify(game.limAuto) + "  maximize autoclickers, clicking the maximize button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.limAuto*totalMult*limAutoMult)) + " times per second"
+  get("buysucc").innerHTML = "Buy Successor Autobuyer for " + (game.challenge==1||game.challenge==7?(game.succAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.succAuto,100*2**game.succAuto))) + " OP"
+  get("buylim").innerHTML = "Buy Maximize Autobuyer for " + (game.challenge==1||game.challenge==7?(game.limAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.limAuto,100*2**game.limAuto))) + "  OP"
+  get("factorShift").innerHTML = "Factor Shift (" + game.factorShifts + "): Requires " + ((game.challenge==5||game.challenge==7) && game.factorShifts >= 2?"Infinity":(game.factorShifts==7?(game.boostUnlock?"Infinity":"Graham's number (g<sub>ψ(Ω<sup>Ω</sup>ω)</sub> (10))"):beautify(factorShiftCosts[game.factorShifts]))) +" OP"
+  get("noFactors").style.display=(game.factors.length==0 ? "inline-block" : "none")
+  get("factorList").style.display=(game.factors.length==0 ? "none" : "inline-block")
   factorMult=1
   if (game.factors.length>0) {
     for(let factorListCounter=0;factorListCounter<game.factors.length;factorListCounter++){
       factorMult *= (1+game.factors[factorListCounter]+(game.upgrades.includes(11)?3*(game.challenge==3||game.challenge==7?2:1):0))*(game.upgrades.includes(1)?2:1)
     }
   }
-  document.getElementById("factorMult").textContent = "Your factors are multiplying Tier 1 Automation by " + beautify(factorMult)
-  document.getElementById("boostersText").textContent = "You have " + game.boosters + " boosters"
-  document.getElementById("refundBoosters").textContent = "Refund back " + calcRefund() + " boosters, but reset all factor shifts (R)"
-  document.getElementById("factorBoost").innerHTML = "Factor Boost (" + game.factorBoosts + "): Requires g<sub>" + displayOrd(V(game.factorBoosts+3)) + "</sub> (10) OP"
-  document.getElementById("gainBoosters").textContent = "Gain " + (game.OP>=V(game.factorBoosts+3)?getFactorBoostGain():(game.factorBoosts+1)) + " Boosters (B)"
-  document.getElementById("dynamicMult").textContent = "Your Dynamic Multiplier is x" + ((game.dynamic*getManifoldEffect())**(game.upgrades.includes(13) && game.challenge % 2 == 1?2:1)).toFixed(3)
-  document.getElementById("maxAllAuto").innerHTML = "Your Max All Autobuyer is clicking the Max All button " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) && game.autoOn.max==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you can't Factor Shift"
-  document.getElementById("infinityAuto").innerHTML = "Your Infinity Autobuyer is clicking the Infinity button " + (game.upgrades.includes(3) && game.autoOn.inf==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you're past " + displayOrd(10**270*4)
-  document.getElementById("autoMaxButton").textContent = "Max All Autobuyer: " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) ? (game.autoOn.max==1 ? "ON" : "OFF") : "LOCKED")
-  document.getElementById("autoInfButton").textContent = "Infinity Autobuyer: " + (game.upgrades.includes(3) ? (game.autoOn.inf==1 ? "ON" : "OFF") : "LOCKED")
-  document.getElementById("bup6 current").textContent = (10+game.boosters**0.9).toFixed(2)
-  document.getElementById("runChal").textContent = (game.chal8==1?"You're currently running Challenge 8":(game.challenge==0?"You're currently not in a challenge":"You're currently running Challenge "+game.challenge))
-  document.getElementById("incrementyText").textContent = "You have "+beautify(game.incrementy)+" incrementy, multiplying " + (game.iups[8]==1?"Tier 1 and ":"") + "Tier 2 Automation by "+((Math.log10(10+game.incrementy.toNumber())**(1.05**game.iups[0]))*1.2**game.iups[2]).toFixed(3) + "x"
-  document.getElementById("incrementyText2").textContent = "You are getting " + beautify(getIncrementyRate(1000)) + " incrementy per second"
-  document.getElementById("iup1").innerHTML = "Raise Incrementy multiplier to the<br>1.05<br>Cost: " + beautify(10**(5*(game.iups[0]+1)))
-  document.getElementById("iup2").innerHTML = "Double production of incrementy<br><br>Cost: " + beautify(10**(3*(game.iups[1]+1)))
-  document.getElementById("iup3").innerHTML = "Multiply Incrementy multiplier by 1.2<br><br>Cost: " + beautify(10**(9*(game.iups[2]+1)))
-  document.getElementById("manifoldShift").style.display = (game.upgrades.includes(12) ? "inline-block" : "none")
-  document.getElementById("manifoldAmount").textContent = beautify(game.manifolds)
-  document.getElementById("manifoldBoost").textContent = getManifoldEffect().toFixed(3)
-  document.getElementById("changeOrdNotation").textContent = "Current Ordinal Notation: " + ["Madore's","Buchholz's","Convenient"][game.buchholz]
-  document.getElementById("changeTheme").textContent = "Current Theme: " + (game.theme == 1 ? "Dark" : "Light")
-  document.getElementById("changeInt").textContent = "Millisecond Interval: " + game.msint + "ms"
-  document.getElementById("changeOrdLengthLess").innerHTML = "Maximum Ordinal Length below " + displayOrd(10**270*4) + ": " + game.maxOrdLength.less
-  document.getElementById("changeOrdLengthMore").innerHTML = "Maximum Ordinal Length above " + displayOrd(10**270*4) + ": " + game.maxOrdLength.more
-  document.getElementById("getManifolds").innerHTML = "Reset incrementy for a manifold.<br>Need: "+((game.iups[5]==1?2:3)**(game.manifolds+1)).toFixed(2)+"x<br>incrementy multiplier"
-  document.getElementById("manifoldIncrease").textContent = "It is increasing by " + ((game.upgrades.includes(13) && game.challenge % 2 == 1?" a non-constant amount ":((0.002*(game.iups[6]==1?100:1))*getManifoldEffect()).toFixed(3))) + " per second and caps at " + getDynamicFactorCap().toFixed(3)
-  document.getElementById("dynamicDecreaseText").style.display=(game.challenge==6||game.challenge==7?"inline":"none")
-  document.getElementById("dynamicDecrease").textContent=(game.upgrades.includes(14)?"10.000":beautify(10**30))
+  get("factorMult").textContent = "Your factors are multiplying Tier 1 Automation by " + beautify(factorMult)
+  get("boostersText").textContent = "You have " + game.boosters + " boosters"
+  get("refundBoosters").textContent = "Refund back " + calcRefund() + " boosters, but reset all factor shifts (R)"
+  get("factorBoost").innerHTML = "Factor Boost (" + game.factorBoosts + "): Requires g<sub>" + displayOrd(V(game.factorBoosts+3,1)) + "</sub> (10) OP"
+  get("gainBoosters").textContent = (getSingLevel()==1?"Gain " + (game.OP>=V(game.factorBoosts+3)?getFactorBoostGain():(game.factorBoosts+1)) + " Boosters":"Gain " + getFBmult() + " Factor Boosts") + " (B)"
+  get("dynamicMult").textContent = "Your Dynamic Multiplier is x" + ((game.dynamic*getManifoldEffect())**(game.upgrades.includes(13) && game.challenge % 2 == 1?2:1)).toFixed(3)
+  get("maxAllAuto").innerHTML = "Your Max All Autobuyer is clicking the Max All button " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) && game.autoOn.max==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you can't Factor Shift"
+  get("infinityAuto").innerHTML = "Your Infinity Autobuyer is clicking the Infinity button " + (game.upgrades.includes(3) && game.autoOn.inf==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you're past " + displayOrd(10**270*4) + (game.leastBoost<=1.5?". It also activates if your Tier 1 automation isn't autoclicking at least once a second":"")
+  get("autoMaxButton").textContent = "Max All Autobuyer: " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) ? (game.autoOn.max==1 ? "ON" : "OFF") : "LOCKED")
+  get("autoInfButton").textContent = "Infinity Autobuyer: " + (game.upgrades.includes(3) ? (game.autoOn.inf==1 ? "ON" : "OFF") : "LOCKED")
+  get("bup6 current").textContent = getBoostFromBoosters(1).toFixed(2)
+  get("runChal").textContent = (game.chal8==1?"You're currently running Challenge 8":(game.challenge==0?"You're currently not in a challenge":"You're currently running Challenge "+game.challenge))
+  get("incrementyText").textContent = "You have "+beautify(game.incrementy)+" incrementy, multiplying " + "Tier 2 Automation by "+calcIncrementyMult().toFixed(3) + "x"
+  get("incrementyText2").textContent = "You are getting " + beautify(getIncrementyRate(1000)) + " incrementy per second"
+  get("iup1").innerHTML = "Raise Incrementy multiplier to the<br>1.05<br>Cost: " + beautify(10**(5*(game.iups[0]+1)))
+  get("iup2").innerHTML = "Double production of incrementy<br><br>Cost: " + beautify(10**(3*(game.iups[1]+1)))
+  get("iup3").innerHTML = "Multiply Incrementy multiplier by 1.2<br><br>Cost: " + beautify(10**(9*(game.iups[2]+1)))
+  get("manifoldShift").style.display = (game.upgrades.includes(12) ? "inline-block" : "none")
+  get("manifoldAmount").textContent = beautify(game.manifolds)+(game.sing.m>0.5?"-"+game.sing.m:(game.sing.m==0?"":"+"+(0-game.sing.m)))
+  get("manifoldBoost").textContent = getManifoldEffect().toFixed(3)
+  get("changeOrdNotation").textContent = "Current Ordinal Notation: " + ["Madore's","Buchholz's","Convenient"][game.buchholz]
+  get("changeTheme").textContent = "Current Theme: " + ["Light","Dark","Space (https://wallpaperplay.com/page-terms)"][game.theme]
+  get("changeInt").textContent = "Millisecond Interval: " + game.msint + "ms"
+  get("changeOrdLengthLess").innerHTML = "Maximum Ordinal Length below " + displayOrd(10**270*4) + ": " + game.maxOrdLength.less
+  get("changeOrdLengthMore").innerHTML = "Maximum Ordinal Length above " + displayOrd(10**270*4) + ": " + game.maxOrdLength.more
+  get("getManifolds").innerHTML = "Reset incrementy for a manifold.<br>Need: "+((game.iups[5]==1?2:3)**(game.manifolds+1)).toFixed(2)+"x<br>incrementy multiplier"
+  get("manifoldIncrease").textContent = "It is increasing by " + ((game.upgrades.includes(13) && game.challenge % 2 == 1?" a non-constant amount ":((0.002*(game.iups[6]==1?100:1))*getManifoldEffect()).toFixed(3))) + " per second and caps at " + getDynamicFactorCap().toFixed(3)
+  get("dynamicDecreaseText").style.display=(game.challenge==6||game.challenge==7?"inline":"none")
+  get("dynamicDecrease").textContent=(game.upgrades.includes(14)?"10.000":"1.000e300")
   let bfactor
   bfactorMult = 1
   for (let i=0;i<7;i++) {
     bfactor = (((1+(game.factors.length >= i+1?game.factors[i]+(game.upgrades.includes(11)?3:0):0))*(game.upgrades.includes(1) && game.factors.length >= i+1?2:1))**(game.leastBoost<=20&&game.challengeCompletion[i]==0?0.25:challengeCurve[game.challengeCompletion[i]]))
     if (((game.challenge==2||game.challenge==7) && i==0)||game.chal8==1) bfactor = 1
     bfactorMult *= bfactor
-    document.getElementById("challenge" + (i+1) + "Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.challengeCompletion[i]+"/3)"
-    document.getElementById("challenge" + (i+1) + "Goal").innerHTML = "Goal: " + beautify(challengeGoals[i][Math.min(game.challengeCompletion[i],2)]) + " OP"
+    get("challenge" + (i+1) + "Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.challengeCompletion[i]+"/3)"
+    get("challenge" + (i+1) + "Goal").innerHTML = "Goal: " + beautify(challengeGoals[i][Math.min(game.challengeCompletion[i],2)]) + " OP"
     chalbut(i)
   }
-  bfactor = getDynamicFactorCap()**challengeCurve[game.chal8Comp]
+  bfactor = getDynamicFactorCap()**getChalCurve(game.chal8Comp)
   if (game.chal8==1) bfactor = 1
   bfactorMult *= bfactor
-  document.getElementById("challenge8Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.chal8Comp+"/∞)"
-  document.getElementById("challenge8Goal").textContent = "Goal: " + beautify(challengeGoals[7][game.chal8Comp]) + " OP"
+  get("challenge8Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.chal8Comp+"/∞)"
+  get("challenge8Goal").textContent = "Goal: " + beautify(getChal8Goal(game.chal8Comp)) + " OP"
   chalbut(7)
   for(let i=0;i<bupUpgradeCosts.length;i++) {
-    bup(i+1,1)
+    bup(i+1,(game.leastBoost<=1.5&&game.qolSM.abu==1&&(game.qolSM.ig73==0||i+1 != 10||game.challenge==4||game.challenge==6||game.challenge==7)&&(game.qolSM.igc8==0||game.chal8==0)?0:1))
   }
-  document.getElementById("chalMult").textContent = "Your " + getSumOfChallenges() + " challenge completions have multiplied Tier 1 and 2 Automation by " + beautify(bfactorMult)
-  iup(1,1)
-  iup(2,1)
-  iup(3,1)
-  iup(4,1)
-  iup(5,1)
-  iup(6,1)
-  iup(7,1)
-  iup(8,1)
-  iup(9,1)
-  document.getElementById("changeColor").textContent = "Colors: " + (game.colors==1?"ON":"OFF")
-  document.getElementById("changeMusic").textContent = "Music: " + musicName[game.music]
-  document.getElementById("incrementyText3").innerHTML = "You start gaining incrementy when you reach " + displayOrd(4e270)
-  document.getElementById("decrementyText").textContent = "There is " + beautifypower(game.decrementy) + " decrementy and " + game.manualClicksLeft + " clicks left"
-  document.getElementById("decrementyText").style.display = (game.chal8==1?"inline":"none")
-  document.getElementById("collapseScreen").style.display = (collapseAnimation==0?"none":"block")
-  document.getElementById("collapseScreen").style.opacity = collapseAnimation + "%"
-  document.getElementById("collapseTabButton").style.display=(game.collapseUnlock==0?"none":"inline-block")
-  document.getElementById("cardinalText").textContent = "You have " + beautify(game.cardinals) + " Unassigned Cardinals"
-  document.getElementById("cardText1").innerHTML = "You have " + beautify(game.assCard[0].points) + " ℵ<sub>0</sub>"
-  document.getElementById("cardPow1").innerHTML = "You have " + beautify(game.assCard[0].power) + " ℵ<sub>0</sub> Power (+" + beautify(game.assCard[0].points.pow(2)) + "/s)"
-  document.getElementById("cardMult1").textContent = "x" + beautify(game.assCard[0].mult,3)
-  document.getElementById("cardText2").innerHTML = "You have " + beautify(game.assCard[1].points) + " ℵ<sub>1</sub>"
-  document.getElementById("cardPow2").innerHTML = "You have " + beautify(game.assCard[1].power) + " ℵ<sub>1</sub> Power (+" + beautify(game.assCard[1].points.pow(2)) + "/s)"
-  document.getElementById("cardMult2").textContent = "x" + beautify(game.assCard[1].mult,3)
-  document.getElementById("cardText3").innerHTML = "You have " + beautify(game.assCard[2].points) + " ℵ<sub>2</sub>"
-  document.getElementById("cardPow3").innerHTML = "You have " + beautify(game.assCard[2].power) + " ℵ<sub>2</sub> Power (+" + beautify(game.assCard[2].points.pow(2)) + "/s)"
-  document.getElementById("cardMult3").textContent = "x" + beautify(game.assCard[2].mult,3)
+  get("chalMult").textContent = "Your " + getSumOfChallenges() + " challenge completions have multiplied Tier 1 and 2 Automation by " + beautify(bfactorMult)
+  for (let i=1;i<=9;i++) {
+    iup(i,1)
+  }
+  get("changeColor").textContent = "Colors: " + (game.colors==1?"ON":"OFF")
+  get("changeMusic").innerHTML = "Music: " + musicName[game.music]
+  get("incrementyText3").innerHTML = "You start gaining incrementy when you reach " + displayOrd(4e270)
+  get("decrementyText").textContent = "There is " + (game.chal8==1?beautifypower(game.decrementy) + " decrementy and ":"") + game.manualClicksLeft + " clicks left"
+  get("decrementyText").style.display = (game.chal8==1||game.challenge==6||game.challenge==7?"inline":"none")
+  get("collapseScreen").style.display = (collapseAnimation==0?"none":"block")
+  get("collapseScreen").style.opacity = collapseAnimation + "%"
+  get("collapseTabButton").style.display=(game.collapseUnlock==0?"none":"inline-block")
+  get("cardinalText").textContent = "You have " + beautify(game.cardinals) + " Unassigned Cardinals"
+  get("cardText1").innerHTML = "You have " + beautify(game.assCard[0].points) + " ℵ<sub>0</sub>"
+  get("cardPow1").innerHTML = "You have " + beautify(game.assCard[0].power) + " ℵ<sub>0</sub> Power (+" + beautify(game.assCard[0].points.pow(game.assCard[0].points.log10().pow(0.5).max(2))) + "/s)"
+  get("cardMult1").textContent = "x" + beautify(game.assCard[0].mult,3)
+  get("cardText2").innerHTML = "You have " + beautify(game.assCard[1].points) + " ℵ<sub>1</sub>"
+  get("cardPow2").innerHTML = "You have " + beautify(game.assCard[1].power) + " ℵ<sub>1</sub> Power (+" + beautify(game.assCard[1].points.pow(game.assCard[1].points.log10().pow(0.5).max(2))) + "/s)"
+  get("cardMult2").textContent = "x" + beautify(game.assCard[1].mult,3)
+  get("cardText3").innerHTML = "You have " + beautify(game.assCard[2].points) + " ℵ<sub>2</sub>"
+  get("cardPow3").innerHTML = "You have " + beautify(game.assCard[2].power) + " ℵ<sub>2</sub> Power (+" + beautify(game.assCard[2].points.pow(game.assCard[2].points.log10().pow(0.5).max(2))) + "/s)"
+  get("cardMult3").textContent = "x" + beautify(game.assCard[2].mult,3)
   for (let i=0;i<6;i++) {
-    document.getElementById("slug"+i).classList.remove("slugMile")
-    document.getElementById("slug"+i).classList.add("notSlugMile")
-	  //yeet
+    get("slug"+i).classList.remove("slugMile")
+    get("slug"+i).classList.add("notSlugMile")
   }
   for (let i=0;i<calcSlugMile();i++) {
-    document.getElementById("slug"+i).classList.add("slugMile")
-    document.getElementById("slug"+i).classList.remove("notSlugMile")
+    get("slug"+i).classList.add("slugMile")
+    get("slug"+i).classList.remove("notSlugMile")
   }
-  document.getElementById("alephOmegaText").innerHTML = "You have " + beautify(game.alephOmega) + " ℵ<sub>ω</sub>"
-  document.getElementById("alephOmegaText2").innerHTML = "You have " + beautify(game.alephOmega) + " ℵ<sub>ω</sub>"
-  aup(1,1)
-  aup(2,1)
-  aup(3,1)
-  aup(4,1)
-  aup(5,1)
-  aup(6,1)
-  aup(7,1)
-  aup(8,1)
-  document.getElementById("collapseButton").innerHTML = (game.reachedBHO==1?"Collapse for " + beautify(EN(calcCard())) + " Cardinals (C)":"Reach the BHO to Collapse!<br>(OR restart the current Collapse)")
-  document.getElementById("decrementyRate").textContent = (game.chal8==1?beautifypower(getDecrementyRate(1000)):1)
+  get("alephOmegaText").innerHTML = "You have " + beautify(game.alephOmega) + " ℵ<sub>ω</sub>"
+  get("alephOmegaText2").innerHTML = "You have " + beautify(game.alephOmega) + " ℵ<sub>ω</sub>"
+  for (let i=1;i<=12;i++) {
+    aup(i,1)
+  }
+  get("collapseButton").innerHTML = (game.reachedBHO==1?"Collapse for " + beautify(EN(calcCard())) + " Cardinals (C)":"Reach the BHO to Collapse!<br>(OR restart the current Collapse)")
+  get("decrementyRate").textContent = (game.chal8==1?beautifypower(getDecrementyRate(1000)):1)
   dup(1,1)
   dup(2,1)
   dup(3,1)
-  document.getElementById("dup1").innerHTML = "Reduce the potency of decrementy by 5%<br><br>Cost: " + beautifypower(dupCosts[0]**(game.dups[0]+1))
-  document.getElementById("dup2").innerHTML = "Halve decrementy growth below ω^(ω3), otherwise double it<br>Cost: " + beautifypower(dupCosts[1]**(game.dups[1]+1))
-  document.getElementById("dup3").innerHTML = "Gain a 1.2x multiplier to Tier 1 and 2<br><br>Cost: " + beautifypower(dupCosts[2]**(game.dups[2]+1))
-  document.getElementById("getDarkManifolds").innerHTML = "Get a Dark Manifold<br>Need: " + beautifypower(Math.log10(3)*(1+game.darkManifolds)) + " Decrementy"
-  document.getElementById("darkManifoldAmount").textContent = game.darkManifolds
-  document.getElementById("darkUpButton").style.display=(game.aups.includes(3)?"inline":"none")
-  document.getElementById("darkManifoldBoost").textContent = ((game.darkManifolds+1)**0.1).toFixed(3)
-  document.getElementById("darkManifoldMaxMode").textContent = "Max Mode: " + (game.darkManifoldMax==1 ? "ON" : "OFF")
-  document.getElementById("autoPrestigeSubTab").style.display = (game.leastBoost<=12?"inline-block":"none")
-  document.getElementById("factorShiftAutoToggle").textContent = "Factor Shift Autoprestiger: " + (game.cAutoOn.shift==1?"ON":"OFF")
-  document.getElementById("factorShiftAutoText").textContent = "Your Factor Shift Autoprestiger is Factor Shifting " + (game.cAutoOn.shift==1?beautifyEN(game.shiftAuto):0) + " time(s) per second"
-  document.getElementById("factorBoostAutoToggle").textContent = "Factor Boost Autoprestiger: " + (game.cAutoOn.boost==1?"ON":"OFF")
-  document.getElementById("factorBoostAutoText").textContent = "Your Factor Boost Autoprestiger is Factor Boosting " + (game.cAutoOn.boost==1?beautifyEN(game.boostAuto):0) + " time(s) per second, but only at the BHO or higher"
-  document.getElementById("cardExtra1").classList.remove("invisible")
-  if (!game.aups.includes(1000)) document.getElementById("cardExtra1").classList.add("invisible")
-  document.getElementById("cardExtra2").classList.remove("invisible")
-  if (!game.aups.includes(6)) document.getElementById("cardExtra2").classList.add("invisible")
-  document.getElementById("cardExtra3").classList.remove("invisible")
-  if (!game.aups.includes(5)) document.getElementById("cardExtra3").classList.add("invisible")
-  document.getElementById("collapseCardHelp").textContent=(game.reachedBHO==1?"Next Cardinal in " + Math.ceil(calcCardExponent(game.collapseTime)>=1?1:(calcCard().toNumber()+1)**(1/calcCardExponent(game.collapseTime))+24-game.factorBoosts) + " Factor Boost(s) (":"Reach the BHO first to collapse! (") + game.collapseTime.toFixed(1) + "s in collapse)"
-  document.getElementById("changeOffline").textContent = "Offline Progress: " + (game.offlineProg==1?"ON":"OFF")
-  document.getElementById("bup10").innerHTML = "The base is always five below " + displayOrd(4e270) + "<br><br>73 Boosters"
-  document.getElementById("aup4").innerHTML = "OP boosts Tier 1 and 2 by x" + Math.log10(Math.log10(1e10+game.OP)).toFixed(3) + "<br><br>Cost: 8 ℵ<sub>ω</sub>"
-  document.getElementById("checkIncrementy").style.display=(game.upgrades.includes(8)?"inline":"none")
-  document.getElementById("checkIncrementy").style.color=HSL(Date.now()/10)
-  document.getElementById("fbConfirm").textContent="Factor Boost Confirmation: " + (game.fbConfirm==1?"ON":"OFF")
-  document.getElementById("bulkBoost").textContent="Bulk Boosting: " + (game.bulkBoost==1?"ON":"OFF")
+  get("dup1").innerHTML = "Reduce the potency of decrementy by 5%<br><br>Cost: " + beautifypower(dupCosts[0]**(game.dups[0]+1))
+  get("dup2").innerHTML = "Halve decrementy growth below ω^(ω3), otherwise double it<br>Cost: " + beautifypower(dupCosts[1]**(game.dups[1]+1))
+  get("dup3").innerHTML = "Gain a 1.2x multiplier to Tier 1 and 2<br><br>Cost: " + beautifypower(dupCosts[2]**(game.dups[2]+1))
+  get("getDarkManifolds").innerHTML = "Get a Dark Manifold<br>Need: " + beautifypower(Math.log10(3)*(1+game.darkManifolds)) + " Decrementy"
+  get("darkManifoldAmount").textContent = game.darkManifolds+(game.sing.dm==0?"":"-"+getDMSacrafice())
+  get("darkUpButton").style.display=(game.aups.includes(3)?"inline":"none")
+  get("darkManifoldBoost").textContent = (Math.max(1,game.darkManifolds+1-getDMSacrafice())**0.1).toFixed(3)
+  get("darkManifoldMaxMode").textContent = "Max Mode: " + (game.darkManifoldMax==1 ? "ON" : "OFF")
+  get("autoPrestigeSubTab").style.display = (game.leastBoost<=12?"inline-block":"none")
+  get("factorShiftAutoToggle").textContent = "Factor Shift Autoprestiger: " + (game.cAutoOn.shift==1?"ON":"OFF")
+  get("factorShiftAutoText").textContent = "Your Factor Shift Autoprestiger is Factor Shifting " + (game.cAutoOn.shift==1?beautifyEN(game.shiftAuto):0) + " time(s) per second"
+  get("factorBoostAutoToggle").textContent = "Factor Boost Autoprestiger: " + (game.cAutoOn.boost==1?"ON":"OFF")
+  get("factorBoostAutoText").textContent = "Your Factor Boost Autoprestiger is Factor Boosting " + (game.cAutoOn.boost==1?beautifyEN(game.boostAuto):0) + " time(s) per second, but only at the BHO or higher, and if you can't get a sluggish milestone"
+  get("cardExtra1").classList.remove("invisible")
+  if (!game.aups.includes(1000)) get("cardExtra1").classList.add("invisible")
+  get("cardExtra2").classList.remove("invisible")
+  if (!game.aups.includes(6)) get("cardExtra2").classList.add("invisible")
+  get("cardExtra3").classList.remove("invisible")
+  if (!game.aups.includes(5)) get("cardExtra3").classList.add("invisible")
+  get("collapseCardHelp").textContent=(game.reachedBHO==1?"Next Cardinal in " + beautify(Math.ceil((calcCard().toNumber()+1)**(1/calcCardExponent(game.collapseTime))+24-game.factorBoosts)) + " Factor Boost(s) (":"Reach the BHO first to collapse! (") + game.collapseTime.toFixed(1) + "s in collapse)"
+  get("changeOffline").textContent = "Offline Progress: " + (game.offlineProg==1?"ON":"OFF")
+  get("bup10").innerHTML = "The base is always five below " + displayOrd(4e270) + "<br><br>73 Boosters"
+  get("aup4").innerHTML = "OP boosts Tier 1 and 2 by x" + Math.log10(Math.log10(1e10+game.OP)).toFixed(3) + "<br><br>Cost: 8 ℵ<sub>ω</sub>"
+  get("checkIncrementy").style.display=(game.upgrades.includes(8)&&game.flashIncrementy==1?"inline":"none")
+  get("flashIncrementy").style.display=(game.upgrades.includes(8)?"inline":"none")
+  get("flashIncrementy").textContent="Flashing Incrementy Reminder: " + (game.flashIncrementy==1?"ON":"OFF")
+  get("checkIncrementy").style.color=HSL(Date.now()/10)
+  get("fbConfirm").textContent="Factor Boost Confirmation: " + (game.fbConfirm==1?"ON":"OFF")
+  get("bulkBoost").textContent="Bulk Boosting: " + (game.bulkBoost==1?"ON":"OFF")
+  get("aup7").innerHTML = "ℵ<sub>ω</sub> boosts the ℵ<sub>1</sub> multiplier by<br>x" + game.alephOmega.add(1).pow(1/32).toNumber().toFixed(2) + "<br>Cost: 65536 ℵ<sub>ω</sub>"
+  updateFactors()
+  get("chal8Incrementy").style.display=(game.leastBoost<=1.5?"inline":"none")
+  get("chal8IncrementyBoost").style.display=(game.leastBoost<=1.5?"inline":"none")
+  get("chal8IncrementyBoost").innerHTML="<br>To Incrementy: x" + (getDynamicFactorCap()**getChalIncrementyCurve(game.chal8Comp)).toFixed(2)
+  get("refundConfirmation").textContent="Refund Confirmation: " + (game.bConf.ref==1?"ON":"OFF")
+  get("refundFB").textContent="Factor Boost if possible on Refund: " + (game.bConf.refFB==1?"ON":"OFF")
+  get("chalConf").textContent="Challenge Confirmation: " + (game.bConf.chal==1?"ON":"OFF")
+  get("chalFB").textContent="Factor Boost if possible on entering a Challenge: " + (game.bConf.chalFB==1?"ON":"OFF")
+  get("bottomBoosterUpgrades").style.display=(game.leastBoost<=1.5?"inline":"none")
+  get("bottomBoosterUpgrades2").style.display=(game.leastBoost<=1.5?"inline":"none")
+  get("distributeCard").style.display=(game.leastBoost<=10?"block":"none")
+  get("auprow2").style.display=(game.aups.includes(4)?"block":"none")
+  get("auprow3").style.display=(game.aups.includes(8)?"block":"none")
+  get("auprow4").style.display=(game.aups.includes(12)?"block":"none")
+  get("autoPrestigeBuy").style.display=(game.leastBoost<=10?"inline":"none")
+  get("autoBup").style.display=(game.leastBoost<=1.5?"block":"none")
+  get("abu").textContent="Autobuy Booster Upgrades: " + (game.qolSM.abu==1?"ON":"OFF")
+  get("ig73").textContent="Ignore the 73 Booster Upgrade unless in challenge 4, 6, or 7: " + (game.qolSM.ig73==1?"ON":"OFF")
+  get("igc8").textContent="Ignore in Challenge 8: " + (game.qolSM.igc8==1?"ON":"OFF")
+  get("acc").textContent="Autocomplete Challenges: " + (game.qolSM.acc==1?"ON":"OFF")
+  get("ca").textContent="Collapse Autoprestiger: " + (game.qolSM.ca==1?"ON":"OFF")
+  get("changeHotKeys").textContent="Hotkeys: " + (game.hotkeysOn==1?"ON":"OFF")
+  get("fbps").style.display=(getFBps()>=1?"block":"none")
+  get("fbps").textContent="You should be getting a total of " + beautify(getFBps()) + " Factor Boost(s) per second"
+  get("singularitySubTab").style.display=(game.upgrades.includes(20)?"inline":"none")
+  get("singularityFunction").style.display=(game.upgrades.includes(20)?"inline":"none")
+  get("singText").textContent="Singularity Level: " + getSingLevel()
+  get("singMaterial").innerHTML="You have " + (game.darkManifolds-getDMSacrafice()) + " Dark Manifolds, " + (game.manifolds-game.sing.m) + " Manifolds, and " + beautifyEN(game.alephOmega) + " ℵ<sub>ω</sub>"
+  get("singEffect").innerHTML="Raising the Factor Boosts 25+ requirement to " + displayOrd(BHO*getSingLevel()) + " and having them give out " + (2*getSingLevel()-1) + " times the Factor Boosts"
+  get("blackHoleCircle").r.baseVal.value=10*Math.sqrt(getSingLevel())
+  get("blackHoleCircle").cy.baseVal.value=10*Math.sqrt(getSingLevel())+10
+  get("blackHole").height.baseVal.value=(10*Math.sqrt(getSingLevel())+10)*2
+  get("sacrDM").innerHTML="Upgrade with<br>" + beautify(1e6*5**game.sing.dm) + "<br>Dark Manifolds"
+  get("singFBtext").textContent="You are currently getting " + beautify(getFBps()) + " Factor Boosts per second"
+  get("sacrNw").innerHTML="Upgrade with<br>" + beautifyEN(1e20*100**game.sing.nw) + " ℵ<sub>ω</sub>"
 }
 
 function dup(n,spectate=0) {
-  document.getElementById("dup" + n).classList.remove("darkButton")
-  document.getElementById("dup" + n).classList.remove("locked")
-  document.getElementById("dup" + n).classList.remove("bought")
+  get("dup" + n).classList.remove("darkButton")
+  get("dup" + n).classList.remove("locked")
+  get("dup" + n).classList.remove("bought")
   if (n<=3){
     if (game.decrementy >= (dupCosts[n-1]**(game.dups[n-1]+1))) {
       if (spectate==0) {
       game.dups[n-1] += 1
       //game.decrementy = game.decrementy.minus(iupCosts[n-1]**game.iups[n-1])
       } else {
-        document.getElementById("dup" + n).classList.add("darkButton")
+        get("dup" + n).classList.add("darkButton")
       }
     } else {
-      document.getElementById("dup" + n).classList.add("locked")
+      get("dup" + n).classList.add("locked")
     }
   } /* else {
     if (!game.upgrades.includes(12)) {
-      document.getElementById("iup"+ + n).style.display = "none";
+      get("iup"+ + n).style.display = "none";
     } else {
-      document.getElementById("iup"+ + n).style.display = "inline-block";
+      get("iup"+ + n).style.display = "inline-block";
       if (game.iups[n-1]==1) {
-        document.getElementById("iup" + n).classList.add("bought")
+        get("iup" + n).classList.add("bought")
       } else if (game.incrementy.gte(iupCosts[n-1])) {
         if (spectate == 0) {
           game.incrementy = game.incrementy.minus(iupCosts[n-1])
           game.iups[n-1] = 1
         } else {
-          document.getElementById("iup" + n).classList.add("boosterButton")
+          get("iup" + n).classList.add("boosterButton")
         }
       } else {
-        document.getElementById("iup" + n).classList.add("locked")
+        get("iup" + n).classList.add("locked")
       }
     }
   } */
@@ -450,7 +496,7 @@ function dup(n,spectate=0) {
 
 
 function assign(a,b,c) {
-  let assigning = (game.assBefore==0?confirm("Choose wisely (Hint: go for ℵ0 or ℵ1 for your first cardinal)"):true)
+  let assigning = (game.assBefore==0?confirm("Are you sure you want to assign to this? (Hint: go for ℵ1 for your first cardinal, but it's ultimately your choice)"):true)
   if (assigning&&game.cardinals.gte(b)) {
     let bulk = EN(c==1?game.cardinals.divide(b).floor():1).times(b)
     game.cardinals = game.cardinals.minus(bulk)
@@ -459,80 +505,7 @@ function assign(a,b,c) {
   }
 }
 
-function resetEverythingCollapseDoes() {
-  game.base=10
-  game.ord=0
-  game.over=0
-  game.canInf=false
-  game.OP=0
-  game.succAuto=0
-  game.limAuto=0
-  game.maxAuto=0
-  game.autoLoop={succ: 0, lim: 0}
-  game.factorShifts=0
-  game.factors=[]
-  game.boosters=0
-  game.upgrades=[4,8,12,16]
-  game.factorBoosts=0
-  game.dynamic=1
-  game.maxAuto=0
-  game.infAuto=0
-  game.bAutoLoop={max: 0, inf: 0}
-  game.challenge=0
-  game.challengeCompletion=[0,0,0,0,0,0,0]
-  game.incrementy=EN(0)
-  game.chal8=0
-  game.chal8Comp=0
-  game.decrementy=0
-  game.manualClicksLeft=1000
-  game.collapseUnlock=1
-  game.collapseTime=0
-  game.reachedBHO=0
-  if (game.leastBoost>=1.5) {
-  game.manifolds=0
-  game.iups=[0,0,0,0,0,0,0,0,0]
-  game.dups = [0,0,0,0,0,0,0,0,0]
-  game.darkManifolds = 0
-  }
-}
 
-function collapse(manmade=0) {
-  if (game.reachedBHO==1 || game.collapseUnlock==0) {
-  if (game.collapseUnlock==0) {
-  let i=1
-  let anim = 0
-  let id = setInterval(frame, 50);
-  function frame() {
-    collapseAnimation += i
-    anim++
-    if (collapseAnimation == 100 && i==1) {
-      i=0
-    }
-    if (anim==300) {
-      game.collapseUnlock=1
-      game.upgrades=[4,8,12,16]
-      game.cardinals = game.cardinals.add(EN(Math.max(game.factorBoosts-24,2)**0.5).floor())
-      if (game.leastBoost>=game.factorBoosts) game.leastBoost=game.factorBoosts
-      resetEverythingCollapseDoes()
-      i=-1
-    }
-    if (i==-1 && collapseAnimation==0) {
-      clearInterval(id)
-    }
-  }
-  } else {
-    game.cardinals = game.cardinals.add(calcCard())
-    if (game.leastBoost>=game.factorBoosts) game.leastBoost=game.factorBoosts
-    resetEverythingCollapseDoes()
-  }
-  } else {
-    if (manmade==1) {
-      if (confirm("Do you want to restart this current collapse to restart the collapse timer?")) {
-        resetEverythingCollapseDoes()
-      }
-    }
-  }
-}
 
 function beautifypower(number) {
   if (number==Infinity) {
@@ -555,10 +528,10 @@ function beautifypower(number) {
 function changeMusic() {
   game.music = (game.music+1)%(musicLink.length+1)
   if (game.music==0) {
-    document.getElementById("music").pause()
+    get("music").pause()
   } else {
-    document.getElementById("music").src=musicLink[game.music-1]
-    document.getElementById("music").play()
+    get("music").src=musicLink[game.music-1]
+    get("music").play()
   }
 }
 
@@ -591,159 +564,62 @@ function changeOrdLengthMore() {
   }
 }
 
-function changeTheme() {game.theme = (game.theme + 1)%2}
+function changeTheme() {game.theme = (game.theme + 1)%3}
 function changeOrdNotation() {game.buchholz = (game.buchholz + 1)%3}
 
 function iup(n,spectate=0) {
-  document.getElementById("iup" + n).classList.remove("boosterButton")
-  document.getElementById("iup" + n).classList.remove("locked")
-  document.getElementById("iup" + n).classList.remove("bought")
+  get("iup" + n).classList.remove("boosterButton")
+  get("iup" + n).classList.remove("locked")
+  get("iup" + n).classList.remove("bought")
   if (n<=3){
-    document.getElementById("iup"+ + n).style.display = "";
+    get("iup"+ + n).style.display = "";
     if (game.incrementy.gte(iupCosts[n-1]**(game.iups[n-1]+1))) {
       if (spectate==0) {
       game.iups[n-1] += 1
       game.incrementy = game.incrementy.minus(iupCosts[n-1]**game.iups[n-1])
       } else {
-        document.getElementById("iup" + n).classList.add("boosterButton")
+        get("iup" + n).classList.add("boosterButton")
       }
     } else {
-      document.getElementById("iup" + n).classList.add("locked")
+      get("iup" + n).classList.add("locked")
     }
   } else {
     if (!game.upgrades.includes(12)) {
-      document.getElementById("iup"+ + n).style.display = "none";
+      get("iup"+ + n).style.display = "none";
     } else {
-      document.getElementById("iup"+ + n).style.display = "inline-block";
+      get("iup"+ + n).style.display = "inline-block";
       if (game.iups[n-1]==1) {
-        document.getElementById("iup" + n).classList.add("bought")
+        get("iup" + n).classList.add("bought")
       } else if (game.incrementy.gte(iupCosts[n-1])) {
         if (spectate == 0) {
           game.incrementy = game.incrementy.minus(iupCosts[n-1])
           game.iups[n-1] = 1
         } else {
-          document.getElementById("iup" + n).classList.add("boosterButton")
+          get("iup" + n).classList.add("boosterButton")
         }
       } else {
-        document.getElementById("iup" + n).classList.add("locked")
+        get("iup" + n).classList.add("locked")
       }
     }
-  }
-}
-
-function completeChallenge() {
-  if (game.OP>=(game.chal8==1?challengeGoals[7][game.chal8Comp]:challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) {
-    if (game.chal8==1) {
-      if (game.leastBoost<=15) {
-        while (game.chal8Comp<=2&&game.OP>=challengeGoals[7][game.chal8Comp]) {
-          game.chal8Comp += 1
-        }
-      } else {
-      game.chal8Comp += 1
-      }
-    } else {
-      if (game.leastBoost<=15) {
-        while (game.challengeCompletion[game.challenge-1]<=2&&game.OP>=challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]]) {
-          game.challengeCompletion[game.challenge-1] += 1
-        }
-      } else {
-      game.challengeCompletion[game.challenge-1] += 1
-      }
-    }
-    game.ord=0
-    game.over=0
-    game.canInf=false
-    game.OP=0
-    game.succAuto=0
-    game.limAuto=0
-    game.autoLoop={succ: 0, lim: 0}
-    game.factorShifts = 0
-    game.base = 10
-    game.factors=[]
-    game.boostUnlock=1
-    game.dynamic=1
-    game.challenge=0
-    game.incrementy=EN(0)
-    game.chal8=0
-    game.decrementy=0
-    game.manualClicksLeft=1000
   }
 }
 
 function chalbut(i) {
-  document.getElementById("challenge"+(i+1)).classList.remove("boosterButton")
-  document.getElementById("challenge"+(i+1)).classList.remove("bought")
-  document.getElementById("challenge"+(i+1)).classList.remove("running")
+  get("challenge"+(i+1)).classList.remove("boosterButton")
+  get("challenge"+(i+1)).classList.remove("bought")
+  get("challenge"+(i+1)).classList.remove("running")
   if (game.challenge==(i+1) || (game.chal8==1&&i==7)) {
-    document.getElementById("challenge"+(i+1)).classList.add("running")
+    get("challenge"+(i+1)).classList.add("running")
   } else if ((game.challengeCompletion[i]>=3 && i<=6.1)) {
-    document.getElementById("challenge"+(i+1)).classList.add("bought")
+    get("challenge"+(i+1)).classList.add("bought")
   } else {
-    document.getElementById("challenge"+(i+1)).classList.add("boosterButton")
+    get("challenge"+(i+1)).classList.add("boosterButton")
   }
 }
 
-function factorBoost(manmade=0) {
-  if (game.OP>=V(game.factorBoosts+3)) {
-    if (manmade==1&&game.fbConfirm==1) {
-      if (!confirm("Are you sure you want to do a Factor Boost?" + (game.upgrades.includes(8)?" Don't forget to check Incrementy!":""))) return
-    }
-    game.boosters += getFactorBoostGain()
-    game.factorBoosts += getFactorBulk()
-    game.ord=0
-    game.over=0
-    game.canInf=false
-    game.OP=0
-    game.succAuto=0
-    game.limAuto=0
-    game.autoLoop={succ: 0, lim: 0}
-    game.factorShifts = 0
-    game.base = 10
-    game.factors=[]
-    game.boostUnlock=1
-    game.dynamic=1
-    game.challenge=0
-    game.incrementy=EN(0)
-    game.chal8=0
-    game.decrementy=0
-    game.manualClicksLeft=1000
-  }
-}
-
-function refund() {
-  game.boosters += calcRefund()
-  let rightrow = []
-  if (game.upgrades.includes(4)) rightrow.push(4)
-  if (game.upgrades.includes(8)) rightrow.push(8)
-  if (game.upgrades.includes(12)) rightrow.push(12)
-  if (game.upgrades.includes(16)) rightrow.push(16)
-  game.upgrades = rightrow
-  for (let i=0;i<bupUpgradeCosts.length;i++) {
-    document.getElementById("bup" + (i+1)).classList.remove("canbuy")
-    document.getElementById("bup" + (i+1)).classList.remove("bought")
-    document.getElementById("bup" + (i+1)).classList.add("locked")
-  }
-  game.ord=0
-  game.over=0
-  game.canInf=false
-  game.OP=0
-  game.succAuto=0
-  game.limAuto=0
-  game.autoLoop={succ: 0, lim: 0}
-  game.factorShifts = 0
-  game.base = 10
-  game.factors=[]
-  game.boostUnlock=1
-  game.dynamic=1
-  game.challenge=0
-  game.incrementy=EN(0)
-  game.manualClicksLeft=1000
-  game.chal8=0
-  game.decrementy=0
-}
 
 function getManifolds() {
-  if ((((Math.log10(10+game.incrementy)**(1.05**game.iups[0]))*1.2**game.iups[2]) >= (game.iups[5]==1?2:3)**(game.manifolds+1))) {
+  if (calcIncrementyMult() >= (game.iups[5]==1?2:3)**(game.manifolds+1)) {
   game.incrementy=EN(0)
   game.manifolds += 1
   }
@@ -766,31 +642,31 @@ function getDarkManifolds() {
 }
 
 function aup(x,spectate=0) {
-  document.getElementById("aup" + (x)).classList.remove("collapse")
-  document.getElementById("aup" + (x)).classList.remove("bought")
-  document.getElementById("aup" + (x)).classList.add("locked")
+  get("aup" + (x)).classList.remove("collapse")
+  get("aup" + (x)).classList.remove("bought")
+  get("aup" + (x)).classList.add("locked")
   if (spectate==0 && (!game.aups.includes(x)) && game.alephOmega.gte(EN(aupCost[x-1]))) {
     game.alephOmega = game.alephOmega.minus(aupCost[x-1])
     game.aups.push(x)
   }
   if (game.alephOmega.gte(EN(aupCost[x-1]))) {
-    document.getElementById("aup" + (x)).classList.add("collapse")
-    document.getElementById("aup" + (x)).classList.remove("locked")
+    get("aup" + (x)).classList.add("collapse")
+    get("aup" + (x)).classList.remove("locked")
   }
   if (game.aups.includes(x)) {
-    document.getElementById("aup" + (x)).classList.add("bought")
-    document.getElementById("aup" + (x)).classList.remove("collapse")
-    document.getElementById("aup" + (x)).classList.remove("locked")
+    get("aup" + (x)).classList.add("bought")
+    get("aup" + (x)).classList.remove("collapse")
+    get("aup" + (x)).classList.remove("locked")
   }
 }
 
 function bup(x,spectate=0) {
-  document.getElementById("bup" + (x)).classList.remove("canbuy")
-  document.getElementById("bup" + (x)).classList.remove("bought")
-  document.getElementById("bup" + (x)).classList.add("locked")
+  get("bup" + (x)).classList.remove("canbuy")
+  get("bup" + (x)).classList.remove("bought")
+  get("bup" + (x)).classList.add("locked")
   if (!game.upgrades.includes(x)) {
-    if (game.boosters>=bupUpgradeCosts[x-1] && game.challenge != 6 && game.challenge != 7) {
-      if (!(x==12 && !(getSumOfChallenges() >= 7)) && !(x==16 && !(getSumOfChallenges() >= 23)) && (x<4.5||game.upgrades.includes(x-4))) {
+    if (game.boosters>=bupUpgradeCosts[x-1] && (game.leastBoost<=1.5||(game.challenge != 6 && game.challenge != 7))) {
+      if (!(x==12 && !(getSumOfChallenges() >= 7)) && !(x==16 && !(getSumOfChallenges() >= 22)) && !(x==20 && !(getSumOfChallenges() >= 33)) && (x<4.5||game.upgrades.includes(x-4))) {
         if (spectate==0) {
           if (x==16) {
             let a=confirm("Buying this upgrade will destroy everything booster destroys, along with all of your upgrades, autobuyers, challenges, incrementy, incrementy upgrades, and manifolds for a single currency of the next prestige layer. Are you ready for this?")
@@ -806,22 +682,21 @@ function bup(x,spectate=0) {
           } else {
             if (x%4 != 0) game.boosters -= bupUpgradeCosts[x-1]
             game.upgrades.push(x)
-            document.getElementById("bup" + (x)).classList.remove("canbuy")
-            document.getElementById("bup" + (x)).classList.add("bought")
-            document.getElementById("bup" + (x)).classList.remove("locked")
-            updateFactors()
+            get("bup" + (x)).classList.remove("canbuy")
+            get("bup" + (x)).classList.add("bought")
+            get("bup" + (x)).classList.remove("locked")
           }
         }  else {
-          document.getElementById("bup" + (x)).classList.add("canbuy")
-          document.getElementById("bup" + (x)).classList.remove("bought")
-          document.getElementById("bup" + (x)).classList.remove("locked")
+          get("bup" + (x)).classList.add("canbuy")
+          get("bup" + (x)).classList.remove("bought")
+          get("bup" + (x)).classList.remove("locked")
         }
       }
     }
   } else {
-    document.getElementById("bup" + (x)).classList.remove("canbuy")
-    document.getElementById("bup" + (x)).classList.add("bought")
-    document.getElementById("bup" + (x)).classList.remove("locked")
+    get("bup" + (x)).classList.remove("canbuy")
+    get("bup" + (x)).classList.add("bought")
+    get("bup" + (x)).classList.remove("locked")
   }
 }
 
@@ -841,7 +716,7 @@ function updateFactors() {
     for(let factorListCounter=0;factorListCounter<game.factors.length;factorListCounter++){
       factorListHTML = factorListHTML + "<li>Factor " + (factorListCounter+1) + " x" + (1+(game.upgrades.includes(11)?3*(game.challenge==3||game.challenge==7?2:1):0)+game.factors[factorListCounter])*(game.upgrades.includes(1)?2:1) + " <button onclick=\"buyFactor(" + factorListCounter + ")\" class=\"infinityButton\">Increase Factor " + (factorListCounter+1) + " for " + beautify(Math.pow(10**(factorListCounter+1),Math.pow(factorCostExp[factorListCounter],game.factors[factorListCounter]))) + " OP</button></li>"
     }
-    if (document.getElementById("factorListMain").innerHTML!=factorListHTML) document.getElementById("factorListMain").innerHTML=factorListHTML
+    if (get("factorListMain").innerHTML!=factorListHTML) get("factorListMain").innerHTML=factorListHTML
   }
 }
 
@@ -902,29 +777,6 @@ function maxall() {
 }
 
 
-
-function infinity(manmade=0) {
-  if (game.canInf) {
-    if (calcOrdPoints(game.ord,game.base,game.over)>=10**265) {
-      game.OP = Math.max(game.OP,calcOrdPoints(game.ord,game.base,game.over))
-    } else {
-      if (game.chal8==1||game.challenge==6||game.challenge==7) game.OP=0
-      game.OP += calcTotalOPGain()
-    }
-    game.ord = 0
-    game.over = 0
-    document.getElementById("infinityTabButton").style.display="inline-block"
-    game.infUnlock = 1
-    game.dynamic=1
-    game.decrementy=0
-    game.autoLoop.succ=0
-    game.autoLoop.lim=0
-    game.manualClicksLeft=1000
-  }
-  loop(0)
-  if (manmade==1) render()
-}
-
 function displayOrd(ord,base=3,over=0,trim=0,large=0,multoff=0,colour=0) {
   if (ord<base && large==0) {
     if (ordColor == "no") ordColor="red"
@@ -939,14 +791,71 @@ function displayOrd(ord,base=3,over=0,trim=0,large=0,multoff=0,colour=0) {
   } else if (ord<4*10**270) {
     let tempvar = (multoff==0 ? [displayOrd(3),displayOrd(9),displayOrd(27),displayOrd(19683),ordMarks[game.buchholz][0].replace("x","")][Math.max(0,Math.floor((ord+10**268)/(10**270)))] : ["1",displayOrd(3),displayOrd(27),displayOrd(19683),ordMarks[game.buchholz][0].replace("x","")][Math.max(0,Math.floor((ord+10**268)/(10**270)))]) 
     return (colour==1?color(tempvar,["ω","(",")","^","!","@","$"],"red"):tempvar)
-  } else if (ord<=BHO) {
+  } else if (ord<BHO) {
     let tempvar = Math.floor(Math.log((ord+10**268)/(4*10**270))/Math.log(3))
     if (ordColor == "no") ordColor=HSL(tempvar*8)
     let tempvar2 = displayOrd(ord-((3**tempvar)*4*10**270)+10**265,base,over,trim+1,1,ordMarks[game.buchholz][tempvar][ordMarks[game.buchholz][tempvar].length-2]=="x",colour)
-    let output=(colour==1?color(ordMarks[game.buchholz][tempvar],["ψ","(","Ω",")","BHO","^","×","@","+","!","$"],HSL(tempvar*8)):ordMarks[game.buchholz][tempvar]).replace("x",(trim==(game.maxOrdLength.more-1)?(colour==1?color("...",["..."],HSL(tempvar*8)):"..."):(tempvar2=="1"||tempvar2=="<span style='color:red'>1</span>"?(tempvar<=0.5 && game.buchholz == 0?(colour==1?"<span style='color:red'>0</span>":"0"):(game.buchholz == 2 ? (colour==1?"<span style='color:red'>1</span>":"1") : "")):tempvar2)))
+    let output = (colour == 1
+      ? color(
+          ordMarks[game.buchholz][tempvar],
+          ["ψ", "(", "Ω", ")", "BHO", "^", "×", "@", "+", "!", "$"],
+          HSL(tempvar * 8)
+        )
+      : ordMarks[game.buchholz][tempvar]
+    ).replace(
+      "x",
+      trim == game.maxOrdLength.more - 1
+        ? colour == 1
+          ? color("...", ["..."], HSL(tempvar * 8))
+          : "..."
+        : tempvar2 == "1" || tempvar2 == "<span style='color:red'>1</span>"
+        ? tempvar <= 0.5 && game.buchholz == 0
+          ? colour == 1
+            ? "<span style='color:red'>0</span>"
+            : "0"
+          : game.buchholz == 2
+          ? colour == 1
+            ? "<span style='color:red'>1</span>"
+            : "1"
+          : ""
+        : tempvar2
+    );
     return output
+  } else if (getSingLevel()==1) {
+    if (ordColor == "no") ordColor=HSL(40*8)
+    return (colour==1?color("BHO",["BHO"],HSL(80*4)):"BHO")
   } else {
-    return displayOrd(BHO,base,over,trim,large,multoff,colour)
+    let tempvar = Math.floor(ord/BHO-1)
+    let tempvar2 = 3**(ord/BHO-1)-3**tempvar
+    if (ord/BHO%1>=0.99999999999999) {
+      tempvar++
+      tempvar2=0
+    }
+    let tempvar3 = tempvar2<1?BHO*tempvar2:(Math.log10(tempvar2)/Math.log10(3)+1)*BHO
+    if (ordColor == "no") ordColor=HSL((tempvar+40)*8)
+    let tempvar4 = displayOrd(tempvar3+10**265,base,over,trim+1,large,(ordMarks[game.buchholz][tempvar+40][ordMarks[game.buchholz][tempvar+40].length-2]=="x"?1:0),colour)
+    let output = (colour == 1
+      ? color(
+          ordMarks[game.buchholz][tempvar+40],
+          ["ψ", "(", "Ω", ")", "ε", "^", "×", "@", "+", "!", "$"],
+          HSL((tempvar+40) * 8)
+        )
+      : ordMarks[game.buchholz][tempvar+40]
+    ).replace(
+      "x",
+      trim == game.maxOrdLength.more - 1
+        ? colour == 1
+          ? color("...", ["..."], HSL(tempvar * 8))
+          : "..."
+        : tempvar4 == "1" || tempvar4 == "<span style='color:red'>1</span>"
+        ? game.buchholz == 2
+          ? colour == 1
+            ? "<span style='color:red'>1</span>"
+            : "1"
+          : ""
+        : tempvar4
+    );
+    return output
   }
 }
 
@@ -954,7 +863,11 @@ function fghexp(times, on) {
   if (times<1) {
     return on
   } else {
+    if (times<5) {
     return fghexp(times-1,Math.pow(2,on)*on)
+    } else {
+      return Infinity
+    }
   }
 }
 
@@ -970,10 +883,10 @@ function beautify(number,f=0) {
   if (mantissa.toFixed(3)=="10.000") return "9.999e" + exponent
 	return mantissa.toFixed(3) + "e" + exponent
   } else {
-    return "1.000e300"
+    return "1.000e257 (cap in base " + game.base + ")"
   }
   } else {
-    return "g<sub>" + displayOrd(number-10**270,3) + "</sub> (10)"
+    return "g<sub>" + displayOrd(number-9.9e269,3) + "</sub> (10)"
   }} else {
     return beautifyEN(number,f)
   }
@@ -1012,50 +925,55 @@ function calcOrdPoints(ord=game.ord,base=game.base,over=game.over) {
 }
 
 function Tab(t) {
-  document.getElementById("Tab1").style.display="none"
-  document.getElementById("Tab2").style.display="none"
-  document.getElementById("Tab3").style.display="none"
-  document.getElementById("Tab4").style.display="none"
-  document.getElementById("Tab5").style.display="none"
-  document.getElementById("Tab6").style.display="none"
-  document.getElementById("Tab7").style.display="none"
-  document.getElementById("Tab" + t).style.display="block"
+  get("Tab1").style.display="none"
+  get("Tab2").style.display="none"
+  get("Tab3").style.display="none"
+  get("Tab4").style.display="none"
+  get("Tab5").style.display="none"
+  get("Tab6").style.display="none"
+  get("Tab7").style.display="none"
+  get("Tab" + t).style.display="block"
   subTab(game.subTab)
   bsubTab(game.bsubTab)
   csubTab(game.csubTab)
-  if (game.music>=1) document.getElementById("music").play();
-  updateFactors()
+  if (game.music>=1) get("music").play();
 }
 
 function subTab(t) {
-  document.getElementById("subTab1").style.display="none"
-  document.getElementById("subTab2").style.display="none"
-  document.getElementById("subTab3").style.display="none"
-  document.getElementById("subTab4").style.display="none"
-  document.getElementById("subTab" + t).style.display="block"
+  get("subTab1").style.display="none"
+  get("subTab2").style.display="none"
+  get("subTab3").style.display="none"
+  get("subTab4").style.display="none"
+  get("subTab5").style.display="none"
+  get("subTab" + t).style.display="block"
   game.subTab=t
 }
 function bsubTab(t) {
-  document.getElementById("bsubTab1").style.display="none"
-  document.getElementById("bsubTab2").style.display="none"
-  document.getElementById("bsubTab3").style.display="none"
-  document.getElementById("bsubTab4").style.display="none"
-  document.getElementById("bsubTab" + t).style.display="block"
+  get("bsubTab1").style.display="none"
+  get("bsubTab2").style.display="none"
+  get("bsubTab3").style.display="none"
+  get("bsubTab4").style.display="none"
+  get("bsubTab" + t).style.display="block"
   game.bsubTab=t
 }
 
 function csubTab(t) {
-  document.getElementById("csubTab1").style.display="none"
-  document.getElementById("csubTab2").style.display="none"
-  document.getElementById("csubTab3").style.display="none"
-  document.getElementById("csubTab4").style.display="none"
-  document.getElementById("csubTab" + t).style.display="inline-block"
+  get("csubTab1").style.display="none"
+  get("csubTab2").style.display="none"
+  get("csubTab3").style.display="none"
+  get("csubTab4").style.display="none"
+  get("csubTab5").style.display="none"
+  get("csubTab6").style.display="none"
+  get("csubTab" + t).style.display="inline-block"
   game.csubTab=t
+  //get("body").style["background-size"]="cover"
+  //Site: https://wallpaperplay.com/
+  //Terms: https://wallpaperplay.com/page-terms 
 }
 
 var autoSave = window.setInterval(function() {
   save()
-}, 2000)
+}, 10000)
 
 function resetConf() {
   let code = prompt("Are you sure you want to delete all of your progress? Type in \"yes\" to reset all of your progress.")
@@ -1064,60 +982,12 @@ function resetConf() {
 
 function maxFactors() {
   if (game.challenge != 2 && game.challenge != 7) {
-    for(let i=0;i<game.factors.length;i++)
-      while (game.OP >= (Math.pow(10**(i+1),Math.pow(factorCostExp[i],game.factors[i])))) buyFactor(i)
-  }
-}
-
-function factorShift(manmade=0) {
-  if (game.OP>=factorShiftCosts[game.factorShifts] && !((game.challenge==5||game.challenge==7) && game.factorShifts >= 2)) {
-    if (game.base>3) {
-      game.ord=0
-      game.over=0
-      game.canInf=false
-      game.OP=0
-      game.succAuto=0
-      game.limAuto=0
-      game.autoLoop={succ: 0, lim: 0}
-      game.factorShifts += 1
-      game.manualClicksLeft=1000
-      game.base -= 1
-      game.factors=[]
-      game.dynamic=1
-      game.decrementy=0
-      game.autoLoop.succ=0
-      game.autoLoop.lim=0
-      for(let i=0;i<game.factorShifts;i++) {
-        game.factors.push(0)
-      }
+    if (game.factors.length>=7 && game.OP >= 1e257) {
+      game.factors=[9,8,7,4,4,3,2]
     } else {
-      if (game.boostUnlock==0) {
-      game.dynamic=1
-      game.ord=0
-      game.over=0
-      game.canInf=false
-      game.OP=0
-      game.succAuto=0
-      game.limAuto=0
-      game.autoLoop={succ: 0, lim: 0}
-      game.factorShifts = 0
-      game.base = 10
-      game.factors=[]
-      game.boostUnlock=1
-      game.boosters += 1
-      game.manualClicksLeft=1000
-      game.factorBoosts += 1
-      game.challenge=0
-      game.incrementy=EN(0)
-      game.chal8=0
-      game.decrementy=0
-      game.autoLoop.succ=0
-      game.autoLoop.lim=0
-      }
+      for(let i=0;i<game.factors.length;i++) while (game.OP >= (Math.pow(10**(i+1),Math.pow(factorCostExp[i],game.factors[i])))) buyFactor(i)
     }
   }
-  if (manmade==1) render()
-  updateFactors()
 }
 
 function buyFactor(n) {
@@ -1125,8 +995,6 @@ function buyFactor(n) {
     if (game.OP<10**265) game.OP -= (Math.pow(10**(n+1),Math.pow(factorCostExp[n],game.factors[n])))
     game.factors[n] += 1
   }
-  render()
-  updateFactors()
 }
 
 function debug() {
@@ -1147,8 +1015,7 @@ function debug() {
   game.chal8=0
   game.decrementy=0
   render()
-  updateFactors()
-  document.getElementById("infinityTabButton").style.display="inline-block"
+  get("infinityTabButton").style.display="inline-block"
 }
 
 function revertToPreBooster() {
@@ -1169,11 +1036,10 @@ function revertToPreBooster() {
   game.chal8=0
   game.decrementy=0
   render()
-  updateFactors()
-  document.getElementById("infinityTabButton").style.display="inline-block"
+  get("infinityTabButton").style.display="inline-block"
 }
 
-function V(n) {
+function V(n,fb=0) {
   if (n<27) {
     let tempvar=0
     let tempvar2=0
@@ -1186,7 +1052,7 @@ function V(n) {
     tempvar2--
     return 3**tempvar2*4*10**270
   } else {
-    return V(26)*243
+    return V(26)*243*(fb==1?(game.factorBoosts>=24?getSingLevel():1):1)
   }
 }
 
@@ -1204,168 +1070,15 @@ function toggleAutoInf() {
   render()
 }
 
-function setMarks() {
-ordMarks = [
-  [
-  "ψ(x)",
-  "ψ(Ωx)",
-  "ψ(Ω<sup>x</sup>)",
-  "ψ(Ω<sup>Ω</sup>x)",
-  "ψ(Ω<sup>Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω+x</sup>)",
-  "ψ(Ω<sup>Ω2</sup>x)",
-  "ψ(Ω<sup>Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω2+x</sup>)",
-  "ψ(Ω<sup>Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup></sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>x</sup>)",
-  "ψ(Ω<sup>Ω<sup>x</sup></sup>)",
-  "BHO",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)"
-  ],
-  [
-  "ψ(Ωx)",
-  "ψ(Ω<sup>2</sup>x)",
-  "ψ(Ω<sup>x</sup>)",
-  "ψ(Ω<sup>Ω</sup>x)",
-  "ψ(Ω<sup>Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω+x</sup>)",
-  "ψ(Ω<sup>Ω2</sup>x)",
-  "ψ(Ω<sup>Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω2+x</sup>)",
-  "ψ(Ω<sup>Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup></sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ω2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>+Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+1</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+2</sup>x)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ω2+x</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>2+Ωx</sup>)",
-  "ψ(Ω<sup>Ω<sup>2</sup>x</sup>)",
-  "ψ(Ω<sup>Ω<sup>x</sup></sup>)",
-  "BHO",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)"
-  ],
-  [
-  "ψ(Ωx)",
-  "ψ(Ω^2×x)",
-  "ψ(Ω^x)",
-  "ψ(Ω^(Ω)×x)",
-  "ψ(Ω^(Ω+1)×x)",
-  "ψ(Ω^(Ω+2)×x)",
-  "ψ(Ω^(Ω+x))",
-  "ψ(Ω^(Ω2)×x)",
-  "ψ(Ω^(Ω2+1)×x)",
-  "ψ(Ω^(Ω2+2)×x)",
-  "ψ(Ω^(Ω2+x))",
-  "ψ(Ω^(Ωx))",
-  "ψ(Ω^(Ω^2)×x)",
-  "ψ(Ω^(Ω^2+1)×x)",
-  "ψ(Ω^(Ω^2+2)×x)",
-  "ψ(Ω^(Ω^2+x))",
-  "ψ(Ω^(Ω^2+Ω)×x)",
-  "ψ(Ω^(Ω^2+Ω+1)×x)",
-  "ψ(Ω^(Ω^2+Ω+2)×x)",
-  "ψ(Ω^(Ω^2+Ω+x))",
-  "ψ(Ω^(Ω^2+Ω2)×x)",
-  "ψ(Ω^(Ω^2+Ω2+1)×x)",
-  "ψ(Ω^(Ω^2+Ω2+2)×x)",
-  "ψ(Ω^(Ω^2+Ω2+x))",
-  "ψ(Ω^(Ω^2+Ωx))",
-  "ψ(Ω^(Ω^2×2)×x)",
-  "ψ(Ω^(Ω^2×2+1)×x)",
-  "ψ(Ω^(Ω^2×2+2)×x)",
-  "ψ(Ω^(Ω^2×2+x))",
-  "ψ(Ω^(Ω^2×2+Ω)×x)",
-  "ψ(Ω^(Ω^2×2+Ω+1)×x)",
-  "ψ(Ω^(Ω^2×2+Ω+2)×x)",
-  "ψ(Ω^(Ω^2×2+Ω+x))",
-  "ψ(Ω^(Ω^2×2+Ω2)×x)",
-  "ψ(Ω^(Ω^2×2+Ω2+1)×x)",
-  "ψ(Ω^(Ω^2×2+Ω2+2)×x)",
-  "ψ(Ω^(Ω^2×2+Ω2+x))",
-  "ψ(Ω^(Ω^2×2+Ωx))",
-  "ψ(Ω^(Ω^2×x))",
-  "ψ(Ω^(Ω^x))",
-  "BHO",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+1)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub>2+2)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)",
-  "ψ(ψ<sub>2</sub>(Ω<sub>2</sub><sup>2</sup>)x)"
-  ]
-]
-}
-
-if (game.music>=1) document.getElementById("music").play();
-document.getElementById("music").src=musicLink[game.music-1]
-document.getElementById("music").muted=false
+if (game.music>=1) get("music").play();
+get("music").src=musicLink[game.music-1]
+get("music").muted=false
 
 function ENify(x) {
   if (typeof x == "number") {
     return EN(x)
+  } else if (x == "null") {
+    return EN(0)
   } else {
     let newEN = new EN(0)
     newEN.array = x.array
@@ -1376,16 +1089,41 @@ function ENify(x) {
 }
 
 function project(x) {
-  if (game.OP>=V(game.factorBoosts+3)&&game.bulkBoost==0) {
-  document.getElementById("nextBulkTime").innerHTML="You can do a Factor Boost now, but bulking is currently disabled now"
-  document.getElementById("bulking").innerHTML=1
-  document.getElementById("factorBoostProg").style.width="100%"
-  document.getElementById("factorBoostProg").innerHTML="100.00%"
+  if (game.OP>=V(game.factorBoosts+3,1)&&game.bulkBoost==0) {
+  get("nextBulkTime").innerHTML="You can do a Factor Boost now, but bulking is currently disabled now"
+  get("bulking").innerHTML=1
+  get("factorBoostProg").style.width="100%"
+  get("factorBoostProg").innerHTML="100.00%"
   } else {
-  document.getElementById("nextBulkTime").innerHTML=(game.OP<1e270?"Reach " + beautify(5e270) + " to see when you can boost!":(game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?"You can't bulk past the BHO!":"Next boost in bulk will take " + ((game.upgrades.includes(2)||game.leastBoost<=1.5)&&(game.upgrades.includes(3)||game.leastBoost<=25)?time(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/x/(1e270))):(Math.floor((V(game.factorBoosts+getFactorBulk()+3)-game.OP)/1/(1e270))) + " click cycles")))
-  document.getElementById("bulking").innerHTML = getFactorBulk()
-  document.getElementById("factorBoostProg").style.width = (game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?100:game.OP/V(game.factorBoosts+getFactorBulk()+3)*100) + "%"
-  document.getElementById("factorBoostProg").innerHTML = (game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?100:game.OP/V(game.factorBoosts+getFactorBulk()+3)*100).toFixed(2) + "%"
+  get("nextBulkTime").innerHTML =
+    game.OP < 1e270
+      ? "Reach " + beautify(5e270) + " to see when you can boost!"
+      : game.factorBoosts + getFactorBulk() >= 25 && getFactorBulk() >= 1
+      ? "You can't bulk past the BHO!"
+      : "Next boost in bulk will take " +
+        ((game.upgrades.includes(2) || game.leastBoost <= 1.5) &&
+        (game.upgrades.includes(3) || game.leastBoost <= 25)
+          ? time(game.factorBoosts<24?
+              Math.floor(
+                (V(game.factorBoosts + getFactorBulk() + 3) - game.OP) /
+                  x /
+                  1e270
+              )
+            : postBHOproj(x)
+            )
+          : Math.floor(
+              (V(game.factorBoosts + getFactorBulk() + 3) - game.OP) / 1 / 1e270
+            ) + " click cycles");
+  get("bulking").innerHTML = getFactorBulk()
+  let percentage=(game.factorBoosts+getFactorBulk()>=25&&getFactorBulk()>=1?100:game.OP/V(game.factorBoosts+getFactorBulk()+3)*100)
+  if (game.factorBoosts>=24&&game.OP<BHO) {
+    percentage=100*game.OP/BHO/3**(getSingLevel()-1)
+  }
+  if (game.factorBoosts>=24&&game.OP>=BHO) {
+    percentage=100*(1/3)**((BHO*getSingLevel()-game.OP)/BHO)
+  }
+  get("factorBoostProg").style.width = percentage + "%"
+  get("factorBoostProg").innerHTML = percentage.toFixed(2) + "%"
   }
 }
 
@@ -1478,3 +1216,27 @@ function distributeCard() {
   game.assCard[1].points=game.assCard[1].points.add(bulk)
   game.assCard[2].points=game.assCard[2].points.add(bulk)
 }
+
+function getSingularity(x) {
+  if (x==0 && game.darkManifolds-getDMSacrafice() >= 1e6*5**game.sing.dm) {
+    game.sing.dm++
+  } else if (x==1 && game.manifolds >= (game.sing.m+1)) {
+    game.sing.m++
+  } else if (x==2 && game.alephOmega.gte(1e20*100**game.sing.nw)) {
+    game.alephOmega=game.alephOmega.minus(1e20*100**game.sing.nw)
+    game.sing.nw++
+  }
+}
+
+function getSingManifold() {
+  if (getSingLevel()>=1.5) {
+    --game.sing.m
+  }
+}
+
+function postBHOproj(x) {
+              let goal=BHO/1e270*3**(getSingLevel()-1)
+              let amt = game.OP/1e270
+              if (game.OP>BHO) amt = BHO/1e270*3**(game.OP/BHO-1)
+              return Math.floor((goal-amt)/x)
+             }
