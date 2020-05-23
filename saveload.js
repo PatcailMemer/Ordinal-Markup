@@ -62,7 +62,15 @@ function reset() {
   shiftAuto: EN(1),
   boostAuto: EN(1),
   fbConfirm: 0,
-  bulkBoost: 1
+  bulkBoost: 1,
+  maxIncrementyRate: EN(0),
+  mostCardOnce: EN(0),
+  flashIncrementy: 1,
+  bConf: {ref: 1, refFB: 0, chal: 0, chalFB: 0},
+  qolSM: {abu: 1, ig73: 1, igc8: 1, acc: 1, nc8: 0, c8: 0, ca: 0, st: 0, ttnc: 0},
+  maxCard: EN(0),
+  hotkeysOn: 1,
+  sing: {dm: 0, m: 0, nw: 0}
   }
   document.getElementById("infinityTabButton").style.display="none"
   render()
@@ -193,12 +201,26 @@ function loadGame(loadgame) {
   game.alephOmega=ENify(game.alephOmega)
   game.shiftAuto=ENify(game.shiftAuto)
   game.boostAuto=ENify(game.boostAuto)
-  if (game.offlineProg==0) game.lastTick=Date.now()
+  game.maxIncrementyRate=ENify(game.maxIncrementyRate)
+  game.mostCardOnce=ENify(game.mostCardOnce)
+  game.maxCard=ENify(game.maxCard)
+  document.getElementById("nonC8Auto").value=game.qolSM.nc8
+  document.getElementById("C8Auto").value=game.qolSM.c8
+  document.getElementById("ttnc").value=game.qolSM.ttnc
+  console.log(game.leastBoost)
+  if (game.leastBoost==null) game.leastBoost=Infinity
+  console.log(game.leastBoost)
+  render()
+  if (game.offlineProg==1) {
+    if (game.collapseTime<=1000&&diff/1000>=1000-game.collapseTime) {
+      loop((1000-game.collapseTime)*1000,1)
+      loop(diff-((1000-game.collapseTime)*1000),1)
+    } else {
+      loop(diff,1)
+    }
+  }
+  game.lastTick=Date.now()
   console.log(diff)
-  render()
-  updateFactors()
-  render()
-  updateFactors()
 }
 
 

@@ -1,0 +1,104 @@
+/* 
+Optimize the game for mobile screens if the window is under 660px 
+Code by Yhvr. Why are you here, anyways?
+Oops, ignore all the `!important`, please.
+*/
+
+@media screen and (max-width: 660px), (max-height: 550px) {
+  #hardy {
+    overflow-x: hidden;
+    height: 75px;
+    /* vertically center text */
+    line-height: 35px;
+  }
+  
+  .tabButton, .infinityTabButton,
+  .boosterTabButton, .collapseTabButton {
+    width: calc(50vw - 1ch - 1em - 12px) !important;
+    height: 50px !important;
+  }
+  
+  .invisTab {
+    display: none !important;
+  }
+  
+  .normalButton, button[onclick="resetConf()"], button[onclick="infinity(1)"],
+  #autoInfButton, #autoMaxButton{
+    width: 75vw !important;
+    min-height: 37.5px !important;
+    font-size: 15px !important;
+  }
+  
+  span {
+    display: inline !important;
+  }
+  
+  #changeOffline {
+    margin: 0 !important;
+  }
+
+  .subtab {
+    min-width: 100px !important;
+    height: 35px !important;
+    font-size: 14px !important;
+  }
+  
+  html {
+    width: 100% !important;
+  }
+  
+  .infinityButton {
+    min-width: 140px !important;
+    min-height: 30px !important;
+    font-size: 14px !important;
+  }
+  
+  #boosterText {
+    display: block !important;
+  }
+  
+  #darkManifoldMaxMode {
+    height: 35px !important;
+  }
+  
+  table#cardinalTable > tbody > tr {
+    width: 100%;
+  }
+  
+  table#cardinalTable > tbody > tr > td {
+    display: block;
+    width: 100%;
+  }
+  
+  .assignButtons {
+    margin: 0 !important;
+  }
+  
+  #cardMult1, #cardMult2, #cardMult3 {
+    display: inline;
+    padding: 0 5px;
+  }
+  
+  #cardExtra3 {
+    display: inline;
+  }
+  
+  .slugMile, .notSlugMile {
+    width: 75vw !important;
+    height: 100px !important;
+    margin-bottom: 5px;
+  }
+  
+  #slug5 {
+    height: auto !important;
+  }
+  
+  tr.trueCenter.long {
+    margin: 0 !important;
+  }
+  
+  #aup1, #aup2, #aup3, #aup4,
+  #aup5, #aup6, #aup7, #aup8 {
+    width: 199px !important;
+  }
+}

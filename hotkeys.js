@@ -8,5 +8,6 @@ const keybinds = {
 }
 // declaring it once is probably faster
 window.onkeypress = _ => {
-  keybinds[_.key] ? keybinds[_.key]() : 0
+  let k = _.key.toLowerCase()
+  keybinds[k] && game.hotkeysOn==1 ? keybinds[k]() : 0
 }

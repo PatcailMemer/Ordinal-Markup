@@ -1,59 +1,60 @@
 function exitChallenge() {
+  if (game.qolSM.abu==1&&game.leastBoost<=1.5) {
+    refundAction()
+  }
   if (game.challenge > 0 || game.chal8==1) {
-    game.ord=0
-    game.over=0
-    game.canInf=false
-    game.OP=0
-    game.succAuto=0
-    game.limAuto=0
-    game.autoLoop={succ: 0, lim: 0}
-    game.factorShifts = 0
-    game.manualClicksLeft=1000
-    game.base = 10
-    game.factors=[]
-    game.boostUnlock=1
-    game.dynamic=1
-    game.challenge=0
-    game.incrementy=EN(0)
-    game.chal8=0
-    game.decrementy=0
+    resetEverythingBoostDoes()
+  }
+}
+
+function completeChallenge() {
+  if (game.OP>=(game.chal8==1?getChal8Goal(game.chal8Comp):challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) {
+    if (game.chal8==1) {
+      if (game.leastBoost<=15) {
+        while (game.OP>=getChal8Goal(game.chal8Comp)) {
+          game.chal8Comp += 1
+        }
+      } else {
+      game.chal8Comp += 1
+      }
+    } else {
+      if (game.leastBoost<=15) {
+        while (game.challengeCompletion[game.challenge-1]<=2&&game.OP>=challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]]) {
+          game.challengeCompletion[game.challenge-1] += 1
+        }
+      } else {
+      game.challengeCompletion[game.challenge-1] += 1
+      }
+    }
+    if (game.qolSM.abu==1&&game.leastBoost<=1.5) {
+    refundAction()
+    }
+    resetEverythingBoostDoes()
   }
 }
 
 function enterChallenge(c) {
   if (game.challenge == 0 && game.challengeCompletion[c-1] != 3 && game.chal8 == 0) {
-    game.ord=0
-    game.over=0
-    game.canInf=false
-    game.OP=0
-    game.succAuto=0
-    game.limAuto=0
-    game.autoLoop={succ: 0, lim: 0}
-    game.factorShifts = 0
-    game.base = 10
-    game.factors=[]
-    game.boostUnlock=1
-    game.dynamic=1
-    game.challenge=c
-    game.incrementy=EN(0)
+    let conf = (game.bConf.chal==1?confirm("Are you sure you want to start a challenge? You'll forfeit your current run in favor of the challenge."):true)
+    if (conf) {
+      if (game.bConf.chalFB==1) factorBoost()
+      if (game.qolSM.abu==1&&game.leastBoost<=1.5) {
+        refundAction()
+       }
+      resetEverythingBoostDoes()
+      game.challenge=c
+    }
   }
 }
 
 function enterChallenge8() {
   if (game.challenge == 0) {
-    game.ord=0
-    game.over=0
-    game.canInf=false
-    game.OP=0
-    game.succAuto=0
-    game.limAuto=0
-    game.autoLoop={succ: 0, lim: 0}
-    game.factorShifts = 0
-    game.base = 10
-    game.factors=[]
-    game.boostUnlock=1
-    game.dynamic=1
-    game.chal8=1
-    game.incrementy=EN(0)
+    let conf = (game.bConf.chal==1?confirm("Are you sure you want to start a challenge? You'll forfeit your current run in favor of the challenge."):true)
+    if (conf) {
+      if (game.bConf.chalFB==1) factorBoost()
+      refundAction()
+      resetEverythingBoostDoes()
+      game.chal8=1
+    }
   }
 }
