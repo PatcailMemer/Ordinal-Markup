@@ -22,7 +22,7 @@ function infinity(manmade=0) {
 
 function factorShift(manmade=0) {
   if (game.OP>=factorShiftCosts[game.factorShifts] && !((game.challenge==5||game.challenge==7) && game.factorShifts >= 2)) {
-    if (game.base>3) {
+    if (game.base>2) {
       game.ord=0
       game.over=0
       game.canInf=false
