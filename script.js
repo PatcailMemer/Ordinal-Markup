@@ -982,8 +982,8 @@ function resetConf() {
 
 function maxFactors() {
   if (game.challenge != 2 && game.challenge != 7) {
-    if (game.factors.length>=7 && game.OP >= 1e257) {
-      game.factors=[9,8,7,4,4,3,2]
+    if (game.factors.length>=8 && game.OP >= 1e257) {
+      game.factors=[10,9,8,7,4,4,3,2]
     } else {
       for(let i=0;i<game.factors.length;i++) while (game.OP >= (Math.pow(10**(i+1),Math.pow(factorCostExp[i],game.factors[i])))) buyFactor(i)
     }
