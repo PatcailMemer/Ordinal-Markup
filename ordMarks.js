@@ -1,3 +1,5 @@
+"use strict";
+
 function setMarks() {
   ordMarks = [
     [],
@@ -88,30 +90,30 @@ function setMarks() {
       "ψ(ε(Ω+x))",
     ]
   ];
-  let tempList=[]
-  tempList.push("ψ(ε<sub>Ω2</sub>x)")
+  let tempList = [];
+  tempList.push("ψ(ε<sub>Ω2</sub>x)");
   ordMarks[1].forEach(item => {
-    tempList.push(item.replace("ψ(","ψ(ε<sub>Ω2</sub>"))
-  })
-  tempList.push("ψ(ε<sub>Ω2</sub><sup>2</sup>x)")
+    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub>"));
+  });
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>2</sup>x)");
   ordMarks[1].forEach(item => {
-    tempList.push(item.replace("ψ(","ψ(ε<sub>Ω2</sub><sup>2</sup>"))
-  })
-  ordMarks[1]=ordMarks[1].concat(tempList)
+    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>2</sup>"));
+  });
+  ordMarks[1] = ordMarks[1].concat(tempList);
   ordMarks[1].forEach(item => {
-    ordMarks[0].push(item)
-  })
-  ordMarks[0][0]="ψ(x)"
-  ordMarks[0][1]="ψ(Ωx)"
-  tempList=[]
-  tempList.push("ψ(ε(Ω2)×x)")
+    ordMarks[0].push(item);
+  });
+  ordMarks[0][0] = "ψ(x)";
+  ordMarks[0][1] = "ψ(Ωx)";
+  tempList = [];
+  tempList.push("ψ(ε(Ω2)×x)");
   ordMarks[2].forEach(item => {
-    tempList.push(item.replace("ψ(","ψ(ε(Ω2)×"))
-  })
-  tempList.push("ψ(ε(Ω2)^(2)×x)")
+    tempList.push(item.replace("ψ(", "ψ(ε(Ω2)×"));
+  });
+  tempList.push("ψ(ε(Ω2)^(2)×x)");
   ordMarks[2].forEach(item => {
-    tempList.push(item.replace("ψ(","ψ(ε(Ω2)^(2)×x"))
-  })
-  ordMarks[2]=ordMarks[2].concat(tempList)
+    tempList.push(item.replace("ψ(", "ψ(ε(Ω2)^(2)×x"));
+  });
+  ordMarks[2] = ordMarks[2].concat(tempList);
 }
 

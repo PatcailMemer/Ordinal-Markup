@@ -12,16 +12,16 @@ let game
 let factorShiftCosts=[200, 1000, 10000, 350000, 1e12, 1e21, 1e100, 1.095e272, Infinity]
 let factorCostExp=[2,2,2,3,3,6,30,100]
 const bupUpgradeCosts=[1,1,1,12,5,4,8,36,72,73,16,108,53,74,66,324,Infinity,Infinity,8e8,5e11,Infinity,Infinity,Infinity,Infinity]
-const slugMile=[10**10,20,15,12,10,1,-1]
+const slugMile=[1e10,20,15,12,10,1,-1]
 let totalMult = 1
 let buptotalMute = 1
-const challengeGoals=[[10**32,10**223,10**270*5],[10**270*5,V(10)+10**270,V(17)+10**270],[10**200,10**214,1e256],[10**33,5e113,1.5e119],[10**122,3.33e136,1e218],[1.02e33,1e44,4.75e108],[1.05e13,4.18e18,1.02e20],[3.000e10,6.00e10,2.4e11,Infinity]]
+const challengeGoals=[[1e32,1e223,1e270*5],[1e270*5,V(10)+1e270,V(17)+1e270],[1e200,1e214,1e256],[1e33,5e113,1.5e119],[1e122,3.33e136,1e218],[1.02e33,1e44,4.75e108],[1.05e13,4.18e18,1.02e20],[3.000e10,6.00e10,2.4e11,Infinity]]
 const challengeCurve=[0,0.5,0.75,1]
 let partOP = 0
 let factorBoostLoop = 0
 let cardinalLoop = ExpantaNum(0)
 let collapseAnimation = 0
-const iupCosts=[10**5,10**3,10**9,10**17,2e22,4e23,10**19,2e25,4e27]
+const iupCosts=[1e5,1e3,1e9,1e17,2e22,4e23,1e19,2e25,4e27]
 const dupCosts=[5,1000,9,Infinity,Infinity,Infinity,Infinity,Infinity,Infinity]
 let ordColor = "no" //yes
 let EN = ExpantaNum
@@ -33,7 +33,7 @@ const musicLink=[
 ]
 const musicName = ['OFF', "Going Down by Jake Chudnow", "Hypnothis by Kevin Macleod", "Horizon by Scott Buckley (<a href='https://soundcloud.com/scottbuckley'>https://soundcloud.com/scottbuckley</a>) - CC BY 3.0"]
 const BHO = V(27)
-const aupCost=[1,2,4,8,16,256,65536,2**32,2**64,2**128,2**256,2**512]
+const aupCost=[1,2,4,8,16,256,65536,2e32,2e64,2e128,2e256,2e512]
 let AF=0
 const d=new Date()
 if (d.getMonth()==3&&d.getDate()==1&&!(d.getFullYear()==Number(localStorage.ordinalMarkupAF))) {
@@ -75,8 +75,8 @@ function maximize(manmade=0) {
     do {
       game.over -= Math.ceil((game.over+game.base)/2-0.1)
       game.ord += game.base
-    } while (game.over+game.base >= game.base*2 && game.ord % (game.base**2) != 0)
-    if (game.ord % (game.base**2) != 0) {
+    } while (game.over+game.base >= game.base*2 && game.ord % (Math.pow(game.base2, 2)) != 0)
+    if (game.ord % (Math.pow(game.base2, 2)) != 0) {
       game.ord += game.over
     }
     game.over = 0
@@ -119,7 +119,7 @@ function loop(ms,off=0) {
   if (game.chal8==1 && calcRefund()>0) refund()
   game.boosters=game.factorBoosts*(game.factorBoosts+1)/2 - calcRefund() + calcSlugMile()
   if (game.leastBoost <= 1e10 && game.OP < calcTotalOPGain()) {
-    game.OP += (calcTotalOPGain()>=10**270?Infinity:calcTotalOPGain()/100000*ms)
+    game.OP += (calcTotalOPGain()>=1e270?Infinity:calcTotalOPGain()/100000*ms)
     if (game.OP > calcTotalOPGain()) game.OP = calcTotalOPGain()
   }
   let assCount
@@ -139,8 +139,8 @@ function loop(ms,off=0) {
   succAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.limAuto),1):1)
   limAutoMult = (game.aups.includes(2)?Math.max(Math.sqrt(game.succAuto),1):1)
   let chal8Tip = (calcOrdPoints()>=1e30)
-  if (buptotalMute <= 100000000 && game.iups[3]==1) buptotalMute=Math.min(100000000,buptotalMute*getManifoldEffect()**2)
-  if ((game.succAuto < 10**265 || game.limAuto < 10**265) && !(game.ord>=3**27&&game.base<=3)) {
+  if (buptotalMute <= 100000000 && game.iups[3]==1) buptotalMute=Math.min(100000000,Math.pow(buptotalMute*getManifoldEffect(), 2))
+  if ((game.succAuto < 1e265 || game.limAuto < 1e265) && !(game.ord>=3e27&&game.base<=3)) {
   if (game.succAuto*totalMult > 0) {
     game.autoLoop.succ += ms
     if (game.autoLoop.succ >= 1000/(game.succAuto*succAutoMult*totalMult)) {
@@ -177,9 +177,9 @@ function loop(ms,off=0) {
     }
   }} else {
     game.over=0
-    game.ord=Math.max(Math.min(game.succAuto,game.limAuto),10**270*4)
+    game.ord=Math.max(Math.min(game.succAuto,game.limAuto),1e270*4)
   }
-  if ((!chal8Tip)&&game.chal8==1&&calcOrdPoints()>=1e30) game.ord=game.base**(game.base*3)
+  if ((!chal8Tip)&&game.chal8==1&&calcOrdPoints()>=1e30) game.ord=Math.pow(game.base, game.base*3)
   changeDynamic(ms)
   if (game.dynamic<0) game.dynamic = 0
   if (ms>0) {
@@ -187,7 +187,7 @@ function loop(ms,off=0) {
     game.bAutoLoop.max += ms
     if (game.bAutoLoop.max >= (1000/buptotalMute)) {
       game.bAutoLoop.max -= (1000/buptotalMute)
-      if ((game.OP < ((game.challenge==5||game.challenge==7) && game.factorShifts >= 2?Infinity:factorShiftCosts[game.factorShifts]) && (game.challenge==0 || game.OP < challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) || game.OP >= 10**265) {
+      if ((game.OP < ((game.challenge==5||game.challenge==7) && game.factorShifts >= 2?Infinity:factorShiftCosts[game.factorShifts]) && (game.challenge==0 || game.OP < challengeGoals[game.challenge-1][game.challengeCompletion[game.challenge-1]])) || game.OP >= 1e265) {
       maxInfStuff()
       }
     }
@@ -196,8 +196,8 @@ function loop(ms,off=0) {
     game.bAutoLoop.inf += ms
     if (game.bAutoLoop.inf >= (1000/buptotalMute)) {
       game.bAutoLoop.inf -= (1000/buptotalMute)
-      if (game.OP+game.ord >= 10**265 && game.challenge != 1 && game.challenge != 7) infinity()
-      if (game.OP+game.ord <= 10**265 && totalMult <= 0.01 && game.leastBoost <= 1.5) infinity()
+      if (game.OP+game.ord >= 1e265 && game.challenge != 1 && game.challenge != 7) infinity()
+      if (game.OP+game.ord <= 1e265 && totalMult <= 0.01 && game.leastBoost <= 1.5) infinity()
     }
   }
   if (game.bAutoLoop.max >= (1000/buptotalMute) && (game.bAutoLoop.inf >= (1000/buptotalMute) || game.leastBoost <= 1e10)) {
@@ -249,11 +249,11 @@ function loop(ms,off=0) {
 }
 
 function render() {
-  let outSize = fghexp((game.ord % (game.base**3)+0.1)/(game.base**2),Math.pow(2,Math.floor((game.ord % (game.base**2)+0.1)/game.base))*(game.base+game.over+(game.ord % game.base)))
+  let outSize = fghexp((game.ord % (Math.pow(game.base, 3))+0.1)/(Math.pow(game.base, 2)),Math.pow(2,Math.floor((game.ord % (Math.pow(game.base, 2))+0.1)/game.base))*(game.base+game.over+(game.ord % game.base)))
   ordColor = "no"
-  let ordSub = (game.ord<=10**200?(getFBps()>=10?displayOrd(0,game.base,0,0,0,0,game.colors):displayOrd(game.ord,game.base,game.over,0,0,0,game.colors)):displayOrd(Math.round(game.ord/(10**270)+1)*10**270-10**270,3,0,0,0,0,game.colors))
-  get("hardy").innerHTML=colorWrap("H",ordColor)+"<sub>" + ordSub + "</sub><text class=\"invisible\">l</text>"+colorWrap("(" + game.base + ")" + (game.ord >= (game.base**3) || outSize >= 10**264 || (game.ord>=5 && game.base==2) ? (getFBps()>=10?"=" + game.base:"") : "=" + beautify(outSize)),ordColor)
-  game.canInf = (game.ord >= (game.base**3) || outSize >= (game.leastBoost<=15?(game.leastBoost<=1.5?10:100):10240) || outSize >= Infinity)
+  let ordSub = (game.ord<=1e200?(getFBps()>=10?displayOrd(0,game.base,0,0,0,0,game.colors):displayOrd(game.ord,game.base,game.over,0,0,0,game.colors)):displayOrd(Math.round(game.ord/(1e270)+1)*1e270-1e270,3,0,0,0,0,game.colors))
+  get("hardy").innerHTML=colorWrap("H",ordColor)+"<sub>" + ordSub + "</sub><text class=\"invisible\">l</text>"+colorWrap("(" + game.base + ")" + (game.ord >= (Math.pow(game.base, 3)) || outSize >= 1e264 || (game.ord>=5 && game.base==2) ? (getFBps()>=10?"=" + game.base:"") : "=" + beautify(outSize)),ordColor)
+  game.canInf = (game.ord >= (Math.pow(game.base, 3)) || outSize >= (game.leastBoost<=15?(game.leastBoost<=1.5?10:100):10240) || outSize >= Infinity)
   if (game.infUnlock==1) {
     get("infinityTabButton").style.display="inline-block"
   } else {
@@ -290,10 +290,10 @@ function render() {
   get("challengeSubTab").style.display=(game.upgrades.includes(4) ? "inline-block" : "none")
   get("incrementySubTab").style.display=(game.upgrades.includes(8) ? "inline-block" : "none")
   get("ordinalPointsDisplay").innerHTML = "You have " + beautify(game.OP) + " Ordinal Points"
-  get("succAutoAmount").innerHTML = "You have " + logbeautify(game.succAuto) + " successor autoclickers, clicking the successor button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.succAuto*totalMult*succAutoMult)) + " times per second" 
-  get("limAutoAmount").innerHTML = "You have " + logbeautify(game.limAuto) + "  maximize autoclickers, clicking the maximize button " + (game.succAuto>10**265?logbeautify(game.succAuto):beautify(game.limAuto*totalMult*limAutoMult)) + " times per second"
-  get("buysucc").innerHTML = "Buy Successor Autobuyer for " + (game.challenge==1||game.challenge==7?(game.succAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.succAuto,100*2**game.succAuto))) + " OP"
-  get("buylim").innerHTML = "Buy Maximize Autobuyer for " + (game.challenge==1||game.challenge==7?(game.limAuto==1?"Infinity":"1.000e6"):beautify(Math.min(10**260+game.limAuto,100*2**game.limAuto))) + "  OP"
+  get("succAutoAmount").innerHTML = "You have " + logbeautify(game.succAuto) + " successor autoclickers, clicking the successor button " + (game.succAuto>1e265?logbeautify(game.succAuto):beautify(game.succAuto*totalMult*succAutoMult)) + " times per second" 
+  get("limAutoAmount").innerHTML = "You have " + logbeautify(game.limAuto) + "  maximize autoclickers, clicking the maximize button " + (game.succAuto>1e265?logbeautify(game.succAuto):beautify(game.limAuto*totalMult*limAutoMult)) + " times per second"
+  get("buysucc").innerHTML = "Buy Successor Autobuyer for " + (game.challenge==1||game.challenge==7?(game.succAuto==1?"Infinity":"1.000e6"):beautify(Math.min(1e260+game.succAuto,Math.pow(100*2, game.succAuto)))) + " OP"
+  get("buylim").innerHTML = "Buy Maximize Autobuyer for " + (game.challenge==1||game.challenge==7?(game.limAuto==1?"Infinity":"1.000e6"):beautify(Math.min(1e260+game.limAuto,Math.pow(100*2, game.limAuto)))) + "  OP"
   get("factorShift").innerHTML = "Factor Shift (" + game.factorShifts + "): Requires " + ((game.challenge==5||game.challenge==7) && game.factorShifts >= 2?"Infinity":(game.factorShifts==7?(game.boostUnlock?"Infinity":"Graham's number (g<sub>ψ(Ω<sup>Ω</sup>ω)</sub> (10))"):beautify(factorShiftCosts[game.factorShifts]))) +" OP"
   get("noFactors").style.display=(game.factors.length==0 ? "inline-block" : "none")
   get("factorList").style.display=(game.factors.length==0 ? "none" : "inline-block")
@@ -308,41 +308,41 @@ function render() {
   get("refundBoosters").textContent = "Refund back " + calcRefund() + " boosters, but reset all factor shifts (R)"
   get("factorBoost").innerHTML = "Factor Boost (" + game.factorBoosts + "): Requires g<sub>" + displayOrd(V(game.factorBoosts+3,1)) + "</sub> (10) OP"
   get("gainBoosters").textContent = (getSingLevel()==1?"Gain " + (game.OP>=V(game.factorBoosts+3)?getFactorBoostGain():(game.factorBoosts+1)) + " Boosters":"Gain " + getFBmult() + " Factor Boosts") + " (B)"
-  get("dynamicMult").textContent = "Your Dynamic Multiplier is x" + ((game.dynamic*getManifoldEffect())**(game.upgrades.includes(13) && game.challenge % 2 == 1?2:1)).toFixed(3)
+  get("dynamicMult").textContent = "Your Dynamic Multiplier is x" + ((Math.pow(game.dynamic*getManifoldEffect()), (game.upgrades.includes(13) && game.challenge % 2 == 1?2:1))).toFixed(3)
   get("maxAllAuto").innerHTML = "Your Max All Autobuyer is clicking the Max All button " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) && game.autoOn.max==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you can't Factor Shift"
-  get("infinityAuto").innerHTML = "Your Infinity Autobuyer is clicking the Infinity button " + (game.upgrades.includes(3) && game.autoOn.inf==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you're past " + displayOrd(10**270*4) + (game.leastBoost<=1.5?". It also activates if your Tier 1 automation isn't autoclicking at least once a second":"")
+  get("infinityAuto").innerHTML = "Your Infinity Autobuyer is clicking the Infinity button " + (game.upgrades.includes(3) && game.autoOn.inf==1 ? beautify(buptotalMute) : 0) + " times per second, but only if you're past " + displayOrd(1e270*4) + (game.leastBoost<=1.5?". It also activates if your Tier 1 automation isn't autoclicking at least once a second":"")
   get("autoMaxButton").textContent = "Max All Autobuyer: " + ((game.upgrades.includes(2)||game.leastBoost<=1.5) ? (game.autoOn.max==1 ? "ON" : "OFF") : "LOCKED")
   get("autoInfButton").textContent = "Infinity Autobuyer: " + (game.upgrades.includes(3) ? (game.autoOn.inf==1 ? "ON" : "OFF") : "LOCKED")
   get("bup6 current").textContent = getBoostFromBoosters(1).toFixed(2)
   get("runChal").textContent = (game.chal8==1?"You're currently running Challenge 8":(game.challenge==0?"You're currently not in a challenge":"You're currently running Challenge "+game.challenge))
   get("incrementyText").textContent = "You have "+beautify(game.incrementy)+" incrementy, multiplying " + "Tier 2 Automation by "+calcIncrementyMult().toFixed(3) + "x"
   get("incrementyText2").textContent = "You are getting " + beautify(getIncrementyRate(1000)) + " incrementy per second"
-  get("iup1").innerHTML = "Raise Incrementy multiplier to the<br>1.05<br>Cost: " + beautify(10**(5*(game.iups[0]+1)))
-  get("iup2").innerHTML = "Double production of incrementy<br><br>Cost: " + beautify(10**(3*(game.iups[1]+1)))
-  get("iup3").innerHTML = "Multiply Incrementy multiplier by 1.2<br><br>Cost: " + beautify(10**(9*(game.iups[2]+1)))
+  get("iup1").innerHTML = "Raise Incrementy multiplier to the<br>1.05<br>Cost: " + beautify(Math.pow(10, (5*(game.iups[0]+1))))
+  get("iup2").innerHTML = "Double production of incrementy<br><br>Cost: " + beautify(Math.pow(10, (3*(game.iups[1]+1))))
+  get("iup3").innerHTML = "Multiply Incrementy multiplier by 1.2<br><br>Cost: " + beautify(Math.pow(10, (9*(game.iups[2]+1))))
   get("manifoldShift").style.display = (game.upgrades.includes(12) ? "inline-block" : "none")
   get("manifoldAmount").textContent = beautify(game.manifolds)+(game.sing.m>0.5?"-"+game.sing.m:(game.sing.m==0?"":"+"+(0-game.sing.m)))
   get("manifoldBoost").textContent = getManifoldEffect().toFixed(3)
   get("changeOrdNotation").textContent = "Current Ordinal Notation: " + ["Madore's","Buchholz's","Convenient"][game.buchholz]
   get("changeTheme").textContent = "Current Theme: " + ["Light","Dark","Space (https://wallpaperplay.com/page-terms)"][game.theme]
   get("changeInt").textContent = "Millisecond Interval: " + game.msint + "ms"
-  get("changeOrdLengthLess").innerHTML = "Maximum Ordinal Length below " + displayOrd(10**270*4) + ": " + game.maxOrdLength.less
-  get("changeOrdLengthMore").innerHTML = "Maximum Ordinal Length above " + displayOrd(10**270*4) + ": " + game.maxOrdLength.more
-  get("getManifolds").innerHTML = "Reset incrementy for a manifold.<br>Need: "+((game.iups[5]==1?2:3)**(game.manifolds+1)).toFixed(2)+"x<br>incrementy multiplier"
+  get("changeOrdLengthLess").innerHTML = "Maximum Ordinal Length below " + displayOrd(1e270*4) + ": " + game.maxOrdLength.less
+  get("changeOrdLengthMore").innerHTML = "Maximum Ordinal Length above " + displayOrd(1e270*4) + ": " + game.maxOrdLength.more
+  get("getManifolds").innerHTML = "Reset incrementy for a manifold.<br>Need: "+Math.pow(((game.iups[5]==1?2:3), (game.manifolds+1))).toFixed(2)+"x<br>incrementy multiplier"
   get("manifoldIncrease").textContent = "It is increasing by " + ((game.upgrades.includes(13) && game.challenge % 2 == 1?" a non-constant amount ":((0.002*(game.iups[6]==1?100:1))*getManifoldEffect()).toFixed(3))) + " per second and caps at " + getDynamicFactorCap().toFixed(3)
   get("dynamicDecreaseText").style.display=(game.challenge==6||game.challenge==7?"inline":"none")
   get("dynamicDecrease").textContent=(game.upgrades.includes(14)?"10.000":"1.000e300")
   let bfactor
   bfactorMult = 1
   for (let i=0;i<7;i++) {
-    bfactor = (((1+(game.factors.length >= i+1?game.factors[i]+(game.upgrades.includes(11)?3:0):0))*(game.upgrades.includes(1) && game.factors.length >= i+1?2:1))**(game.leastBoost<=20&&game.challengeCompletion[i]==0?0.25:challengeCurve[game.challengeCompletion[i]]))
+    bfactor = Math.pow((1+(game.factors.length >= i+1?game.factors[i]+(game.upgrades.includes(11)?3:0):0))*(game.upgrades.includes(1) && game.factors.length >= i+1?2:1), game.leastBoost<=20&&game.challengeCompletion[i]==0?0.25:challengeCurve[game.challengeCompletion[i]])
     if (((game.challenge==2||game.challenge==7) && i==0)||game.chal8==1) bfactor = 1
     bfactorMult *= bfactor
     get("challenge" + (i+1) + "Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.challengeCompletion[i]+"/3)"
     get("challenge" + (i+1) + "Goal").innerHTML = "Goal: " + beautify(challengeGoals[i][Math.min(game.challengeCompletion[i],2)]) + " OP"
     chalbut(i)
   }
-  bfactor = getDynamicFactorCap()**getChalCurve(game.chal8Comp)
+  bfactor = Math.pow(getDynamicFactorCap(), getChalCurve(game.chal8Comp))
   if (game.chal8==1) bfactor = 1
   bfactorMult *= bfactor
   get("challenge8Effect").textContent = "x" + bfactor.toFixed(2) + " ("+game.chal8Comp+"/∞)"
@@ -391,13 +391,13 @@ function render() {
   dup(1,1)
   dup(2,1)
   dup(3,1)
-  get("dup1").innerHTML = "Reduce the potency of decrementy by 5%<br><br>Cost: " + beautifypower(dupCosts[0]**(game.dups[0]+1))
-  get("dup2").innerHTML = "Halve decrementy growth below ω^(ω3), otherwise double it<br>Cost: " + beautifypower(dupCosts[1]**(game.dups[1]+1))
-  get("dup3").innerHTML = "Gain a 1.2x multiplier to Tier 1 and 2<br><br>Cost: " + beautifypower(dupCosts[2]**(game.dups[2]+1))
+  get("dup1").innerHTML = "Reduce the potency of decrementy by 5%<br><br>Cost: " + beautifypower(Math.pow(dupCosts[0], (game.dups[0]+1)))
+  get("dup2").innerHTML = "Halve decrementy growth below ω^(ω3), otherwise double it<br>Cost: " + beautifypower(Math.pow(dupCosts[1], (game.dups[1]+1)))
+  get("dup3").innerHTML = "Gain a 1.2x multiplier to Tier 1 and 2<br><br>Cost: " + beautifypower(Math.pow(dupCosts[2], (game.dups[2]+1)))
   get("getDarkManifolds").innerHTML = "Get a Dark Manifold<br>Need: " + beautifypower(Math.log10(3)*(1+game.darkManifolds)) + " Decrementy"
   get("darkManifoldAmount").textContent = game.darkManifolds+(game.sing.dm==0?"":"-"+getDMSacrafice())
   get("darkUpButton").style.display=(game.aups.includes(3)?"inline":"none")
-  get("darkManifoldBoost").textContent = (Math.max(1,game.darkManifolds+1-getDMSacrafice())**0.1).toFixed(3)
+  get("darkManifoldBoost").textContent = (Math.max(1,Math.pow(game.darkManifolds+1-getDMSacrafice()), 0.1)).toFixed(3)
   get("darkManifoldMaxMode").textContent = "Max Mode: " + (game.darkManifoldMax==1 ? "ON" : "OFF")
   get("autoPrestigeSubTab").style.display = (game.leastBoost<=12?"inline-block":"none")
   get("factorShiftAutoToggle").textContent = "Factor Shift Autoprestiger: " + (game.cAutoOn.shift==1?"ON":"OFF")
@@ -410,7 +410,7 @@ function render() {
   if (!game.aups.includes(6)) get("cardExtra2").classList.add("invisible")
   get("cardExtra3").classList.remove("invisible")
   if (!game.aups.includes(5)) get("cardExtra3").classList.add("invisible")
-  get("collapseCardHelp").textContent=(game.reachedBHO==1?"Next Cardinal in " + beautify(Math.ceil((calcCard().toNumber()+1)**(1/calcCardExponent(game.collapseTime))+24-game.factorBoosts)) + " Factor Boost(s) (":"Reach the BHO first to collapse! (") + game.collapseTime.toFixed(1) + "s in collapse)"
+  get("collapseCardHelp").textContent=(game.reachedBHO==1?"Next Cardinal in " + beautify(Math.ceil((Math.pow(calcCard().toNumber()+1), (1/calcCardExponent(game.collapseTime))+24-game.factorBoosts))) + " Factor Boost(s) (":"Reach the BHO first to collapse! (") + game.collapseTime.toFixed(1) + "s in collapse)"
   get("changeOffline").textContent = "Offline Progress: " + (game.offlineProg==1?"ON":"OFF")
   get("bup10").innerHTML = "The base is always five below " + displayOrd(4e270) + "<br><br>73 Boosters"
   get("aup4").innerHTML = "OP boosts Tier 1 and 2 by x" + Math.log10(Math.log10(1e10+game.OP)).toFixed(3) + "<br><br>Cost: 8 ℵ<sub>ω</sub>"
@@ -424,7 +424,7 @@ function render() {
   updateFactors()
   get("chal8Incrementy").style.display=(game.leastBoost<=1.5?"inline":"none")
   get("chal8IncrementyBoost").style.display=(game.leastBoost<=1.5?"inline":"none")
-  get("chal8IncrementyBoost").innerHTML="<br>To Incrementy: x" + (getDynamicFactorCap()**getChalIncrementyCurve(game.chal8Comp)).toFixed(2)
+  get("chal8IncrementyBoost").innerHTML="<br>To Incrementy: x" + (Math.pow(getDynamicFactorCap(), getChalIncrementyCurve(game.chal8Comp))).toFixed(2)
   get("refundConfirmation").textContent="Refund Confirmation: " + (game.bConf.ref==1?"ON":"OFF")
   get("refundFB").textContent="Factor Boost if possible on Refund: " + (game.bConf.refFB==1?"ON":"OFF")
   get("chalConf").textContent="Challenge Confirmation: " + (game.bConf.chal==1?"ON":"OFF")
@@ -453,9 +453,9 @@ function render() {
   get("blackHoleCircle").r.baseVal.value=10*Math.sqrt(getSingLevel())
   get("blackHoleCircle").cy.baseVal.value=10*Math.sqrt(getSingLevel())+10
   get("blackHole").height.baseVal.value=(10*Math.sqrt(getSingLevel())+10)*2
-  get("sacrDM").innerHTML="Upgrade with<br>" + beautify(1e6*5**game.sing.dm) + "<br>Dark Manifolds"
+  get("sacrDM").innerHTML="Upgrade with<br>" + beautify(Math.pow(1e6*5, game.sing.dm)) + "<br>Dark Manifolds"
   get("singFBtext").textContent="You are currently getting " + beautify(getFBps()) + " Factor Boosts per second"
-  get("sacrNw").innerHTML="Upgrade with<br>" + beautifyEN(1e20*100**game.sing.nw) + " ℵ<sub>ω</sub>"
+  get("sacrNw").innerHTML="Upgrade with<br>" + beautifyEN(Math.pow(1e20*100, game.sing.nw)) + " ℵ<sub>ω</sub>"
 }
 
 function dup(n,spectate=0) {
@@ -463,7 +463,7 @@ function dup(n,spectate=0) {
   get("dup" + n).classList.remove("locked")
   get("dup" + n).classList.remove("bought")
   if (n<=3){
-    if (game.decrementy >= (dupCosts[n-1]**(game.dups[n-1]+1))) {
+    if (game.decrementy >= (Math.pow(dupCosts[n-1], (game.dups[n-1]+1)))) {
       if (spectate==0) {
       game.dups[n-1] += 1
       //game.decrementy = game.decrementy.minus(iupCosts[n-1]**game.iups[n-1])
@@ -512,11 +512,11 @@ function beautifypower(number) {
     return "Infinity"
   } else {
 	let exponent = Math.floor(number)
-	let mantissa = 10**(number % 1)
-	if (exponent < 5) return Math.round(10**number)
+	let mantissa = Math.pow(10, (number % 1))
+	if (exponent < 5) return Math.round(Math.pow(10, number))
   if (exponent > 100000) {
     exponent=Math.floor(Math.log10(number))
-    mantissa=(number/(10**exponent))
+    mantissa=(number/(Math.pow(10, exponent)))
     if (mantissa.toFixed(5)=="10.00000") return "e9.99999e" + exponent
     return "e" + mantissa.toFixed(5) + "e" + exponent
   }
@@ -573,7 +573,7 @@ function iup(n,spectate=0) {
   get("iup" + n).classList.remove("bought")
   if (n<=3){
     get("iup"+ + n).style.display = "";
-    if (game.incrementy.gte(iupCosts[n-1]**(game.iups[n-1]+1))) {
+    if (game.incrementy.gte(Math.pow(iupCosts[n-1], (game.iups[n-1]+1)))) {
       if (spectate==0) {
       game.iups[n-1] += 1
       game.incrementy = game.incrementy.minus(iupCosts[n-1]**game.iups[n-1])
