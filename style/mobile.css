@@ -12,6 +12,10 @@ Oops, ignore all the `!important`, please.
     line-height: 35px;
   }
   
+  #factorContainer {
+    height: 400px !important;
+  }
+  
   .tabButton, .infinityTabButton,
   .boosterTabButton, .collapseTabButton {
     width: calc(50vw - 1ch - 1em - 12px) !important;
@@ -52,7 +56,19 @@ Oops, ignore all the `!important`, please.
     min-height: 30px !important;
     font-size: 14px !important;
   }
+
+  ul#factorListMain {
+	  padding-left: 0px;
+  }
   
+  li > .infinityButton {
+	width: 50vw !important;
+  }
+
+  div[style="height: 270px"] {
+	height: 375px !important;
+  }
+
   #boosterText {
     display: block !important;
   }

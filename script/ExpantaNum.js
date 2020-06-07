@@ -1,3 +1,4 @@
+/* eslint-disable */
 //Code snippets and templates from Decimal.js
 
 ;(function (globalScope) {
