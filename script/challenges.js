@@ -43,7 +43,7 @@ function completeChallenge() {
 }
 
 function enterChallenge(c) {
-  if (game.challenge === 0 && game.challengeCompletion[c - 1] !== 3 && game.chal8 === 0) {
+  if (game.challenge === 0 && (game.challengeCompletion[c - 1] < 2.5||game.upgrades.includes(17)) && game.chal8 === 0) {
 	let conf;
 	switch (game.bConf.chal) {
 		case 1:

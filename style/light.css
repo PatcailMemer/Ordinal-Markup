@@ -4,3 +4,9 @@ body {
   color: #000000;
   background-color: #FFFFFF;
 }
+
+.unboughtthing {
+    background-color: white !important;
+    border-color: black !important;
+    color: black !important;
+}

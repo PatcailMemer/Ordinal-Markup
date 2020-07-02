@@ -4,6 +4,7 @@ Code by Yhvr. Why are you here, anyways?
 Oops, ignore all the `!important`, please.
 */
 
+
 @media screen and (max-width: 660px), (max-height: 550px) {
   #hardy {
     overflow-x: hidden;
@@ -15,7 +16,16 @@ Oops, ignore all the `!important`, please.
   #factorContainer {
     height: 400px !important;
   }
-  
+  .treeButton {
+   font-family: sans-serif;
+   border-width:1.5px;
+   cursor: pointer;
+   transition-duration: 0.1s;
+   margin: center;
+   width: 120px !important;
+   height: 60px !important;
+   font-size: 12px !important;
+  }
   .tabButton, .infinityTabButton,
   .boosterTabButton, .collapseTabButton {
     width: calc(50vw - 1ch - 1em - 12px) !important;
