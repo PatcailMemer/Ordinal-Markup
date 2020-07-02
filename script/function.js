@@ -396,7 +396,7 @@ function getFBmult() {
 }
 
 function OPtoOrd(x, b, trim=0) {
-  if (x == 0 || trim >= 12) return 0;
+  if (x <= 0.000000000001 || trim >= 12) return 0;
   let exp = Math.floor(Math.log10(x) + 0.000000000001);
   if (validInBase(exp, b)) {
     let coef = Math.floor(x / 10 ** exp + 0.000000000001);
