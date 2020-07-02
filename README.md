@@ -1,5 +1,5 @@
 # Ordinal Markup
-
+get to work lazy
 A game of maximizing ordinals and decreasing numbers
 
 FILE OVERVIEW:<br>

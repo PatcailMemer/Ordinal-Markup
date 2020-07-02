@@ -5,8 +5,9 @@ let factorMult = 1;
 let bfactorMult = 1;
 let succAutoMult = 1;
 let limAutoMult = 1;
+let RPloop = 0;
 /* eslint-disable */
-let ordMarks = [];
+//let ordMarks = [];
 let numMarks = [];
 /* eslint-enable */
 setMarks();
@@ -30,8 +31,8 @@ const bupUpgradeCosts = [
   5,4,8,36,
   72,73,16,108,
   53,74,66,324,
-  Infinity,Infinity,8e8,2e11,
-  Infinity,Infinity,Infinity,Infinity
+  5e15,Infinity,8e8,1e11,
+  Infinity,Infinity,2e19,1e19
 ];
 const slugMile = [1e10, 20, 15, 12, 10, 1, -1];
 let totalMult = 1;
@@ -41,7 +42,7 @@ const challengeGoals = [
   [5e270, V(10) + 1e270, V(17) + 1e270],
   [1e200, 1e214, 1e256],
   [1e33, 5e113, 1.5e119],
-  [1e122, 3.33e136, 1e218],
+  [1e122, 3.33e136, 1e219],
   [1.02e33, 1e44, 4.75e108],
   [1.05e13, 4.18e18, 1.02e20],
   [3.0e10, 6.0e10, 2.4e11, Infinity]
@@ -53,7 +54,7 @@ let cardinalLoop = ExpantaNum(0);
 /* eslint-disable */
 let collapseAnimation = 0;
 /* eslint-enable */
-const iupCosts = [1e5, 1e3, 1e9, 1e17, 2e22, 4e23, 1e19, 2e25, 4e27];
+const iupCosts = [1e5, 1e3, 1e9, 1e16, 2e22, 4e23, 1e19, 2e25, 4e27];
 const dupCosts = [
   5,
   1000,
@@ -65,19 +66,24 @@ const dupCosts = [
   Infinity,
   Infinity
 ];
+const baselessMile = [5**75,5**90,Infinity]
 let ordColor = "no";
 const EN = ExpantaNum;
 const get = x => document.getElementById(x);
 const musicLink = [
-  "https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884",
+  //"https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884",
   "https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FHypnothis.mp3?v=1584285594822",
-  "https://cdn.glitch.com/310d7aca-4728-445f-9084-db26ceccd7b5%2FArseniy%20Shkljaev%20-%20Nuclearoids%20%5BTrance%5D.mp3?v=1591548196791"
+  "https://cdn.glitch.com/310d7aca-4728-445f-9084-db26ceccd7b5%2FArseniy%20Shkljaev%20-%20Nuclearoids%20%5BTrance%5D.mp3?v=1591548196791",
+  "https://cdn.glitch.com/310d7aca-4728-445f-9084-db26ceccd7b5%2FHeaven%20and%20Hell%20-%20Jeremy%20Blake%20%5BMpgun.com%5D.mp3?v=1592859293921",
+  "https://cdn.glitch.com/310d7aca-4728-445f-9084-db26ceccd7b5%2FMan%20Down.mp3?v=1593650783387"
 ];
 const musicName = [
   "OFF",
-  "Going Down by Jake Chudnow",
-  "Hypnothis by Kevin Macleod",
-  "Nuclearoids by Arseniy 20Shkljaev (http://arseniymusic.com/)"
+  //"Going Down by Jake Chudnow",
+  "Hypnothis by Kevin Macleod (Royalty Free)",
+  "Nuclearoids by Arseniy Shkljaev (http://arseniymusic.com/)",
+  "Heaven and Hell by Jeremy Blake (Copyright Free)",
+  "Man Down by Kevin Macleod"
 ];
 const BHO = V(27);
 const aupCost = [
@@ -179,6 +185,13 @@ function loop(unadjusted, off = 0) {
   game.qolSM.nc8 = get("nonC8Auto").value;
   game.qolSM.c8 = get("C8Auto").value;
   game.qolSM.ttnc = get("ttnc").value;
+  if (getBaseless()>=0.5) {
+    RPloop += ms
+    if (RPloop >= 1000) {
+      game.refundPoints += Math.floor(RPloop/1000)
+      RPloop = RPloop % 1000
+    }
+  }
   if (game.challenge !== 0 && game.leastBoost <= 1.5 && game.qolSM.acc === 1) {
     if (
       game.OP >= challengeGoals[game.challenge - 1][Number(game.qolSM.nc8) - 1]
@@ -195,9 +208,10 @@ function loop(unadjusted, off = 0) {
     confirm("You failed Challenge 8 because you had booster upgrades on you!");
   if (game.chal8 === 1 && calcRefund() > 0) refund();
   game.boosters =
-    (game.factorBoosts * (game.factorBoosts + 1)) / 2 -
-    calcRefund() +
-    calcSlugMile();
+    ((game.factorBoosts * (game.factorBoosts + 1)) / 2 + calcSlugMile() + getBaseless()) -
+    calcRefund();
+  game.boosters=Math.round(game.boosters)
+  if (game.boosters < -0.5) refund()
   if (game.leastBoost <= 1e10 && game.OP < calcTotalOPGain()) {
     game.OP +=
       calcTotalOPGain() >= 1e270 ? Infinity : (calcTotalOPGain() / 100000) * ms;
@@ -211,6 +225,10 @@ function loop(unadjusted, off = 0) {
   }
   let assCount;
   for (assCount in game.assCard) {
+    if (game.assCard[assCount].power.lt(1200)&&game.collapseUnlock==1) {
+      game.assCard[assCount].power = game.assCard[assCount].power.add(ms/3000)
+      if (game.assCard[assCount].power.gte(1200)) game.assCard[assCount].power=EN(1200)
+    }
     game.assCard[assCount].power = game.assCard[assCount].power.add(
       game.assCard[assCount].points
         .pow(
@@ -224,7 +242,9 @@ function loop(unadjusted, off = 0) {
     game.assCard[assCount].mult = game.assCard[assCount].power
       .add(10)
       .log10()
-      .times(game.aups.includes(7) && assCount == 1? game.alephOmega.add(1).pow(1 / 32): 1);
+      .times(game.aups.includes(7) && assCount == 1? game.alephOmega.add(1).pow(1 / 32): 1)
+      .times(game.sfBought.includes(71) && assCount == 2?1+(getSingLevel()+game.manifolds-game.sing.m-game.spentFunctions)*0.4:1)
+      .times(game.sfBought.includes(52)?1.5:1);
   }
   if (game.upgrades.includes(8)) {
     game.incrementy = game.incrementy.add(getIncrementyRate(ms / 2));
@@ -245,11 +265,10 @@ function loop(unadjusted, off = 0) {
   limAutoMult = game.aups.includes(2)
     ? Math.max(Math.sqrt(game.succAuto), 1)
     : 1;
-  const chal8Tip = calcOrdPoints() >= 1e30;
+  const chal8Tip = calcOrdPoints() >= 1e30*1e10**(game.base==5&&game.sfBought.includes(61));
   const tempSucc = game.succAuto * succAutoMult * totalMult;
   const tempLim = game.limAuto * limAutoMult * totalMult;
-  if (buptotalMute <= 100000000 && game.iups[3] === 1)
-    buptotalMute = Math.min(100000000, buptotalMute * getManifoldEffect() ** 2);
+  if (game.iups[3] === 1) buptotalMute += 100000000;
   if (
     (game.succAuto < 1e265 || game.limAuto < 1e265) &&
     !(game.ord >= 3 ** 27 && game.base <= 3)
@@ -303,8 +322,8 @@ function loop(unadjusted, off = 0) {
     game.over = 0;
     game.ord = Math.max(Math.min(game.succAuto, game.limAuto), 4e270);
   }
-  if (!chal8Tip && game.chal8 === 1 && calcOrdPoints() >= 1e30)
-    game.ord = game.base ** (game.base * 3);
+  if (!chal8Tip && game.chal8 === 1 && calcOrdPoints() >= 1e30*1e10**(game.base==5&&game.sfBought.includes(61)))
+    game.ord = game.base ** (game.base * 3+(game.base==5&&game.sfBought.includes(61)?game.base:0));
   changeDynamic(ms);
   if (game.dynamic < 0) game.dynamic = 0;
   if (ms > 0) {
@@ -412,6 +431,9 @@ function loop(unadjusted, off = 0) {
     game.cardinals = game.cardinals.add(cardinalLoop.floor());
     cardinalLoop = cardinalLoop.mod(1);
   }
+  if (calcBase()==5&&game.challenge==4&&game.ord > game.mostChal4) {
+    game.mostChal4 = game.ord
+  }
   if (
     game.challenge === 0 &&
     game.chal8 === 0 &&
@@ -419,7 +441,7 @@ function loop(unadjusted, off = 0) {
     game.cAutoOn.shift === 1 &&
     game.cAutoOn.boost === 1 &&
     game.leastBoost <= 12 &&
-    calcFactorBoostTime() <= ms * 0.022
+    (1/getFBps())*getFBmult() <= ms * 0.022
   ) {
     factorBoostLoop +=
       ((1 / calcFactorBoostTime() - 1 / (ms * 0.022)) * ms) / 1000;
@@ -451,8 +473,8 @@ function render() {
   );
   ordColor = "no";
   const ordSub =
-    game.ord <= 1e200
-      ? getFBps() >= 10
+    game.ord <= 1e200 || getFBps()/getFBmult() >= 10
+      ? getFBps()/getFBmult() >= 10
         ? displayOrd(0, game.base, 0, 0, 0, 0, game.colors)
         : displayOrd(game.ord, game.base, game.over, 0, 0, 0, game.colors)
       : displayOrd(
@@ -467,12 +489,11 @@ function render() {
   get("hardy").innerHTML =
     `${colorWrap("H", ordColor)}<sub>${ordSub}</sub><text class="invisible">l</text>${colorWrap(
       `(${game.base})${(game.ord >= game.base ** 3 ||
-        outSize >= 10 ** 264 ||
-        (game.ord >= 5 && game.base === 2)
-          ? getFBps() >= 10
+        outSize >= 10 ** 264 || getFBps()/getFBmult() >= 10
+          ? getFBps()/getFBmult() >= 10
             ? `=${game.base}`
             : ""
-          : `=${beautify(outSize)}`)}`,
+          : `=${beautifyEN(outSize)}`)}`,
       ordColor
     )}`
   game.canInf =
@@ -531,6 +552,8 @@ function render() {
   get("challengeSubTab").style.display = game.upgrades.includes(4)
     ? "inline-block"
     : "none";
+  get("chalFactorWhole").style.display=(game.boostUnlock==1||game.factorShifts==7) ? "inline" : "none"
+  get("challengeFactor").textContent = `Your Quadrupler is x${getChalFact().toFixed(3)}`
   get("incrementySubTab").style.display = game.upgrades.includes(8)
     ? "inline-block"
     : "none";
@@ -601,7 +624,7 @@ function render() {
     " boosters, but reset all factor shifts (R)";
   get("factorBoost").innerHTML =
     "Factor Boost (" +
-    game.factorBoosts +
+    commafy(game.factorBoosts) +
     "): Requires g<sub>" +
     displayOrd(V(game.factorBoosts + 3, 1)) +
     "</sub> (10) OP";
@@ -614,7 +637,7 @@ function render() {
         " Boosters"
       : "Gain " + getFBmult() + " Factor Boosts") + " (B)";
   get("dynamicMult").textContent =
-    "Your Dynamic Multiplier is x" +
+    "Your Dynamic Factor is x" +
     (
       (game.dynamic * getManifoldEffect()) **
       (game.upgrades.includes(13) && game.challenge % 2 == 1 ? 2 : 1)
@@ -715,7 +738,7 @@ function render() {
     "It is increasing by " +
     (game.upgrades.includes(13) && game.challenge % 2 == 1
       ? " a non-constant amount "
-      : (0.002 * (game.iups[6] == 1 ? 100 : 1) * getManifoldEffect()).toFixed(
+      : (0.002 * (game.iups[6] == 1 ? 100  * (game.sfBought.includes(32) ? 100 : 1) : 1) * getManifoldEffect()).toFixed(
           3
         )) +
     " per second and caps at " +
@@ -861,6 +884,14 @@ function render() {
     get("slug" + i).classList.add("slugMile");
     get("slug" + i).classList.remove("notSlugMile");
   }
+  for (let i = 0; i < 5; i++) {
+    get("base" + i).classList.remove("slugMile");
+    get("base" + i).classList.add("notSlugMile");
+  }
+  for (let i = 0; i < getBaseless(); i++) {
+    get("base" + i).classList.add("slugMile");
+    get("base" + i).classList.remove("notSlugMile");
+  }
   get("alephOmegaText").innerHTML =
     "You have " + beautify(game.alephOmega) + " ℵ<sub>ω</sub>";
   get("alephOmegaText2").innerHTML =
@@ -871,7 +902,7 @@ function render() {
   get("collapseButton").innerHTML =
     game.reachedBHO == 1
       ? "Collapse for " + beautify(EN(calcCard())) + " Cardinals (C)"
-      : "Reach the BHO to Collapse!<br>(OR restart the current Collapse)";
+      : "Reach the BHO or 25 Factor Boosts to Collapse!<br>(OR restart the current Collapse)";
   get("decrementyRate").textContent =
     game.chal8 == 1 ? beautifypower(getDecrementyRate(1000)) : 1;
   dup(1, 1);
@@ -888,14 +919,12 @@ function render() {
     beautifypower(dupCosts[2] ** (game.dups[2] + 1));
   get("getDarkManifolds").innerHTML =
     "Get a Dark Manifold<br>Need: " +
-    beautifypower(Math.log10(3) * (1 + game.darkManifolds)) +
+    beautifypower(Math.log10(game.sfBought.includes(31)?2:3) * (1 + game.darkManifolds)) +
     " Decrementy";
   get("darkManifoldAmount").textContent =
-    beautify(game.darkManifolds) + (game.sing.dm===0?"":"-" + beautify(getDMSacrafice()))
+    beautify(game.darkManifolds) + (game.sing.dm===0||(game.sfBought.includes(11))?"":"-" + beautify(getDMSacrafice()))
   get("darkUpButton").style.display = game.aups.includes(3) ? "inline" : "none";
-  get("darkManifoldBoost").textContent = (
-    Math.max(1, game.darkManifolds + 1 - getDMSacrafice()) ** 0.1
-  ).toFixed(3);
+  get("darkManifoldBoost").textContent = getDarkManifoldEffect().toFixed(3);
   get("darkManifoldMaxMode").textContent =
     "Max Mode: " + (game.darkManifoldMax === 1 ? "ON" : "OFF");
   get("autoPrestigeSubTab").style.display =
@@ -922,15 +951,15 @@ function render() {
     (game.reachedBHO === 1
       ? "Next Cardinal in " +
         beautify(
-          Math.ceil(
+          Math.max(Math.ceil(
             (calcCard().toNumber() + 1) **
               (1 / calcCardExponent(game.collapseTime)) +
               24 -
               game.factorBoosts
-          )
+          ),1)
         ) +
         " Factor Boost(s) ("
-      : "Reach the BHO first to collapse! (") +
+      : "(") +
     game.collapseTime.toFixed(1) +
     "s in collapse)" + "<p>Most Cardinals collapsed at once: " + beautify(game.mostCardOnce) +
     (game.aups.includes(8)?", providing a constant " + beautify(game.mostCardOnce.times(0.03)) + " Cardinals per second":"") + "</p>";
@@ -1010,10 +1039,10 @@ function render() {
     "Collapse Autoprestiger: " + (game.qolSM.ca == 1 ? "ON" : "OFF");
   get("changeHotKeys").textContent =
     "Hotkeys: " + (game.hotkeysOn == 1 ? "ON" : "OFF");
-  get("fbps").style.display = getFBps() >= 1 ? "block" : "none";
+  get("fbps").style.display = getFBps()/getFBmult() >= 1 ? "block" : "none";
   get("fbps").textContent =
     "You should be getting a total of " +
-    beautify(getFBps()) +
+    commafy(getFBps()) +
     " Factor Boost(s) per second";
   get("singularitySubTab").style.display = game.upgrades.includes(20)
     ? "inline"
@@ -1024,7 +1053,7 @@ function render() {
   get("singText").textContent = "Singularity Level: " + getSingLevel();
   get("singMaterial").innerHTML =
     "You have " +
-    beautify(game.darkManifolds - getDMSacrafice()) +
+    beautify(Math.max(0,game.darkManifolds - getDMSacrafice())) +
     " Dark Manifolds, " +
     (game.manifolds - game.sing.m) +
     " Manifolds, and " +
@@ -1032,25 +1061,26 @@ function render() {
     " ℵ<sub>ω</sub>";
   get("singEffect").innerHTML =
     "Raising the Factor Boosts 25+ requirement to " +
-    displayOrd(BHO * getSingLevel()) +
+    displayOrd(Math.ceil(BHO * getSingLevel())) +
     " and having them give out " +
-    (2 * getSingLevel() - 1) +
-    " times the Factor Boosts";
+    getFBmult()
+ +
+    " times the Factor Boosts" + (getSingLevel()==69?"<br><b>👀 OMG THAT'S THE NICE NUMBER!!! 👀</b>":"");
   get("blackHoleCircle").r.baseVal.value = 10 * Math.sqrt(getSingLevel());
   get("blackHoleCircle").cy.baseVal.value = 10 * Math.sqrt(getSingLevel()) + 10;
   get("blackHole").height.baseVal.value =
     (10 * Math.sqrt(getSingLevel()) + 10) * 2;
   get("sacrDM").innerHTML =
     "Upgrade with<br>" +
-    beautify(1e6 * 5 ** game.sing.dm) +
+    beautify(1e6 * (game.sfBought.includes(23)?4:5) ** game.sing.dm) +
     "<br>Dark Manifolds";
   get("singFBtext").textContent =
     "You are currently getting " +
-    beautify(getFBps()) +
+    commafy(getFBps()) +
     " Factor Boosts per second";
   get("sacrNw").innerHTML =
     "Upgrade with<br>" +
-    beautifyEN(1e20 * 100 ** game.sing.nw) +
+    beautifyEN(1e20 * (game.sfBought.includes(21)?30:100) ** game.sing.nw) +
     " ℵ<sub>ω</sub>";
   get("changeThicc").textContent="T H I C C Buttons: " + (game.thicc==1?"ON":"OFF")
   for (let i=0;i<3;i++) {
@@ -1058,9 +1088,19 @@ function render() {
     if (game.thicc==1) document.getElementsByClassName("canThicc")[i].classList.add("thicc")
   }
   get("collapseConf").textContent="Collapse Confirmation: " + (game.collapseConf==1?"ON":"OFF")
-  get("singularityFunction").textContent=(game.mostSing<19.5?"Reach level 20 Singularity":"Spoiler Alert")
+  get("singularityFunction").textContent=(game.mostSing<19.5?"Reach level 20 Singularity":"Singularity Functions")
   get("getRekt20sing").style.display=(game.mostSing<19.5?"block":"none")
   get("singFuncContent").style.display=(game.mostSing>19.5?"block":"none")
+  drawStudyTree()
+  singfunctions.forEach(func => func.update())
+  get("functions").textContent=
+`You have ${getSingLevel()+game.manifolds-game.sing.m - game.spentFunctions} functions.
+They are based on your Singularity level.`
+  //Instead of storing singularity functions, instead, it stores the highest singularity level achieved
+  get("refundPointAmount").innerHTML=`You have ${game.refundPoints} Refund Points<br>You gain them when you Collapse`
+  get("baselessMilestoneTab").style.display=(game.sfEver.includes(51)?"inline-block":"none")
+  get("maxSing").style.display=(getBaseless()>=2?"block":"none")
+  get("minSing").style.display=(getBaseless()>=2?"block":"none")
 }
 
 function dup(n, spectate = 0) {
@@ -1220,11 +1260,13 @@ function iup(n, spectate = 0) {
 function chalbut(i) {
   get("challenge" + (i + 1)).classList.remove("boosterButton");
   get("challenge" + (i + 1)).classList.remove("bought");
+  get("challenge" + (i + 1)).classList.remove("pointer");
   get("challenge" + (i + 1)).classList.remove("running");
   if (game.challenge == i + 1 || (game.chal8 == 1 && i == 7)) {
     get("challenge" + (i + 1)).classList.add("running");
   } else if (game.challengeCompletion[i] >= 3 && i <= 6.1) {
     get("challenge" + (i + 1)).classList.add("bought");
+    if (game.upgrades.includes(17)) get("challenge" + (i + 1)).classList.add("pointer");
   } else {
     get("challenge" + (i + 1)).classList.add("boosterButton");
   }
@@ -1243,24 +1285,24 @@ function getManifolds() {
 function changeDynamic(ms) {
   if (game.dynamicUnlock == 1)
     game.dynamic +=
-      ms / 1000000 + (game.iups[6] == 1 ? (99 * ms) / 1000000 : 0);
-  if (game.challenge == 6 || game.challenge == 7)
+      ms / 1000000 * (game.iups[6] == 1 ? 100*(game.sfBought.includes(32) ? 100 : 1): 1); 
+  if (game.challenge == 6 || game.challenge == 7) //No update, that was just the previous minor upgrade time to make more studies
     game.dynamic -=
-      (10 ** 27 * ms) /
+      ((10 ** 297) /
       2 /
-      (game.upgrades.includes(14) ? 10 ** 29 : 1) /
-      getManifoldEffect();
+      (game.upgrades.includes(14) ? 10 ** 299 : 1) /
+      getManifoldEffect()) * ms;
   let capp =
     10 *
-    (game.darkManifolds + 1) ** 0.1 *
+    getDarkManifoldEffect() *
     (game.aups.includes(6) ? game.assCard[1].mult.toNumber() : 1);
   if (game.dynamic >= capp) game.dynamic = capp;
 }
 
 function getDarkManifolds() {
-  if (game.decrementy <= game.darkManifolds * Math.log10(3)) return;
+  if (game.decrementy <= game.darkManifolds * Math.log10(game.sfBought.includes(31)?2:3)) return;
   if (game.darkManifoldMax == 1) {
-    game.darkManifolds = Math.floor(game.decrementy / Math.log10(3));
+    game.darkManifolds = Math.floor(game.decrementy / Math.log10(game.sfBought.includes(31)?2:3));
   } else {
     game.darkManifolds += 1;
   }
@@ -1302,6 +1344,7 @@ function bup(x, spectate = 0) {
         !(x == 12 && !(getSumOfChallenges() >= 7)) &&
         !(x == 16 && !(getSumOfChallenges() >= 22)) &&
         !(x == 20 && !(getSumOfChallenges() >= 33)) &&
+        !(x == 24 && !(getSumOfChallenges() >= 37)) &&
         (x < 4.5 || game.upgrades.includes(x - 4))
       ) {
         if (spectate == 0) {
@@ -1472,7 +1515,7 @@ function displayOrd(
       (tempvar == 1
         ? ""
         : (game.buchholz == 2 ? "^(" : "<sup>") +
-          displayOrd(tempvar, base, 0) +
+          displayOrd(Math.ceil(tempvar), base, 0) +
           (game.buchholz == 2 ? ")" : "</sup>")) +
       (tempvar3 == 1
         ? ""
@@ -1491,7 +1534,7 @@ function displayOrd(
       trim == game.maxOrdLength.less - 1
         ? ""
         : displayOrd(
-            ord - tempvar2 * tempvar3,
+            Math.ceil(ord - tempvar2 * tempvar3),
             base,
             over,
             trim + 1,
@@ -1578,7 +1621,7 @@ function displayOrd(
         : (Math.log10(tempvar2) / Math.log10(3) + 1) * BHO;
     if (ordColor == "no") ordColor = HSL((tempvar + 40) * 8);
     let tempvar4 = displayOrd(
-      tempvar3 + 10 ** 265,
+      Math.ceil(tempvar3 + 10 ** 265),
       base,
       over,
       trim + 1,
@@ -1726,6 +1769,7 @@ function csubTab(t) {
   get("csubTab4").style.display = "none";
   get("csubTab5").style.display = "none";
   get("csubTab6").style.display = "none";
+  get("csubTab7").style.display = "none";
   get("csubTab" + t).style.display = "inline-block";
   game.csubTab = t;
   //get("body").style["background-size"]="cover"
@@ -1884,8 +1928,8 @@ function project(x) {
         : game.factorBoosts + getFactorBulk() >= 25 && getFactorBulk() >= 1
         ? "You can't bulk past the BHO!"
         : "Next boost in bulk will take " +
-          ((game.upgrades.includes(2) || game.leastBoost <= 1.5) &&
-          (game.upgrades.includes(3) || game.leastBoost <= 25)
+          ((game.upgrades.includes(2) || game.leastBoost <= 1.5) && (game.autoOn.max==1) &&
+          ((game.upgrades.includes(3)&&game.autoOn.inf==1) || game.leastBoost <= 25)
             ? time(
                 game.factorBoosts < 24
                   ? Math.floor(
@@ -2011,13 +2055,13 @@ function distributeCard() {
 function getSingularity(x) {
   if (
     x == 0 &&
-    game.darkManifolds - getDMSacrafice() >= 1e6 * 5 ** game.sing.dm
+    game.darkManifolds - getDMSacrafice() >= 1e6 * (game.sfBought.includes(23)?4:5) ** game.sing.dm
   ) {
     game.sing.dm++;
   } else if (x == 1 && game.manifolds >= game.sing.m + 1) {
     game.sing.m++;
-  } else if (x == 2 && game.alephOmega.gte(1e20 * 100 ** game.sing.nw)) {
-    game.alephOmega = game.alephOmega.minus(1e20 * 100 ** game.sing.nw);
+  } else if (x == 2 && game.alephOmega.gte(1e20 * (game.sfBought.includes(21)?30:100) ** game.sing.nw)) {
+    game.alephOmega = game.alephOmega.minus(1e20 * (game.sfBought.includes(21)?30:100) ** game.sing.nw);
     game.sing.nw++;
   }
 }
@@ -2026,6 +2070,16 @@ function getSingManifold() {
   if (getSingLevel() >= 1.5) {
     --game.sing.m;
   }
+}
+
+function downgradeSing1() {
+  game.sing.m -= getSingLevel()-1
+}
+
+function maximizeSing() {
+  while (game.darkManifolds - getDMSacrafice() >= 1e6 * (game.sfBought.includes(23)?4:5) ** game.sing.dm) game.sing.dm++;
+  while (game.alephOmega.gte(1e20 * (game.sfBought.includes(21)?30:100) ** game.sing.nw)) game.sing.nw++;
+  game.sing.m=game.manifolds;
 }
 
 function postBHOproj(x) {

@@ -24,8 +24,8 @@ function infinity(manmade = 0) {
 
 // There was "manmade = 0" as the args, but manmade was never used, so I removed it.
 function factorShift() {
-  if (game.OP >= factorShiftCosts[game.factorShifts] && !((game.challenge === 5 || game.challenge === 7) && game.factorShifts >= 2)) {
-    if (game.base > 3) {
+  if (game.OP >= getFSCost(game.factorShifts) && !((game.challenge === 5 || game.challenge === 7) && game.factorShifts >= 2)) {
+    if (game.factorShifts < 6.5) {
       game.ord = 0;
       game.over = 0;
       game.canInf = false;
@@ -137,6 +137,7 @@ function collapse(manmade = 0) {
   } else {
     var conf = (game.collapseConf==0?true:confirm("Are you sure you want to collapse?"))
     if (conf) {
+      if (game.sfEver.includes(11)) game.refundPoints++
       if (calcCard().gte(game.mostCardOnce)) game.mostCardOnce = calcCard();
       game.cardinals = game.cardinals.add(calcCard());
       if (game.leastBoost >= game.factorBoosts) game.leastBoost = game.factorBoosts;

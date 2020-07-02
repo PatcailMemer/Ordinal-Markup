@@ -1,7 +1,7 @@
 "use strict";
 
 const keybinds = {
-    u: () => infinity(1),
+    i: () => infinity(1),
     m: () => maxInfStuff(),
     s: () => factorShift(1),
     b: () => {

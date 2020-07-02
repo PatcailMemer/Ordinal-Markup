@@ -77,7 +77,13 @@ function reset() {
   sing: { dm: 0, m: 0, nw: 0 },
   thicc: 1,
   collapseConf: 1,
-  mostSing: 0
+  mostSing: 0,
+  spentFunctions: 0,
+  sfBought: [],
+  sfEver: [],
+  mostChal4: 0,
+  refundPoints: 0,
+  refundPointProg: 0
   };
   document.getElementById("infinityTabButton").style.display = "none";
   render();

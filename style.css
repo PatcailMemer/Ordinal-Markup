@@ -325,6 +325,15 @@ invisible {
   display: inline-block;
 }
 
+#baseTable td {
+  width: 150px;
+  font-family: sans-serif;
+  text-align: center;
+  color: white;
+  height: 150px;
+  display: inline-block;
+}
+
 
 #slugTable tr:nth-child(1) td:nth-child(1) p {
   font-size: 10pt;
@@ -334,9 +343,7 @@ invisible {
   font-size: 11pt;
 }
 
-/* #slugTable tr:nth-child(1) td:nth-child(2) p {
-  font-size: 10pt;
-} */
+
 
 #slugTable tr:nth-child(1) td:nth-child(3) p {
   font-size: 10pt;
@@ -389,7 +396,7 @@ invisible {
 
 .darkButton {
   color: #ffffff;
-	background: radial-gradient(#333,#000);
+	background: #000;
 	border-width: 2px;
   border-color: #808080;
 	border-radius: 2px;
@@ -399,14 +406,14 @@ invisible {
 
 .darkButton:hover {
   border-color: transparent;
-  background: transparent;
+  background: #000;
 }
 
 #subTab4 td button {font-size: 12pt}
 
 .singularity {
-  color: #ffffff;
-	background: radial-gradient(#333,#000);
+  color: #FFF;
+	background: #000;
 	border-width: 2px;
   border: solid green;
 	border-radius: 2px;
@@ -416,7 +423,7 @@ invisible {
 
 .singularity:hover {
   border-color: transparent;
-  background: transparent;
+  background: #000;
 }
 
 .singSacr {
@@ -435,7 +442,40 @@ invisible {
   height: 60px;
 }
 
-#singFunc {
+.singularityFunction {
+    border: 1px solid;
+    font-weight: bold;
+    font-family: sans-serif;
+    width: 170px;
+    height: 80px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+    vertical-align: top;
+    text-align: center;
+    margin:7px;
+    display: block;
+}
+
+.unboughtthing {
+    color: #666;
+    border-color: #004000;
+}
+
+
+
+.boughtthing {
+    color: black;
+    background: #00FF00;
+}
+
+.canbought {
+    color: black;
+    background: green;
+}
+
+#functions {
     color: #ffffff;
 	  background: radial-gradient(#333,#000);
   	border-width: 2px;
@@ -451,4 +491,33 @@ invisible {
     transform: translateX(-50%);
     border: solid green;
     text-align: center;
+    font-size: 16pt;
+}
+
+#singTable td {width: 100px; text-align: center; vertical-align: bottom}
+
+#realCenter {
+  margin: auto;
+  display: block;
+  text-align:center;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+.unbought {
+    color: black;
+    background: lime;
+}
+
+.unbought:hover {
+    color: lime;
+    background: black;
+}
+
+.boughtthing:hover {
+    color: black;
+    background: #00FF00;
+}
+
+.pointer {
+  cursor: pointer;
 }
