@@ -59,8 +59,8 @@ class SingularityFunction {
 let SF = (a,b,c,d) => new SingularityFunction(a,b,c,d)
 let singfunctions = [
   SF(0, [], 11, [0,0]),
-  SF(23, [11], 21, [0,0]),
-  SF(16, [11], 22, [0,0]),
+  SF(24, [11], 21, [0,0]),
+  SF(15, [11], 22, [0,0]),
   SF(20, [11], 23, [0,0]),
   SF(6, [22], 31, [0,0]),
   SF(10, [22], 32, [0,0]),
