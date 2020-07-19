@@ -135,7 +135,12 @@ function collapse(manmade = 0) {
     }
   }, 50);
   } else {
-    var conf = (game.collapseConf==0?true:confirm("Are you sure you want to collapse?"))
+    let conf = false
+    if (manmade == 0) {
+      conf = true
+    } else {
+    conf = (game.collapseConf==0?true:confirm("Are you sure you want to collapse?"))
+    }
     if (conf) {
       if (game.sfEver.includes(11)) game.refundPoints++
       if (calcCard().gte(game.mostCardOnce)) game.mostCardOnce = calcCard();
