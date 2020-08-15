@@ -5,7 +5,7 @@ function infinity(manmade = 0) {
     if (calcOrdPoints(game.ord, game.base, game.over) >= 1e265) {
       game.OP = Math.max(game.OP, calcOrdPoints(game.ord, game.base, game.over));
     } else {
-      if (game.chal8 === 1 || game.challenge === 6 || game.challenge === 7) game.OP = 0;
+      if (inChal(8) || inChal(6)) game.OP = 0;
       game.OP += calcTotalOPGain();
     }
     game.ord = 0;
@@ -24,7 +24,7 @@ function infinity(manmade = 0) {
 
 // There was "manmade = 0" as the args, but manmade was never used, so I removed it.
 function factorShift() {
-  if (game.OP >= getFSCost(game.factorShifts) && !((game.challenge === 5 || game.challenge === 7) && game.factorShifts >= 2)) {
+  if (game.OP >= getFSCost(game.factorShifts) && !(inChal(5) && game.factorShifts >= 2)) {
     if (game.factorShifts < 6.5) {
       game.ord = 0;
       game.over = 0;
@@ -71,7 +71,7 @@ function factorShift() {
 }
 
 function factorBoost(manmade = 0) {
-  if (game.OP >= V(game.factorBoosts + 3, 1) && game.challenge === 0) {
+  if (game.OP >= V(game.factorBoosts + 3, 1) && !(inAnyChal())) {
     if (manmade === 1 && game.fbConfirm === 1) {
       if (!confirm(`Are you sure you want to do a Factor Boost?${
         (game.upgrades.includes(8)
@@ -125,7 +125,9 @@ function collapse(manmade = 0) {
     if (anim === 300) {
       game.collapseUnlock = 1;
       game.upgrades = [4, 8, 12, 16];
-      game.cardinals = game.cardinals.add(EN(Math.max(game.factorBoosts - 24, 2) ** 0.5).floor());
+      let k = EN(Math.max(game.factorBoosts - 24, 2) ** 0.5).floor()
+      if (k.gte(game.mostCardOnce)) game.mostCardOnce = k;
+      game.cardinals = game.cardinals.add(k);
       if (game.leastBoost >= game.factorBoosts) game.leastBoost = game.factorBoosts;
       resetEverythingCollapseDoes();
       i--;
@@ -135,7 +137,12 @@ function collapse(manmade = 0) {
     }
   }, 50);
   } else {
-    var conf = (game.collapseConf==0?true:confirm("Are you sure you want to collapse?"))
+    let conf = false
+    if (manmade == 0) {
+      conf = true
+    } else {
+    conf = (game.collapseConf==0?true:confirm("Are you sure you want to collapse?"))
+    }
     if (conf) {
       if (game.sfEver.includes(11)) game.refundPoints++
       if (calcCard().gte(game.mostCardOnce)) game.mostCardOnce = calcCard();
@@ -174,7 +181,9 @@ function resetEverythingCollapseDoes() {
   game.challengeCompletion = [0, 0, 0, 0, 0, 0, 0];
   game.incrementy = EN(0);
   game.chal8 = 0;
+  game.chal9 = 0;
   game.chal8Comp = 0;
+  if (getOCComp(1)<1) {game.chal9Comp = 0}
   game.decrementy = 0;
   game.manualClicksLeft = 1000;
   game.collapseUnlock = 1;
@@ -210,4 +219,5 @@ function resetEverythingBoostDoes() {
   game.incrementy = EN(0);
   game.challenge = 0;
   game.chal8 = 0;
+  game.chal9 = 0;
 }

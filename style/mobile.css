@@ -127,4 +127,19 @@ Oops, ignore all the `!important`, please.
   #aup5, #aup6, #aup7, #aup8 {
     width: 199px !important;
   }
+  #enterIncrementyverseButton {
+  border-radius: 5px !important;
+  display:block !important;
+  margin-top:10px !important;
+  height:200px !important;
+  font-size: 20pt !important;
+  border: solid #0000FF 5px;
+  text-shadow: 6px 6px 6px #0000FF;
+  }
+  #enterIncrementyverseRequirementText {
+    font-size: 15pt !important;
+  }
+  #singRange {
+    width: 90% !important;
+  }
 }

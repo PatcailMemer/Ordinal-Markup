@@ -222,6 +222,13 @@
   color: #000080;
 }
 
+.OmegaRun {
+  background: #FFFFFF;
+  border-radius: 2px;
+  border-color: green;
+  color: #000000;
+}
+
 #finishChallenge {
   height: 100px;
   width: 200px;
@@ -394,6 +401,21 @@ invisible {
   font-size: 13pt;
 }
 
+#chalProgBar {
+  width: 100%;
+  height: 20px;
+  background: #a0a0a0;
+}
+
+#chalProg {
+  height: 20px;
+  background: #00ff00;
+  color: #000000;
+  text-align: center;
+  width: 50%;
+  font-size: 13pt;
+}
+
 .darkButton {
   color: #ffffff;
 	background: #000;
@@ -521,3 +543,38 @@ invisible {
 .pointer {
   cursor: pointer;
 }
+.OCComplete {
+   background: yellow;
+   border-color: gold;
+   height: 75px;
+  
+}
+
+#singRange {
+  width: 50%;
+}
+
+#enterIncrementyverseButton {
+  border-radius: 20px;
+  display:block;
+  width: 50%;
+  margin:auto;
+  margin-top:30px;
+  height:300px;
+  text-align:center;
+  font-size:40pt;
+  font-weight:bold;
+  background:url('https://cdn.glitch.com/6f7e4eb0-585a-45ff-a8c1-2d13a9a7d93f%2Fvortex3.gif?v=1596905007129') no-repeat center;
+  background-size: cover;
+  font-family: sans-serif;
+  color: #0000FF;
+  cursor: pointer;
+  transition-duration: 0.2s;
+  border: solid #0000FF 5px;
+  text-shadow: 6px 6px 6px #0000FF;
+}
+
+#enterIncrementyverseButton:hover {
+  text-shadow: 6px 6px 6px #5000FF;
+}
+

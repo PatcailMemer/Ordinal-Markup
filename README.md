@@ -1,5 +1,7 @@
 # Ordinal Markup
-get to work lazy
+get to work lazy *cough cough* PATCAIL
+
+
 A game of maximizing ordinals and decreasing numbers
 
 FILE OVERVIEW:<br>

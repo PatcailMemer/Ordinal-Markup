@@ -19,11 +19,12 @@ class SingularityFunction {
     if(this.canBuy()) {
       this.bought = true
       if (!game.sfEver.includes(this.id)) game.sfEver.push(this.id)
-      game.spentFunctions += this.price
+      if (!(this.id<=25&&getBaseless()>=3)) game.spentFunctions += this.price
       game.sfBought.push(this.id)
       document.getElementById("SF"+this.id).classList.remove("unbought")
       document.getElementById("SF"+this.id).classList.add("boughtthing")
     }
+    singfunctions.forEach(func => func.update())
   }
   update() {
     if (this.prereq.some(pre => game.sfEver.includes(pre))||this.id==11) {
@@ -48,12 +49,14 @@ class SingularityFunction {
     }
   }
   specialReq() {
+    if (this.id==41&&(getSingLevel()+game.manifolds-game.sing.m<=615||getBaseless()<=3.5)) return false
     if (this.id==51&&getSumOfChallenges()<=33.5) return false
     if (this.id==71&&getSumOfChallenges()<=35.5) return false
+    if (this.id==73&&game.bestFBps<500000000) return false
     return true
   }
   canBuy() {
-    return (this.id==11||getSingLevel()+game.manifolds-game.sing.m-game.spentFunctions >= this.price && !(game.sfBought.indexOf(this.id) > -1) && this.prereq.some(id => {return game.sfBought.includes(id)}) && game.sfBought.indexOf(this.splitpath[0]) == -1 && game.sfBought.indexOf(this.splitpath[1]) == -1 && this.specialReq())
+    return (this.id==11||(this.id<=25&&getBaseless()>=3)||getSingLevel()+game.manifolds-game.sing.m-game.spentFunctions >= this.price && !(game.sfBought.indexOf(this.id) > -1) && this.prereq.some(id => {return game.sfBought.includes(id)}) && game.omegaChallenge!=6 && game.sfBought.indexOf(this.splitpath[0]) == -1 && game.sfBought.indexOf(this.splitpath[1]) == -1 && this.specialReq())
   }
 }
 let SF = (a,b,c,d) => new SingularityFunction(a,b,c,d)
@@ -64,7 +67,7 @@ let singfunctions = [
   SF(20, [11], 23, [0,0]),
   SF(6, [22], 31, [0,0]),
   SF(10, [22], 32, [0,0]),
-  SF(Infinity, [31], 41, [0,0]),
+  SF(0, [31], 41, [0,0]),
   SF(2, [31,32], 42, [0,0]),
   SF(0, [42], 51, [0,0]),
   SF(12, [42], 52, [0,0]), //uhh, sniped... lol we both got sniped by each other
@@ -73,7 +76,13 @@ let singfunctions = [
   SF(42, [51], 63, [0,0]),
   SF(0, [61], 71, [0,0]),
   SF(16, [62], 72, [0,0]),
-  SF(Infinity, [63], 73, [0,0]),
-  SF(Infinity, [71,72,73], 81, [0,0]),
+  SF(0, [63], 73, [0,0]),
+  SF(1000, [71,72,73], 81, [0,0]),
   
 ];
+
+function buyMaxFunction() {
+  singfunctions.forEach(a => {
+    a.buy()
+  })
+}

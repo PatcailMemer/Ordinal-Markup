@@ -1,4 +1,5 @@
 "use strict";
+let reader = new FileReader();
 
 function reset() {
   game = {
@@ -34,7 +35,7 @@ function reset() {
   manifolds: 0,
   iups: [0, 0, 0, 0, 0, 0, 0, 0, 0],
   buchholz: 1,
-  theme: 0,
+  theme: 1,
   msint: 50,
   maxOrdLength: { less: 5, more: 7 },
   colors: 0,
@@ -83,8 +84,23 @@ function reset() {
   sfEver: [],
   mostChal4: 0,
   refundPoints: 0,
-  refundPointProg: 0
-  };
+  refundPointProg: 0,
+  omegaChallenge: 0,
+  ocBestIncrementy: [EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0),EN(0)],
+  challenge2: [0,0],
+  incrementyDouble: 0,
+  bestFBps: 0,
+  advAutoShift: 0,
+  chal9: 0,
+  chal9Comp: 0,
+  mostChal8Comp: 0,
+  bestPsi: 0,
+  fileExport: 1,
+  bestIncrementy: EN(0),
+  ocConf: {enter: 1, exit: 1, double: 1}
+  }
+  //By default, it should be a file export k
+  //Since with plain text you can lose it easily
   document.getElementById("infinityTabButton").style.display = "none";
   render();
   updateFactors();
@@ -200,6 +216,10 @@ function handlePost0211Saves() {
     }
     game.version = 0.31;
   }
+  if (game.version === 0.31) {
+   game.upgrades=game.upgrades.filter(x => {return ![17,24].includes(x)})
+   game.version = 0.34;
+  }
 }
 
 function handleOldVersions(loadgame) {
@@ -233,6 +253,8 @@ function loadGame(loadgame) {
   game.maxIncrementyRate = ENify(game.maxIncrementyRate);
   game.mostCardOnce = ENify(game.mostCardOnce);
   game.maxCard = ENify(game.maxCard);
+  game.bestIncrementy = ENify(game.bestIncrementy);
+  for (let i in game.ocBestIncrementy) {game.ocBestIncrementy[i]=ENify(game.ocBestIncrementy[i])}
   document.getElementById("nonC8Auto").value = game.qolSM.nc8;
   document.getElementById("C8Auto").value = game.qolSM.c8;
   document.getElementById("ttnc").value = game.qolSM.ttnc;
@@ -254,17 +276,48 @@ function loadGame(loadgame) {
 
 
 function save() {
-  if (AF === 0) localStorage.setItem("ordinalMarkupSave", JSON.stringify(game));
+  if (AF === 0) {
+    localStorage.setItem("ordinalMarkupSave", JSON.stringify(game))
+  };
+}
+// hi
+function exporty(file=0) {
+  if(file) {
+    save();
+    let file = new Blob([btoa(JSON.stringify(game))], {type: "text/plain"})
+    window.URL = window.URL || window.webkitURL;
+    let a = document.createElement("a")
+    a.href = window.URL.createObjectURL(file)
+    a.download = "Ordinal Markup Save.txt"
+    a.click()
+    $.notify("File Export Successful!","success")
+  } else {
+    copyStringToClipboard(btoa(JSON.stringify(game)));
+  }
 }
 
-function exporty() {
-  copyStringToClipboard(btoa(JSON.stringify(game)));
-}
+function importy(file=0) {
+  if(file) {
+    let loadgame = "";
+    reader.readAsText(document.getElementById("a").files[0]);
+      
+      window.setTimeout(function() {
+      console.log(52)
+      loadgame=JSON.parse(atob(reader.result))
+      if (loadgame !== "") {
+      loadGame(loadgame);
+      $.notify("Import Successful!","success")
+      }
+      }, 100)
 
-function importy() {
+  } else {
   let loadgame = "";
   loadgame = JSON.parse(atob(prompt("Paste in your save WARNING: WILL OVERWRITE YOUR CURRENT SAVE")));
   if (loadgame !== "") {
     loadGame(loadgame);
+    $.notify("Import Successful!","success")
+  }
   }
 }
+
+

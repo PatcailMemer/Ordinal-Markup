@@ -12,6 +12,8 @@
     <div id="theme"><link rel="stylesheet" href="style/dark.css"></div>
     <!-- import the webpage's javascript file -->
     <script src="script/ExpantaNum.js" defer></script>
+    <script src="script/jquery.js" defer></script>
+    <script src="script/notify.js" defer></script>
     <script src="script/ordMarks.js" defer></script>
     <script src="script/saveload.js" defer></script>
     <script src="script/function.js" defer></script>
@@ -22,6 +24,8 @@
     <script src="script/singfunc.js" defer></script>
     <script src="script/canvas.js" defer></script>
     <script src="script/stats.js" defer></script>
+    <script src="script/ordLevel.js" defer></script>
+    <script src="script/progressbar.js" defer></script>
     <script src="script/script.js" defer></script>
   </head>  
   <body id="body">
@@ -41,11 +45,12 @@
       <p><button onclick="infinity(1)" id="infinityButton" class="normalButton thicc canThicc">Reach 10240 to Markup</button></p>
     </div>
     <div id="Tab2">
-      <button onclick="save()" class="normalButton" style="border:2px solid #00FF00">Save your game</button>
-      <button onclick="exporty()" class="normalButton" style="border:2px solid #00FF00">Export your game file</button>
-      <button onclick="importy()" class="normalButton" style="border:2px solid #0080FF">Import your game file</button>
-      <button onclick="resetConf()" style="color:#FF0000;border:2px solid #FF0000">RESET YOUR GAME</button>
-      <p></p>
+      <button onclick="save();$.notify('Game Saved!','success')" class="normalButton" style="border:2px solid #00FF00">Save your game</button>
+      <button onclick="exporty(1)" class="normalButton" style="border:2px solid #00FF00">Export your game save via file</button>
+      <button onclick="exporty(0)" class="normalButton" style="border:2px solid #00FF00">Export your game save via text</button>
+      <button onclick="importy(0)" class="normalButton" style="border:2px solid #0080FF">Import your game save via text</button>
+      <button onclick="resetConf()" style="color:#FF0000;border:2px solid #FF0000">RESET YOUR GAME</button><br>
+      <p><input type="file" id="a" class="normalButton" style="border:2px solid #0080FF;display:inline-block" oninput="importy(1)">  Import your game save via file (will overwrite save)</p>
       <button onclick="changeOfflineProg()" class="normalButton" id="changeOffline">Offline Progress: ON</button>
       <button onclick="changeInt()" class="normalButton" id="changeInt">Millisecond Interval: 50ms</button>
       <button onclick="changeOrdLengthLess()" class="normalButton" id="changeOrdLengthLess">Maximum Ordinal Length below e0: 50ms</button>
@@ -66,6 +71,8 @@
       <p>Oh, and also, if you like this game, or you dislike the timewalls, why don't you play <a href="https://patcailmemer.github.io/om-fse-minus/">Ordinal Markup Factor Shift Edition Minus?</a></p>
       <p>It has more content below ψ(Ω) and you can reach <b>REALLY</b> large numbers (smaller than vanilla though)</p>
       <p>Oh, and why not you join the <a href="https://discordapp.com/invite/RerPeNA">Discord Server?</a></p>
+      <b><p>Current Version: v0.34</p>
+        Last Updated: August 15th, 2020</b>
     </div>
     <div id="Tab3">
       <p>Your highest Ordinal was w [WIP]</p>
@@ -90,7 +97,9 @@ And the amount of layers ever so tall.</p>
 When there was a visitor who would come to stay.<br>
 They started climbing and reached the second floor,<br>
 Only to find the exact same climb once more.</p>-->
-      Ordinal Level: Coming Soon!
+      Your current Ordinal Level is <span id="psiLevel"></span>
+      <p>Next Ordinal Level is at <span id="nextPsiLevel"></span></p>
+      Your highest Ordinal Level is <span id="bestPsiLevel"></span>
       <ol style="display:none">
         <li>Reach the number 20</li>
         <li>Perform a Markup</li>
@@ -160,9 +169,9 @@ Only to find the exact same climb once more.</p>-->
           <p><text id="nextBulkTime">32d 15h 48m 9s</text></p>
           <p><div id="factorBoostProgBar"><div id="factorBoostProg"></div></div></p>
         </div>
-        <div id="completeChallenge">
+        <div id="completeChallenge" style="width:100%">
           <button class="boosterButton" id="finishChallenge" onclick="completeChallenge()">Complete the challenge!<br>100 OP</button>
-          <p><text id="nextChalBulkTime">32d 15h 48m 9s</text></p>
+          <p><text id="nextChalBulkTime">Time till next Challenge is coming soon!</text></p>
           <p><div id="chalProgBar"><div id="chalProg"></div></div></p>
         </div>
       </div>
@@ -216,7 +225,8 @@ Only to find the exact same climb once more.</p>-->
       <button onclick="bsubTab(3)" class="boosterButton subtab" id="challengeSubTab">Challenges</button>
       <button onclick="bsubTab(4)" class="boosterButton subtab" id="incrementySubTab">Incrementy</button>
       <p></p>
-      <div id="bsubTab1"><div id="bsubTab1sub"><text id="boostersText" style="text-align:center;display:block;margin-bottom:10px">You have 1 Boosters</text>
+      <div id="bsubTab1"><div id="bsubTab1sub"><div style="margin-bottom:10px"><text id="boostersText" style="text-align:center;display:block">You have 1 Boosters</text>
+        <text style="text-align:center;display:block;margin:10px" id="boostersFromMilestones">(+529 from milestones)</text></div>
       <button id="refundBoosters" class="trueCenter" style="margin-bottom: 10px" onclick="refund()">Refund back 0 boosters, but reset all factor shifts</button>
       <div class="trueCenter"><button id="refundConfirmation" style="margin-bottom: 10px" onclick="game.bConf.ref=1-game.bConf.ref">Refund Confirmation: ON</button>
       <button id="refundFB" style="margin-bottom: 10px" onclick="game.bConf.refFB=1-game.bConf.refFB">Factor Boost if possible on Refund: OFF</button></div>
@@ -229,34 +239,34 @@ Only to find the exact same climb once more.</p>-->
           <td><button class="treeButton locked" id="bup4" onclick="bup(4)">Unlock Challenges<br><br>Need 12 Boosters</button></td>
         </tr>
         <tr>
-          <td><button class="treeButton locked" id="bup5" onclick="bup(5)">Gain 5x as much OP<br><br>5 Boosters</button></td>
+          <td><button class="treeButton locked" id="bup5" onclick="bup(5)">Gain 5x as much OP<br><br><text id="bup5Cost">5</text> Boosters</button></td>
           <td><button class="treeButton locked" id="bup6" onclick="bup(6)">Boosters boost Tier 1 and 2 automation by x<text id="bup6 current">1.00</text><br>4 Boosters</button></td>
           <td><button class="treeButton locked" id="bup7" onclick="bup(7)">Gain 20 OP per second<br><br>8 Boosters</button></td>
           <td><button class="treeButton locked" id="bup8" onclick="bup(8)">Unlock Incrementy<br><br>Need 36 Boosters</button></td>
         </tr>
         <tr>
-          <td><button class="treeButton locked" id="bup9" onclick="bup(9)">The base is reduced by 4 if it's over 7<br><br>72 Boosters</button></td>
+          <td><button class="treeButton locked" id="bup9" onclick="bup(9)">The base is reduced by 4 if it's over 7<br><br><text id="bup9Cost">72</text> Boosters</button></td>
           <td><button class="treeButton locked" id="bup10" onclick="bup(10)">The base is always 5 below <br>73 Boosters</button></td>
           <td><button class="treeButton locked" id="bup11" onclick="bup(11)">You get 3 free factors each<br><br>16 Boosters</button></td>
           <td><button class="treeButton locked" id="bup12" onclick="bup(12)">Extend Incrementy<br>Need 108 Boosters and 7 Challenge Completions</button></td>
         </tr>
         <tr>
-          <td><button class="treeButton locked" id="bup13" onclick="bup(13)">In odd numbered challenges, Dynamic factor is squared<br>53 Boosters</button></td>
+          <td><button class="treeButton locked" id="bup13" onclick="bup(13)">In odd numbered challenges, Dynamic factor is squared<br><text id="bup13Cost">53</text> Boosters</button></td>
           <td><button class="treeButton locked" id="bup14" onclick="bup(14)">Dynamic decreases 1.00e299 times slower<br><br>74 Boosters</button></td>
           <td><button class="treeButton locked" id="bup15" onclick="bup(15)">Markup gives 666666x OP if the base is less than six<br>66 Boosters</button></td>
-          <td><button class="treeButton locked" id="bup16" onclick="bup(16)"><b>Unlock the next layer<br>Need 324 Boosters and 22 Challenge Completions</b></button></td>
+          <td><button class="treeButton locked" id="bup16" onclick="bup(16)" style="font-size:12pt"><b>Unlock the next layer<br>Need 324 Boosters and 22 Challenge Completions</b></button></td>
         </tr>
         <tr id="bottomBoosterUpgrades">
-          <td><button class="treeButton locked" id="bup17" onclick="bup(17)">You can enter challenges past 3 completions<br>5e15 Boosters</button></td>
-          <td><button class="treeButton locked" id="bup18" onclick="bup(18)">???</button></td>
+          <td><button class="treeButton locked" id="bup17" onclick="bup(17)" style="display:none">You can enter challenges past 3 completions<br><text id="bup17Cost">53</text> Boosters</button></td>
+          <td><button class="treeButton locked" id="bup18" onclick="bup(18)" style="display:none">???</button></td>
           <td><button class="treeButton locked" id="bup19" onclick="bup(19)">The above upgrade applies to passive OP gain<br>8e8 Boosters</button></td>
           <td><button class="treeButton locked" id="bup20" onclick="bup(20)">Unlock the Singularity<br>Need 1e11 Boosters and 33 Challenge Completions</button></td>
         </tr>
         <tr id="bottomBoosterUpgrades2">
-          <td><button class="treeButton locked" id="bup21" onclick="bup(21)">???</button></td>
-          <td><button class="treeButton locked" id="bup22" onclick="bup(22)">???</button></td>
+          <td><button class="treeButton locked" id="bup21" onclick="bup(21)" style="display:none">???</button></td>
+          <td><button class="treeButton locked" id="bup22" onclick="bup(22)" style="display:none">???</button></td>
           <td><button class="treeButton locked" id="bup23" onclick="bup(23)">Base 6 is now base 5<br><br>2e19 Boosters</button></td>
-          <td><button class="treeButton locked" id="bup24" onclick="bup(24)">Coming Soon!<br>Need 1e19 Boosters and 37 Challenge Completions</button></td>
+          <td><button class="treeButton locked" id="bup24" onclick="bup(24)" style="font-size:12pt">Unlock Omega Challenges<br>Need 1e21 Boosters and 37 Challenge Completions</button></td>
         </tr>
         </tbody></table><p style="text-align: center"><i id="mobileMessage">You may have to rotate your phone on mobile to see all of the upgrades. The right column of upgrades doesn't consume your boosters.</i><br>You also start with a free Maximize Autoclicker as a gift :)</p></div>
       </div></div>
@@ -288,9 +298,10 @@ Only to find the exact same climb once more.</p>-->
         </tr>
         <tr>
           <td><button class="challenge boosterButton" onclick="enterChallenge(7)" id="challenge7" style="font-size: 10pt">Challenge 7<br><b>ALL PREVIOUS CHALLENGES AT ONCE,</b> and Challenge 6 Completions boost OP gain from Markups<p></p><text id="challenge7Goal">Goal: 1.000e33 OP</text><br>Reward: Factor 7 boosts Tier 1 and 2<br>Currently: <text id="challenge7Effect">x1.00 (0/3)</text></button></td>
-          <td><button class="challenge boosterButton" onclick="enterChallenge8()" id="challenge8" style="font-size: 8pt">Challenge 8<br>There's exponentially rising decrementy dividing Tier 1 production, immediately Refund if you have any Booster Upgrades, all challenge effects are disabled, Challenge 7 completions boost OP, keep no OP on Markup, you can do a maximum of 1000 manual successor clicks per Markup, Quadrupler is disabled<p></p><text id="challenge8Goal">Goal: 1.000e33 OP</text><br>Reward: Dynamic Factor Cap boosts Tier 1 and 2<text id="chal8Incrementy"> and Incrementy</text>, Currently: <text id="challenge8Effect">x1.00 (0/3)</text><text id="chal8IncrementyBoost"><br>To Incrementy: x1.00</text></button></td>
+          <td><button class="challenge boosterButton" onclick="enterChallenge8()" id="challenge8" style="font-size: 8pt">Challenge 8<br>There's exponentially rising decrementy dividing Tier 1 production, immediately Refund if you have any Booster Upgrades, all challenge effects are disabled, Challenge 7 completions boost OP, keep no OP on Markup, you can do a maximum of 1000 manual successor clicks per Markup, Quadrupler is disabled, ordinal is capped at w^(w3)<p></p><text id="challenge8Goal">Goal: 1.000e33 OP</text><br>Reward: Dynamic Factor Cap boosts Tier 1 and 2<text id="chal8Incrementy"> and Incrementy</text>, Currently: <text id="challenge8Effect">x1.00 (0/3)</text><text id="chal8IncrementyBoost"><br>To Incrementy: x1.00</text></button></td>
         </tr> 
         </table>
+        <button class="challenge boosterButton" onclick="enterChallenge9()" id="challenge9" style="width:604px;margin-left:2px;margin-top:2px">Challenge 9<br>Time is 1e15x slower, you can't enter this challenge in Omega Challenges<p></p>There is no goal</button>
         <p><i>Note: In challenge 8, if you have less than 1.00e10 decrementy, all ticks simulates 50 milliseconds, regardless of the millisecond interval.<br>That also means that offline progression in Challenge 8 is disabled if you have less than 1.00e10 decrementy in the challenge.</i></p>
       </div>
       <div id="bsubTab4">
@@ -304,14 +315,14 @@ Only to find the exact same climb once more.</p>-->
             <td><button class="treeButton boosterButton" id="iup3" onclick="iup(3)">Multiply multiplier by 1.2<br><br>Cost: 1.00e9</button></td>
           </tr>
           <tr>
-            <td><button class="treeButton boosterButton" id="iup4" onclick="iup(4)">Manifolds are 3x as effective, and gain a flat 1e8/s Tier 2<br>Cost: 1.00e16</button></td>
+            <td><button class="treeButton boosterButton" id="iup4" onclick="iup(4)">Manifolds are 3x as effective, and gain a flat 5e8/s Tier 2<br>Cost: 5.00e15</button></td>
             <td><button class="treeButton boosterButton" id="iup5" onclick="iup(5)">Manifolds are 26% more effective<br><br>Cost: 2.00e22</button></td>
             <td><button class="treeButton boosterButton" id="iup6" onclick="iup(6)">Reduce manifold requirement scaling<br><br>Cost: 4.00e23</button></td>
           </tr>
           <tr>
             <td><button class="treeButton boosterButton" id="iup7" onclick="iup(7)">Dynamic increases 100x faster<br><br>Cost: 1.00e19</button></td>
-            <td><button class="treeButton boosterButton" id="iup8" onclick="iup(8)">Dynamic Factor Cap multiplies incrementy gain<br>Cost: 2.00e25</button></td>
-            <td><button class="treeButton boosterButton" id="iup9" onclick="iup(9)">Double the OP gain from Markups<br><br>Cost: 4.00e27</button></td>
+            <td><button class="treeButton boosterButton" id="iup8" onclick="iup(8)">Dynamic Factor Cap multiplies incrementy gain<br>Cost: 1.00e25</button></td>
+            <td><button class="treeButton boosterButton" id="iup9" onclick="iup(9)">Double the OP from Markups and gain a flat 1e15/s Tier 2<br>Cost: 1.00e27</button></td>
           </tr>
         </table></div>
         <div id="manifoldShift">
@@ -333,11 +344,13 @@ Only to find the exact same climb once more.</p>-->
       <button onclick="csubTab(7)" class="collapse subtab" id="baselessMilestoneTab">Baseless Milestones</button>
       <button onclick="csubTab(4)" class="collapse subtab" id="autoPrestigeSubTab">Autoprestigers</button>
       <button onclick="csubTab(5)" class="singularity subtab" id="singularitySubTab">Singularity</button>
-        <button onclick="csubTab(6)" class="singularity subtab" id="singularityFunction">Reach level 20 Singularity</button>
+      <button onclick="csubTab(6)" class="singularity subtab" id="singularityFunction">Reach level 20 Singularity</button>
+      <button onclick="csubTab(8)" class="singularity subtab" id="omegaChallenges">Omega Challenges</button> 
+      <button onclick="csubTab(9)" class="boosterButton subtab" id="enterIncrementyverse">Enter the Incrementyverse</button> 
       </div>
       <div id="csubTab1" style="width: 100%">
         <p id="cardinalText" style="font-size: 20pt;text-align: center;font-weight: bold">You have 1 cardinal</p>
-        <button id="collapseButton" class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 60px" onclick="collapse(1)"><text style="margin: 10px">Reach the BHO to collapse!</text></button>
+        <button id="collapseButton" class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 60px" onclick="if (game.omegaChallenge==0) {collapse(1)} else {exitOC()}"><text style="margin: 10px">Reach the BHO to collapse!</text></button>
         <p id="collapseCardHelp" style="text-align:center">Next Cardinal in 3 Factor Boosts (5.896s in collapse)</p>
         <button class="trueCenter collapse" style="margin-bottom:18px" id="collapseConf" onclick="game.collapseConf=1-game.collapseConf">Collapse Confirmation: ON</button>
         <button class="trueCenter collapse" style="font-size: 15pt;text-align: center;height: 40px" id="distributeCard" onclick="distributeCard()">Distribute All Cardinals</button>
@@ -380,11 +393,11 @@ Only to find the exact same climb once more.</p>-->
             <td id="slug0"><br>∞ Boosts<br><br><p>You gain 1% of OP gained per second if your OP is less than your pending OP</p></td>
             <td id="slug1"><br>20 Boosts<br><br><p>Challenges 1-7 without completions give a reduced boost (x^0.25)</p></td>
             <td id="slug2"><br>15 Boosts<br><br><p>Gain 15 OP per second, Markup requirement is now 100, and you can bulk complete challenges</p></td>
-    <td id="slug3"><br>12 Boosts<br><br><p>Unlock Tier 3 automation, the 4 booster upgrade is improved</p></td>
+            <td id="slug3"><br>12 Boosts<br><br><p>Unlock Tier 3 automation, the 4 booster upgrade is improved</p></td>
             <td id="slug4"><br>10 Boosts<br><br><p>Unlock Distribute All and upgrades for Tier 3 automation</p></td>
           </tr>
           <tr class="trueCenter long">
-            <td id="slug5" style="width: 775px"><br>1 Boost<br><p>You keep all Incrementy Upgrades, Dark Upgrades, Manifolds, and Dark Manifolds on collapse, unlock an Autobuyer for Booster Upgrades, you can autocomplete Challenges, unlock an Autoprestiger for Collapse, you get a free Maximize Autobuyer and you always have a Max All Autobuyer, you can complete Challenge 8 multiple times, reduce the Markup requirement to 10, Auto-Markup activates if you're not making autoclicks from Tier 1, and extend the Booster upgrades<p></td>
+            <td id="slug5" style="width: 775px"><br>1 Boost<br><p>You keep all Incrementy Upgrades, Dark Upgrades, Manifolds, and Dark Manifolds on collapse, unlock an Autobuyer for Booster Upgrades, you can autocomplete Challenges, unlock an Autoprestiger for Collapse, you get a free Maximize Autobuyer and you always have a Max All Autobuyer, you can complete Challenge 8 multiple times, reduce the Markup requirement to 10, Auto-Markup activates if you're not making autoclicks from Tier 1, unlock two incredibly powerful Aleph upgrades and four Booster upgrades<p></td>
           </tr>
           </tbody>
         </table>
@@ -408,10 +421,10 @@ Only to find the exact same climb once more.</p>-->
             <td><button class="treeButton collapse" id="aup8" onclick="aup(8)">Gain 3% of most cardinals gained at once per second<br>Cost: 4.29e9 ℵ<sub>ω</sub></button></td>
           </tr>
           <tr id="auprow3">
-            <td><button class="treeButton collapse" id="aup9" onclick="aup(9)">Keep 10% of Factor Boosts on Collapse<br><br>Cost: 1.84e19 ℵ<sub>ω</sub></button></td>
-            <td><button class="treeButton collapse" id="aup10" onclick="aup(10)">Redacted<br><br>Cost: 3.40e38 ℵ<sub>ω</sub></button></td>
-            <td><button class="treeButton collapse" id="aup11" onclick="aup(11)">Redacted<br><br>Cost: 1.16e77 ℵ<sub>ω</sub></button></td>
-            <td><button class="treeButton collapse" id="aup12" onclick="aup(12)">Redacted<br><br>Cost: 1.34e154 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup9" onclick="aup(9)" style="width:199px !important;">Keep 10% of Factor Boosts on Collapse<br>Cost: 1.84e19 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup10" onclick="aup(10)" style="width:199px !important;">Unlock Challenge 9<br><br>Cost: 3.40e38 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup11" onclick="aup(11)" style="display:none">Redacted<br><br>Cost: 1.16e77 ℵ<sub>ω</sub></button></td>
+            <td><button class="treeButton collapse" id="aup12" onclick="aup(12)" style="display:none">Redacted<br><br>Cost: 1.34e154 ℵ<sub>ω</sub></button></td>
           </tr>
           <tr id="auprow4">
             <td><button class="treeButton collapse" id="aup13" onclick="aup(13)">HACKER!!!<br><br>Cost: 1.84e19 ℵ<sub>ω</sub></button></td>
@@ -428,6 +441,7 @@ Only to find the exact same climb once more.</p>-->
         <p id="factorBoostAutoText">Your Factor Boost Autoprestiger is Factor Boosting 1 time per second</p>
         <button class="collapse" id="factorShiftAutoToggle" onclick="game.cAutoOn.shift=1-game.cAutoOn.shift">Factor Shift Autoprestiger: ON</button>
         <button class="collapse" id="factorBoostAutoToggle" onclick="game.cAutoOn.boost=1-game.cAutoOn.boost">Factor Boost Autoprestiger: ON</button>
+        <button class="collapse" id="factorShiftAdvAutoToggle" onclick="game.advAutoShift=1-game.advAutoShift">Advanced Autoshift (max of 5 Factor Shifts in Challenge 8): OFF</button>
         <div id="autoPrestigeBuy">
         <p style="font-weight:bold">Tier 3 Automation Upgrades</p>
         <p id="alephOmegaText2">You have 10 ℵ<sub>ω</sub></p>
@@ -452,8 +466,10 @@ Only to find the exact same climb once more.</p>-->
       <div id="csubTab5" style="width:100%;height:100%">
         <p style="width:auto;text-align: center" id="singMaterial">You have 25 Dark Manifolds, 2 Manifolds, and 1.000e20 ℵ<sub>ω</sub></p>
         <h1 id="singText" style="width:auto;font-size: 20pt;text-align: center;font-weight: bold">Singularity Level: 1</h1>
+        <input id="singRange" class="trueCenter" type="range" value="0" min="0" max="10" oninput="onSingRangeChange()" onchange="onSingRangeChange()">
         <button class="trueCenter singularity" style="height:35px;font-size:12pt" onclick="maximizeSing()" id="maxSing">Maximize the Singularity</button>
         <p style="width:auto;text-align: center" id="singEffect">Translated to a x51 multiplier to Factor Boosts and a raise of cap to psi(w^w^w)</p>
+        <p style="text-align: center" id="singFBtext">You are currently getting 1000 Factor Boosts per second</p>
         <svg id="blackHole" height="40" width="100%">
         <circle cx="50%" cy="20" r="10" stroke="white" stroke-width="1" fill="black" id="blackHoleCircle"/></svg>
         <table id="cardinalTable" style="width: 100%" cellspacing="0" cellpadding="0">
@@ -479,13 +495,22 @@ Only to find the exact same climb once more.</p>-->
             </td>
           </tr>
         </table>
-        <p style="text-align: center" id="singFBtext">You are currently getting 1000 Factor Boosts per second</p>
       </div>
       <div id="csubTab6" class="long">
         <h1 style="width:auto;font-size: 20pt;text-align: center;font-weight: bold" id="getRekt20sing">Get Rekt Weakling!<br>You need a larger singularity before you even think about unlocking this mechanic!</h1>
         <div id="singFuncContent">
         <div id="singFunc">
-          <div><div id="functions"></div><button id="respec" onclick="if (game.refundPoints>=0.5) {game.refundPoints -= 1; game.sfBought = []; game.spentFunctions = 0;}" class="singularity boughtthing trueCenter treeButton">Refund all Singularity Functions<br>Cost: 1 RP</button></div>
+          <div><div id="functions"><text id="functionText"></text>
+            <div style="display:block;width:100%">
+            <button onclick="window.scrollTo(0, document.body.scrollHeight);" class="singularity" style="display:inline-block;height:50px;width:48%;margin:0px">Scroll to bottom</button>
+            <button onclick="window.scrollTo(0, 0);" class="singularity" style="display:inline-block;height:50px;width:48%;margin:0px">Scroll to top</button>
+            </div>
+          </div>
+            <div style="width:410px;margin:auto;margin-top:20px">
+            <button id="respec" onclick="if (game.refundPoints>=0.5) {game.refundPoints -= 1; game.sfBought = []; if (getBaseless()>=3) {game.sfBought=[11, 21, 22, 23]};game.spentFunctions = 0; singfunctions.forEach(func => func.update())};resizeCanvas()" class="singularity boughtthing treeButton">Refund all Singularity Functions<br>Cost: 1 RP</button>
+            <button onclick="if (game.refundPoints>=99.5) {game.refundPoints -= 100;buyMaxFunction()};resizeCanvas()" class="singularity boughtthing treeButton">Buy Max Singularity Functions<br>Cost: 100 RP</button>
+            </div>
+          </div>
           <p id="refundPointAmount" style="width:auto;text-align: center;font-size: 15pt;margin-bottom:-10px">You have 0 Refund Points, capped at 10<br>You gain them when you collapse successfully</p>
         </div>
         <table id="singTable" style="width: 100%"><tbody class="trueCenter">
@@ -493,36 +518,36 @@ Only to find the exact same climb once more.</p>-->
             <td style="width: 100%;display:inline;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton trueCenter singularity" id="SF11" onclick="singfunctions[0].buy()">Start. Singularity doesn't consume Dark Manifolds <br> Free</button></td>           
           </tr>
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF21" onclick="singfunctions[1].buy()">Reduce ℵ<sub>ω</sub> singularity scaling to x30. <br> Cost: 24 Functions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF22" onclick="singfunctions[2].buy()">Manifolds affect Decrementy gain <br> Cost: 15 Functions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF23" onclick="singfunctions[3].buy()">Reduce Dark Manifold singularity scaling to x4. <br> Cost: 20 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF21" onclick="singfunctions[1].buy();resizeCanvas()">Reduce ℵ<sub>ω</sub> singularity scaling to x30. <br> Cost: 24 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF22" onclick="singfunctions[2].buy();resizeCanvas()">Manifolds affect Decrementy gain <br> Cost: 15 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF23" onclick="singfunctions[3].buy();resizeCanvas()">Reduce Dark Manifold singularity scaling to x4. <br> Cost: 20 Functions</button></td>
           </tr> <!--hmm i could use docuument.getElementByClassName for this maybe-->
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF31" onclick="singfunctions[4].buy()">Second row of Incrementy applies to Dark Manifolds <br> Cost: 6 Functions</button></td>
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF32" onclick="singfunctions[5].buy()">Third row of Incrementy applies to Decrementy <br> Cost: 10 Functions</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF31" onclick="singfunctions[4].buy();resizeCanvas()">Second row of Incrementy applies to Dark Manifolds <br> Cost: 6 Functions</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF32" onclick="singfunctions[5].buy();resizeCanvas()">Third row of Incrementy applies to Decrementy <br> Cost: 10 Functions</button></td>
           </tr>
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF41" onclick="singfunctions[6].buy()">Classified</button></td>
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF42" onclick="singfunctions[7].buy()">Quadruple OP and Decrementy from all sources<br> Cost: 2 Functions</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF41" onclick="singfunctions[6].buy();resizeCanvas()">Unlock the Portal<br>Need: 616 total Functions and 4 Baseless Milestones</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF42" onclick="singfunctions[7].buy();resizeCanvas()">Quadruple OP and Decrementy from all sources<br> Cost: 2 Functions</button></td>
             <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px;opacity:0" onclick="document.getElementById('sfsecret').style.opacity=1" id="sfsecret"  class="long trueCenter"><button class="treeButton singularity" style="cursor:default">You found an easter egg! Good job!</button></td>
           </tr>
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
             <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px;opacity:0" class="long trueCenter"><button class="treeButton singularity" style="cursor:default">You found an easter egg! Good job!</button></td>
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF51" onclick="singfunctions[8].buy()">Unlock Baseless Milestones<br>Need: 34 Challenge Completions</button></td>
-            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF52" onclick="singfunctions[9].buy()">Multiply Aleph Power Multipliers by 1.5<br> Cost: 12 Functions</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF51" onclick="singfunctions[8].buy();resizeCanvas()">Unlock Baseless Milestones<br>Need: 34 Challenge Completions</button></td>
+            <td style="width: 100%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF52" onclick="singfunctions[9].buy();resizeCanvas()">Multiply Aleph Power Multipliers by 1.5<br> Cost: 12 Functions</button></td>
           </tr>
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF61" onclick="singfunctions[10].buy()">You can reach w^w4 in challenge 8, but in base 5 only<br> Cost: 17 Functions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF62" onclick="singfunctions[11].buy()">Manifolds are buffed. (x^4)<br> Cost: 15 Functions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF63" onclick="singfunctions[12].buy()">ℵ<sub>0</sub> multiplier divides Challenge 8 goals<br> Cost: 42 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF61" onclick="singfunctions[10].buy();resizeCanvas()">You can reach w^w4 in challenge 8, but in base 5 only<br> Cost: 17 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF62" onclick="singfunctions[11].buy();resizeCanvas()">Manifolds are buffed. (x^4)<br> Cost: 15 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF63" onclick="singfunctions[12].buy();resizeCanvas()">ℵ<sub>0</sub> multiplier divides Challenge 8 goals<br> Cost: 42 Functions</button></td>
           </tr> 
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF71" onclick="singfunctions[13].buy()" style="font-size:11pt">Each unspent function increases ℵ<sub>2</sub> effect by 40%<br>Need: 36 Challenge Completions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF72" onclick="singfunctions[14].buy()">Singularity effect is raised to the 1.4<br> Cost: 16 Functions</button></td>
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF73" onclick="singfunctions[15].buy()">Classified</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF71" onclick="singfunctions[13].buy();resizeCanvas()" style="font-size:11pt">Each unspent function increases ℵ<sub>2</sub> effect by 40%<br>Need: 36 Challenge Completions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF72" onclick="singfunctions[14].buy();resizeCanvas()">Singularity effect is raised to the 1.4<br> Cost: 16 Functions</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF73" onclick="singfunctions[15].buy();resizeCanvas()" style="font-size:11pt">Square root the fourth Factor Shift cost<br>Need: Second set of Omega Challenges unlocked</button></td>
           </tr> 
           <tr style="width: 100%;margin-bottom:30px" class="long trueCenter">
-            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF81" onclick="singfunctions[16].buy()">Classified</button></td>
+            <td style="width: 30%;display:inline;margin-left:10px;margin-right:10px"  class="long trueCenter"><button class="treeButton singularity" id="SF81" onclick="singfunctions[16].buy();resizeCanvas()">Good luck<br><br>Cost: 1000 Functions</button></td>
           </tr> 
         </tbody></table> <!--uhhhhhhh, still can't click anything...--> <!-- The canvas doesn't account for scrolling-->
           <div style="height: 100px"></div>
@@ -531,18 +556,83 @@ Only to find the exact same climb once more.</p>-->
       </div>
       <div id="csubTab7" style="width: 100%">
         <h1 style="text-align: center">Baseless Milestones</h1>
-        <h4 style="font-weight:normal;text-align: center">Reach the required ordinal in Challenge 4 to receive a reward<br>Each reward also starts you with an extra Booster<br></h4>
+        <h4 style="font-weight:normal;text-align: center">You can now enter any challenges past three completion!<br>Reach the required ordinal in Challenge 4 to receive a reward<br>Each reward also starts you with an extra Booster</h4>
         <table id="baseTable" style="width: auto;display: block" class="long trueCenter">
           <tbody class="long trueCenter">
           <tr class="trueCenter long">
-            <td id="base0"><br>ω<sup>ω<sup>2</sup>3</sup><br><p>Gain 1 RP per second</p></td>
-            <td id="base1"><br>ω<sup>ω<sup>2</sup>3+ω3</sup><br><p>You can now maximize and minimize the Singularity</p></td>
-            <td id="base2"><br>Coming<br><p>Soon</p></td>
-            <td id="base3"><br>Coming<br><p>Soon</p></td>
-            <td id="base4"><br>Coming<br><p>Soon</p></td>
+            <td id="base0" style="font-size: 10pt"><br>ω<sup>ω<sup>2</sup>3</sup><br><p>Gain 1 RP per second</p></td>
+            <td id="base1" style="font-size: 10pt"><br>ω<sup>ω<sup>2</sup>3+ω3</sup><br><p>You can now change the Singularity faster (max, min, slider) and autobuy singularity function upgrades</p></td>
+            <td id="base2" style="font-size: 10pt"><br>ω<sup>ω<sup>2</sup>4+ω3</sup><br><p>Forever keep the first four function upgrades free and unlock advanced autoshift (Refunding is encouraged)</p></td>
+            <td id="base3" style="font-size: 10pt"><br>ω<sup>ω<sup>2</sup>4+ω4</sup><br><p>Automatically get Incrementy and Dark Manifolds and Upgrades without losing incrementy, below 1e10000 Incrementy</p></td>
           </tr>
           </tbody>
         </table>
+      </div>
+      <div id="csubTab8" style="width: 100%">
+        <table>
+          <tbody>
+            <button class="OCComplete" onclick="exitOC()">Exit Omega Challenge</button>
+            <button class="singularity" id="ocConfEnter" onclick="game.ocConf.enter=1-game.ocConf.enter" style="margin:5px">Enter Omega Challenge Confirmation: OFF</button>
+            <button class="singularity" id="ocConfExit" onclick="game.ocConf.exit=1-game.ocConf.exit" style="margin-right:5px">Exit Omega Challenge Confirmation: OFF</button>
+            <button class="singularity" id="ocConfDouble" onclick="game.ocConf.double=1-game.ocConf.double">Perform Double Collapse upon entering Omega Challenge: OFF</button>
+            <p>When you enter an Omega Challenge, the factor boost multiplier from Singularity doesn't work. You also lose your Double Incrementy production upgrades, but you'll get them back after you exit the challenge.
+            Omega Challenges can be completed a fractional number of times past 1. <text id="totalOmegaChalComp">Your 15 Omega Challenge Completions are multiplying booster gain by 3.02</text></p>
+            
+            <tr>
+              <td><button class="challenge OmegaRun" onclick="enterOC(1)" id="oc1" style="font-size: 9pt">Omega Challenge 1<br>Pick two challenges and play in them. You can't complete any challenges and Factors are useless. You can buy booster upgrades, even in challenge 6+<text id="omegaChal1Combo" style="display:none"><br>Current Combo: <u>Challenge 1</u> + <u>Challenge 2</u></text><p></p><text id="oc1G">Goal: 1.000e16 Incrementy</text><br>Current Reward: Complete all challenges 3 times per completion^1.4, up to most ever completed.<br>Completed: <text id="oc1E">x1.00</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(2)" id="oc2" style="font-size: 10pt">Omega Challenge 2<br>All doublings are disabled. You also can't enter even numbered challenges<p></p><text id="oc2G">Goal: 1.000e33 OP</text><br>Current Reward: Boost all doubling to x<text id="double">3.00</text><br>Completed: <text id="oc2E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(3)" id="oc3" style="font-size: 10pt">Omega Challenge 3<br>Booster upgrades are disabled<p></p><text id="oc3G">Goal: 1.000e33 OP</text><br>Reward: The left column of Booster upgrades are much cheaper (cost^0.5^x)<br>Completed: <text id="oc3E">x1.00 (0/3)</text></button></td>
+            </tr>
+            <tr id="ocSet2">
+              <td><button class="challenge collapse" onclick="enterOC(4)" id="oc4" style="font-size: 10pt">Omega Challenge 4<br>Factor Shifts and the second Incrementy upgrade are much more expensive<p></p><text id="oc4G">Goal: 1.000e33 OP</text><br>Reward: Factor Shifts are much cheaper everywhere you go, x^<text id="oc4Effect">0.500000</text><br>Completed: <text id="oc4E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(5)" id="oc5">Omega Challenge 5<br>Aleph power is stuck at x0.0001<p></p><text id="oc5G">Goal: 1.000e33 OP</text><br>Reward: Aleph power is stronger<br>Currently: ^<text id="oc5Effect"></text><br>Completed: <text id="oc5E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(6)" id="oc6" style="font-size: 10pt">Omega Challenge 6<br>You can't normally buy Singularity Functions upgrade and the Singularity is stuck at 1. You also can't enter normal challenges<p></p><text id="oc6G">Goal: 1.000e33 OP</text><br>Reward: Raise base incrementy gain to the <text id="oc6Effect"></text> (cap at 1.1 completions)<br>Completed: <text id="oc6E">x1.00 (0/3)</text></button></td>
+            </tr>
+            <tr id="ocSet3">
+              <td><button class="challenge collapse" onclick="enterOC(7)" id="oc7">Omega Challenge 7<br>Booster upgrades are disabled<p></p><text id="oc7G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc7E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(8)" id="oc8">Omega Challenge 8<br>Booster upgrades are disabled<p></p><text id="oc8G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc8E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(9)" id="oc9">Omega Challenge 9<br>Booster upgrades are disabled<p></p><text id="oc9G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc9E">x1.00 (0/3)</text></button></td>
+            </tr>
+            <tr id="ocSet4">
+              <td><button class="challenge collapse" onclick="enterOC(10)" id="oc10">Omega Challenge 10<br>Redacted<p></p><text id="oc10G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc10E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(11)" id="oc11">Omega Challenge 11<br>Redacted<p></p><text id="oc11G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc11E">x1.00 (0/3)</text></button></td>
+              <td><button class="challenge collapse" onclick="enterOC(12)" id="oc12">Omega Challenge 12<br>Redacted<p></p><text id="oc12G">Goal: 1.000e33 OP</text><br>Reward: There is a cap for how expensive a booster upgrade can cost.<br>Completed: <text id="oc12E">x1.00 (0/3)</text></button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="collapse" style="width: 904px;height:150px;margin:2px;text-align:center;font-size:20pt" id="ocFBpsReq"><p>Unlock the next set of Omega Challenges!</p>Requirement: <text>500,000,000</text> Factor Boosts per second</div>
+    
+      </div>
+      <div id="csubTab9" style="width: 100%;text-align:center">
+        <button id="enterIncrementyverseButton">Enter the Incrementyverse<text style="font-size:30px" id="enterIncrementyverseRequirementText"><br>Requirement: 1e540 Incrementy<br>Coming Soon!</text></button>
+        <p style="text-align:center">Current Best Incrementy: <text id="bestIncrementy">2.03e540</text> / 1.00e540</p>
+        <p style="text-align:center"><i>When the universe ends, a world out there is waiting to be explored.</i></p>
+        <p style="text-align:center"><i>By entering the Incrementyverse, you're willing to lose your life in pursuit of Infinity</i></p>
+        <text style="color:#00FF00">Pro:
+        <p>
+          Remove the Incrementy multiplier Cap
+          </p></text>
+        <text style="color:#FF0000">Cons: 
+        <p>
+          Immediately exit any challenges/omega challenges you're in without losing Incrementy
+          <br>Manifolds are instantly sacrificed to the Singularity
+          <br>Remove the ability to Markup (you can still gain 1% of passive pending OP per second)
+          <br>Remove Factors
+          <br>Remove Factor Shifts
+          <br>Remove Factor Boosts
+          <br>Remove the Dynamic Factor
+          <br>Remove the Quadrupler
+          <br>Remove Darkness
+          <br>Remove Booster Upgrades
+          <br>Remove Challenges
+          <br>Remove Collapsing
+          <br>Remove Aleph Power
+          <br>Remove Aleph Upgrades
+          <br>Remove Autoprestigers
+          <br>Remove the first 7 rows of Singularity Functions
+          <br>Remove Omega Challenges
+          <br><b style="font-size:40pt">Oh, and you die lol</b>
+          </p></text>
       </div>
     </div>
   </body>

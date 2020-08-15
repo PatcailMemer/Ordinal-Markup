@@ -91,6 +91,7 @@ function setMarks() {
     ]
   ];
   let bruh = ordMarks[1]
+  let bruh2 = ordMarks[2]
   let tempList = [];
   tempList.push("ψ(ε<sub>Ω2</sub>x)");
   ordMarks[1].forEach(item => {
@@ -103,20 +104,31 @@ function setMarks() {
   ordMarks[1] = ordMarks[1].concat(tempList);
   tempList = [];
   tempList.push("ψ(ε<sub>Ω2</sub><sup>x</sup>)");
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ω</sup>x)");
   ordMarks[1].forEach(item => {
-    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>").concat("marker").replace(/\)marker/g,"</sup>)"));
+    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>Ω</sup>"));
+  });
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ω+x</sup>)");
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ω2</sup>x)");
+  ordMarks[1].forEach(item => {
+    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>Ω2</sup>"));
   });
   ordMarks[1] = ordMarks[1].concat(tempList);
   tempList = [];
-  tempList.push("ψ(ε<sub>Ω2</sub><sup>ε<sub>Ω2</sub><sup>x</sub></sup>)");
-  bruh.forEach(item => {
-    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>ε<sub>Ω2</sub><sup>").concat("marker").replace(/\)marker/g,"</sup></sup>)"));
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ω2+x</sup>)");
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ωx</sup>)");
+  tempList.push("ψ(ε<sub>Ω2</sub><sup>Ω<sup>2</sup></sup>x)");
+  ordMarks[1].forEach(item => {
+    tempList.push(item.replace("ψ(", "ψ(ε<sub>Ω2</sub><sup>Ω<sup>2</sup></sup>"));
   });
   ordMarks[1] = ordMarks[1].concat(tempList);
+  
+  tempList = [];
   
   ordMarks[1].forEach(item => {
     ordMarks[0].push(item);
   });
+  
   ordMarks[0][0] = "ψ(x)";
   ordMarks[0][1] = "ψ(Ωx)";
   tempList = [];
@@ -129,5 +141,29 @@ function setMarks() {
     tempList.push(item.replace("ψ(", "ψ(ε(Ω2)^(2)×"));
   });
   ordMarks[2] = ordMarks[2].concat(tempList);
+  tempList = [];
+  tempList.push("ψ(ε(Ω2)^(x))");
+  tempList.push("ψ(ε(Ω2)^(Ω)×x)");
+  ordMarks[2].forEach(item => {
+    tempList.push(item.replace("ψ(", "ψ(ε(Ω2)^(Ω)×"));
+  });
+  tempList.push("ψ(ε(Ω2)^(Ω+x))");
+  tempList.push("ψ(ε(Ω2)^(Ω2)×x)");
+  ordMarks[2].forEach(item => {
+    tempList.push(item.replace("ψ(", "ψ(ε(Ω2)^(Ω2)×"));
+  });
+  ordMarks[2] = ordMarks[2].concat(tempList);
+  tempList = [];
+  tempList.push("ψ(ε(Ω2)^(Ω2+x))");
+  tempList.push("ψ(ε(Ω2)^(Ωx))");
+  tempList.push("ψ(ε(Ω2)^(Ω^2)×x)");
+  ordMarks[2].forEach(item => {
+    tempList.push(item.replace("ψ(", "ψ(ε(Ω2)^(Ω^2)×"));
+  });
+  ordMarks[2] = ordMarks[2].concat(tempList);
+  tempList = [];
+  ordMarks[0].push("Endgame reached x")
+  ordMarks[1].push("Endgame reached x")
+  ordMarks[2].push("Endgame reached x")
 }
 
