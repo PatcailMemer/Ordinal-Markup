@@ -1,8 +1,9 @@
 var canvas = document.getElementById("tree");
 var ctx = canvas.getContext("2d");
+let canvasUpdate = 0
 
 window.addEventListener("resize", resizeCanvas);
-
+window.addEventListener("load", resizeCanvas);
 function resizeCanvas() {
     canvas.width = 0;
     canvas.height = 0;
@@ -39,8 +40,9 @@ function drawStudyTree() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = 0;
     canvas.height = 0;
+  canvasUpdate=1-canvasUpdate
     canvas.width = document.body.scrollWidth;
-    canvas.height = document.body.scrollHeight;
+    canvas.height = document.body.scrollHeight+canvasUpdate;
   let arr // this is definitely necessary yes it is
 	for (arr in singfunctions) {
 		  singfunctions[arr].prereq.forEach(parent => {
