@@ -1013,7 +1013,7 @@ function render() {
   get("bup10").innerHTML =
     "The base is always five below " +
     displayOrd(4e270) +
-    "<br><br>73 Boosters";
+    ". Buying this resets your ordinal<br>73 Boosters";
   get("aup4").innerHTML =
     "OP boosts Tier 1 and 2 by x" +
     Math.log10(Math.log10(1e10 + game.OP)).toFixed(3) +
@@ -1459,7 +1459,7 @@ function bup(x, spectate = 0) {
           } else {
             if (x % 4 != 0) game.boosters -= Math.round(bupUpgradeCosts[x - 1]**(x%4==1?0.5**getOCComp(3):1));
             game.upgrades.push(x);
-	    if (x==9) {
+            if (x==9||x==10) {
               game.ord=0
             }
             get("bup" + x).classList.remove("canbuy");
