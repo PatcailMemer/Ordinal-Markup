@@ -1459,6 +1459,9 @@ function bup(x, spectate = 0) {
           } else {
             if (x % 4 != 0) game.boosters -= Math.round(bupUpgradeCosts[x - 1]**(x%4==1?0.5**getOCComp(3):1));
             game.upgrades.push(x);
+	    if (x==9) {
+              game.ord=0
+            }
             get("bup" + x).classList.remove("canbuy");
             get("bup" + x).classList.add("bought");
             get("bup" + x).classList.remove("locked");
