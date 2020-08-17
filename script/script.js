@@ -1178,7 +1178,7 @@ They are based on your Singularity level.`
     game.darkManifolds = Math.floor(game.decrementy / Math.log10(game.sfBought.includes(31)?2:3));
   }
   if (getBaseless()>=4 && calcIncrementyMult() >= (game.iups[5] == 1 ? 2 : 3) ** (game.manifolds + 1)) {
-    game.manifolds=Math.max(game.manifolds,Math.floor(Math.log2(calcIncrementyMult())))
+    game.manifolds=Math.max(game.manifolds,Math.floor(Math.log2(calcIncrementyMult()/1.2)))
   }
   get("oc6Effect").innerHTML=Math.max(1,Math.min(getOCComp(6),1.1)**0.5).toFixed(6)
   get("enterIncrementyverse").style.display=game.sfEver.includes(41)?"inline":"none"
@@ -1366,7 +1366,7 @@ function chalbut(i) {
 function getManifolds() {
   if (
     calcIncrementyMult() >=
-    (game.iups[5] == 1 ? 2 : 3) ** (game.manifolds + 1)
+    1.2*(game.iups[5] == 1 ? 2 : 3) ** (game.manifolds + 1)
   ) {
     if (getBaseless()<4) game.incrementy = EN(0);
     game.manifolds += 1;
