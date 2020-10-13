@@ -94,7 +94,7 @@ function enterOC(c) {
     collapse()
   }
   game.incrementyDouble=game.iups[1]
-  game.iups[1]=0
+  game.iups[1]=EN(0)
   game.sfBought = [];
   game.spentFunctions = 0;
   singfunctions.forEach(func => func.update())

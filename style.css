@@ -554,7 +554,7 @@ invisible {
   width: 50%;
 }
 
-#enterIncrementyverseButton {
+.enterIncrementyverseButton {
   border-radius: 20px;
   display:block;
   width: 50%;
@@ -574,7 +574,105 @@ invisible {
   text-shadow: 6px 6px 6px #0000FF;
 }
 
-#enterIncrementyverseButton:hover {
+.enterIncrementyverseButton:hover {
   text-shadow: 6px 6px 6px #5000FF;
 }
 
+#whitescreen {
+  margin: auto;
+  width: 100%;
+  height: calc(3 * (100%-300px) + 300px);
+  display: block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: white;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  display:none
+}
+
+#achievementTable td {
+  width:120px;
+  height:120px;
+  background: grey;
+  border-color: #00FF00;
+  border-radius: 5px;
+  border-weight: 10px;
+}
+
+[tooltip] {
+	position: relative;
+	z-index: 2;
+}
+
+[tooltip]:before,
+[tooltip]:after {
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+}
+
+[tooltip]:before {
+	font-size: 12px;
+	position: absolute;
+	top: -10px;
+	margin-bottom: -80px;
+	padding: 10px;
+	border-radius: 6px;
+  width: 100px;
+	background-color: #000;
+	color: #fff;
+	content: attr(tooltip);
+	transition-duration: 0.2s;
+	z-index: 4;
+  text-align: center;
+  left: calc(50%);
+  -ms-transform: translate(-50%);
+  transform: translate(-50%);
+}
+
+[tooltip]:hover:before {
+	visibility: visible;
+	opacity: 1;
+  z-index:5;
+}
+
+.fractalEngineMachinesOne {
+  width:100%;
+}
+
+.fractalEngineMachinesTwo {
+  width:initial;
+  display:flex;
+  flex-direction: column;
+}
+
+#flash {
+  width: 100%;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  position: absolute;
+  top: 0;
+  margin: 0;
+  left: 0;
+  text-align: center;
+  padding: 10% 0;
+  font-size: 50px;
+}
+
+
+#isubTab3 td {
+  width:25%;
+}
+
+#isubTab3 button {
+  width:100%;
+  display:block;
+  text-align:center;
+  margin:auto;
+  height:100px;
+  font-size:18px;
+}

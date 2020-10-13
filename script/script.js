@@ -10,6 +10,12 @@ let you_found_an_easter_egg = "thoncc"
 /* eslint-disable */
 //let ordMarks = [];
 let numMarks = [];
+
+Number.prototype.toNumber = function() {
+    var target = this;
+    return this+0;
+}
+
 setMarks();
 const BHO = V(27);
 /* eslint-enable */
@@ -71,7 +77,7 @@ const dupCosts = [
 ];
 const baselessMile = [5**75,5**90,5**115,5**120,Infinity]
 let ordColor = "no";
-const EN = ExpantaNum;
+
 const get = x => document.getElementById(x);
 const musicLink = [
   //"https://cdn.glitch.com/03a4b67b-6f18-4f6d-8d37-50a18fb615c8%2FGoing%20Down%20by%20Jake%20Chudnow%20%5BHD%5D.mp3?v=1581538237884",
@@ -115,7 +121,7 @@ if (
 } else {
   AF = 0;
 }
-
+const ach = document.querySelectorAll("#achievementTable td")
 reset();
 get("music").loop = true;
 get("music").volume = 0.5;
@@ -129,8 +135,12 @@ render();
 singfunctions.forEach(func => func.update())
 resizeCanvas();
 
+function updateAchs() {
+  
+}
 
 function increment(manmade = 0) {
+
   if (manmade === 0 || game.manualClicksLeft >= 0.5) {
     if (
       manmade === 1 &&
@@ -144,7 +154,7 @@ function increment(manmade = 0) {
     }
     clickCoolDown = 2;
   }
-  if (manmade === 1) render();
+  //if (manmade === 1) render();
 }
 
 function maximize(manmade = 0) {
@@ -164,7 +174,7 @@ function maximize(manmade = 0) {
     game.over = 0;
     clickCoolDown = 2;
   }
-  if (manmade === 1) render();
+  //if (manmade === 1) render();
 }
 
 let deltaTime;
@@ -175,7 +185,14 @@ const calculate = window.setInterval(() => {
 }, game.msint);
 
 function loop(unadjusted, off = 0) {
-  let ms=unadjusted
+  checkAchieve()
+  updateOptions()
+  if (game.incrementyverse == 1) {
+    incrementyverseLoop(Math.max(0,unadjusted),off)
+    game.lastTick = Date.now();
+    return
+  }
+  let ms=Math.max(0,unadjusted)
   if (inChal(8)&&game.decrementy<10&&unadjusted != 0) {
     ms=50
   }
@@ -496,6 +513,10 @@ function loop(unadjusted, off = 0) {
 }
 
 function render() {
+  if (game.incrementyverse == 1) {
+    incrementyverseRender()
+    return
+  }
   const outSize = fghexp(
     ((game.ord % game.base ** 3) + 0.1) / game.base ** 2,
     Math.pow(2, Math.floor(((game.ord % game.base ** 2) + 0.1) / game.base)) *
@@ -539,7 +560,12 @@ function render() {
     $.notify(`Ordinal Level ${ordLevel} Reached! ` + (ordLevel==51?"(You should start repeatedly markuping and max all)":"") + (ordLevel==100? "(Get ready for base 2!)":""), "achieve");
   }
   get("psiLevel").innerText = ordLevel
-  get("nextPsiLevel").innerHTML = displayOrd(getPsiReq(ordLevel+1)(game.base),game.base)
+  if (get("Tab4").style.display == "block") {
+  if (ordLevel == 154) {
+    get("nextPsiLevel").innerHTML = displayHugeOrd(ordThreshData["buchholz e(W2+1)"])
+  } else {
+    get("nextPsiLevel").innerHTML = displayOrd(getPsiReq(ordLevel+1)(game.base),game.base)
+  }}
   get("bestPsiLevel").textContent=game.bestPsi
   if (game.infUnlock === 1) {
     get("infinityTabButton").style.display = "inline-block";
@@ -731,7 +757,7 @@ function render() {
     "x";
   get("incrementyText2").textContent =
     "You are getting " +
-    beautifyEN(getIncrementyRate(1000)) +
+    beautifyEN(getIncrementyRate(1000).div((game.challenge == 9) ? 1e15 : 1)) +
     " incrementy per second";
   get("iup1").innerHTML =
     "Base Incrementy multiplier is raised to the 1.05<br>Cost: " +
@@ -753,25 +779,6 @@ function render() {
       ? ""
       : "+" + (0 - game.sing.m));
   get("manifoldBoost").textContent = getManifoldEffect().toFixed(3);
-  get("changeOrdNotation").textContent =
-    "Current Ordinal Notation: " +
-    ["Madore's", "Buchholz's", "Convenient"][game.buchholz];
-  get("changeTheme").textContent =
-    "Current Theme: " +
-    ["Light", "Dark", "Space (https://wallpaperplay.com/page-terms)"][
-      game.theme
-    ];
-  get("changeInt").textContent = "Millisecond Interval: " + game.msint + "ms";
-  get("changeOrdLengthLess").innerHTML =
-    "Maximum Ordinal Length below " +
-    displayOrd(10 ** 270 * 4) +
-    ": " +
-    game.maxOrdLength.less;
-  get("changeOrdLengthMore").innerHTML =
-    "Maximum Ordinal Length above " +
-    displayOrd(10 ** 270 * 4) +
-    ": " +
-    game.maxOrdLength.more;
   get("getManifolds").innerHTML =
     "Reset incrementy for a manifold.<br>Need: " +
     (((game.iups[5] == 1 ? 2 : 3) ** (game.manifolds + 1))*1.2).toFixed(2) +
@@ -846,9 +853,6 @@ function render() {
   for (let i = 1; i <= 9; i++) {
     iup(i, 1);
   }
-  get("changeColor").textContent =
-    "Colors: " + (game.colors === 1 ? "ON (high performance cost)" : (game.colors === 2 ? "Flashing" : "OFF"));
-  get("changeMusic").innerHTML = "Music: " + musicName[game.music];
   get("incrementyText3").innerHTML =
     "You start gaining incrementy when you reach " + displayOrd(4e270);
   get("decrementyText").textContent =
@@ -1008,8 +1012,6 @@ function render() {
     game.collapseTime.toFixed(1) +
     "s in collapse)" + "<p>Most Cardinals collapsed at once: " + beautify(game.mostCardOnce) +
     (game.aups.includes(8)?", providing a constant " + beautify(game.mostCardOnce.times(0.03)) + " Cardinals per second":"") + "</p>";
-  get("changeOffline").textContent =
-    "Offline Progress: " + (game.offlineProg == 1 ? "ON" : "OFF");
   get("bup10").innerHTML =
     "The base is always five below " +
     displayOrd(4e270) +
@@ -1081,8 +1083,6 @@ function render() {
     "Autocomplete Challenges: " + (game.qolSM.acc == 1 ? "ON" : "OFF");
   get("ca").textContent =
     "Collapse Autoprestiger: " + (game.qolSM.ca == 1 ? "ON" : "OFF");
-  get("changeHotKeys").textContent =
-    "Hotkeys: " + (game.hotkeysOn == 1 ? "ON" : "OFF");
   get("fbps").style.display = getFBps()/getFBmult() >= 1 ? "block" : "none";
   get("fbps").textContent =
     "You should be getting a total of " +
@@ -1127,7 +1127,6 @@ function render() {
     "Upgrade with<br>" +
     beautifyEN(1e20 * (game.sfBought.includes(21)?30:100) ** game.sing.nw) +
     " ℵ<sub>ω</sub>";
-  get("changeThicc").textContent="T H I C C Buttons: " + (game.thicc==1?"ON":"OFF")
   for (let i=0;i<3;i++) {
     document.getElementsByClassName("canThicc")[i].classList.remove("thicc")
     if (game.thicc==1) document.getElementsByClassName("canThicc")[i].classList.add("thicc")
@@ -1191,6 +1190,7 @@ They are based on your Singularity level.`
   if (game.challenge>0||game.chal8==1||game.chal9==1) {
     challengeProject()
   }
+  get("incrementyverseTabButton").style.display = "none"
 }
 
 function dup(n, spectate = 0) {
@@ -1319,7 +1319,7 @@ function iup(n, spectate = 0) {
     let cost=EN(iupCosts[n - 1]).pow((EN(1).add(game.iups[n - 1])).times((n==2&&game.omegaChallenge==4)+1))
     if (game.incrementy.gte(cost)) {
       if (spectate == 0) {
-        game.iups[n - 1] += 1;
+        game.iups[n - 1] = game.iups[n - 1].add(1);
         if (getBaseless()<4) game.incrementy = game.incrementy.minus(cost);
       } else {
         get("iup" + n).classList.add("boosterButton");
@@ -1685,8 +1685,9 @@ function displayOrd(
           HSL(tempvar * 8)
         )
       : ordMarks[game.buchholz][tempvar]
-    ).replace(
-      "x",
+    ).split("x");
+
+    output.splice(1, 0,
       trim == game.maxOrdLength.more - 1
         ? colour == 1
           ? color("...", ["..."], HSL(tempvar * 8))
@@ -1703,7 +1704,7 @@ function displayOrd(
           : ""
         : tempvar2
     );
-    return output;
+    return output.join("");
   } else if (getSingLevel() == 1&&ord==BHO) {
     if (ordColor == "no") ordColor = HSL(40 * 8);
     return colour == 1 ? color("BHO", ["BHO"], HSL(80 * 4)) : "BHO";
@@ -1801,6 +1802,10 @@ function beautify(number, f = 0) {
 
 function beautifyEN(n, f = 0) {
   let x = EN(n);
+  if (x.gte("eeeee10")) {
+    return `10{${x.array[x.array.length-1][0]+1}}${x.array[x.array.length-1][1]+2}`
+    return x.toString()
+  }
   if (x.lte(1e5)) {
     return f === 0 ? x.floor().toString() : x.toNumber().toFixed(f);
   } else if (x.lte("ee5")) {
@@ -1813,7 +1818,7 @@ function beautifyEN(n, f = 0) {
     if (mantissa == "10.00") mantissa = "1.00";
     return mantissa + "e" + beautify(exponent);
   } else {
-    return x.floor().toString();
+    return "e" + beautifyEN(x.log10())
   }
 }
 
@@ -1844,11 +1849,16 @@ function Tab(t) {
   get("Tab5").style.display = "none";
   get("Tab6").style.display = "none";
   get("Tab7").style.display = "none";
+  get("Tab8").style.display = "none";
   get("Tab" + t).style.display = "block";
   subTab(game.subTab);
   bsubTab(game.bsubTab);
   csubTab(game.csubTab);
+  isubTab(game.isubTab);
   if (game.music >= 1) get("music").play();
+  if (t==4) {
+    setAchieveText()
+  }
 }
 
 function subTab(t) {
@@ -1870,13 +1880,22 @@ function bsubTab(t) {
 }
 
 function csubTab(t) {
-  [1,2,3,4,5,6,7,8,9].forEach(i => get("csubTab"+i).style.display = "none")
+  [1,2,3,4,5,6,7,8,9,10,11,12].forEach(i => get("csubTab"+i).style.display = "none")
   get("csubTab" + t).style.display = "inline-block";
   game.csubTab = t;
-  drawStudyTree()
+  if (t==6) {
+  singfunctions.forEach(func => func.update());
+  drawStudyTree();
+  }
   //get("body").style["background-size"]="cover"
   //Site: https://wallpaperplay.com/
   //Terms: https://wallpaperplay.com/page-terms
+}
+
+function isubTab(t) {
+  [1,2,3].forEach(i => get("isubTab"+i).style.display = "none")
+  get("isubTab" + t).style.display = "inline-block";
+  game.isubTab = t;
 }
 
 var autoSave = window.setInterval(function() {

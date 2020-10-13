@@ -76,9 +76,15 @@ let ordThresh = {
   154: () => BHO*342,
   155: () => Infinity
 }
-
+//EN(3).pow(41*3**27)
 
 let getPsi = ord => {
+  if (game.incrementyverse==1) {
+    let level = 154
+    if (game.bigBrainOrd.gte(ordThreshData["buchholz e(W2+1)"])) level=155
+    if (game.bigBrainOrd.gte(Infinity)) level=156
+    return level
+  }
   let temp = Object.keys(ordThresh)
   temp.reverse()
   for(const i in temp) {
@@ -87,6 +93,9 @@ let getPsi = ord => {
 }
 
 let getPsiReq = level => {
+  if (level >= 155) {
+    return [ordThreshData["buchholz e(W2+1)"],EN(Infinity)][level-155]
+  }
   let k
   for (k in ordThresh) {
     if (level<=k) {
@@ -95,3 +104,4 @@ let getPsiReq = level => {
   }
   return 0
 }
+

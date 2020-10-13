@@ -24,7 +24,7 @@ Oops, ignore all the `!important`, please.
    margin: center;
    width: 120px !important;
    height: 60px !important;
-   font-size: 12px !important;
+   font-size: 10px !important;
   }
   .tabButton, .infinityTabButton,
   .boosterTabButton, .collapseTabButton {
