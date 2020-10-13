@@ -170,13 +170,20 @@ function getDecrementyRate(x) {
 }
 
 function getIncrementyRate(x) {
-  if (game.ord < 1e270) {return EN(0);}
+  if (game.ord < 1e270&&game.incrementyverse==0) {return EN(0);}
+  if (game.incrementyverse==1) {
+    return game.bigBrainOrd.times(
+      EN(2).times(game.sfBought.includes(101)?EN(getSingLevel()).minus(game.spentENFunctions).max(3).div(3).floor():EN(1))
+      .pow(game.iups[1]))
+      .times(game.ivups.includes(1)?EN(1e120).pow(game.ivups.length):1).times(x/1000)//.times(1e240)//.times(1e220)
+  }
+  //(getSingLevel().toNumber()-2500)*0.65+2
   let ordRate = game.ord / 1e270;
   if (game.ord > BHO) ordRate = (BHO / 1e270) * 3 ** (game.ord / BHO - 1);
   return EN(
     ((ordRate * (x/1000)))
   ) .pow(Math.max(1,Math.min(getOCComp(6),1.1)**0.5))
-    .times((game.omegaChallenge == 2?1:double()) ** game.iups[1] *
+    .times((game.omegaChallenge == 2?1:double()) ** (game.iups[1].toNumber()) *
       (game.iups[7] === 1 ? getDynamicFactorCap() : 1))
     .times(game.aups.includes(5) ? game.assCard[2].mult : 1)
     .times(
@@ -254,14 +261,16 @@ function calcOPPS(fs = game.factorShifts) {
 }
 
 function calcIncrementyMult(i = game.incrementy) {
-  return ExpantaNum(i)
+  let k=ExpantaNum(i)
     .add(10)
     .log10()
     .pow(ExpantaNum(1.05).pow(game.iups[0]))
-    .times(ExpantaNum(1.2).pow(game.iups[2]))
-    .times(1.2)
-    .min(1e120)
-    .toNumber();
+    .times(ExpantaNum(EN(1.2).times(game.sfBought.includes(102)?calcSF102Effect():1)).pow(game.iups[2]))
+    .times(1.2);
+  if (game.incrementyverse == 0) {
+    k=k.min(1e120).toNumber();
+  }
+  return k
 }
 
 function calcFactorBoostTime() {
@@ -388,6 +397,9 @@ function increaseOrdTier2(x) {
 }
 
 function getSingLevel() {
+  if (game.incrementyverse==1) {
+    return game.multifolds.add(game.sing.dm+game.sing.nw+1)
+  }
   return 1 + game.sing.dm + game.sing.m + game.sing.nw;
 }
 
@@ -507,5 +519,4 @@ function getSumOC() {
   return getOCComp(1)+getOCComp(2)+getOCComp(3)+getOCComp(4)+getOCComp(5)+getOCComp(6)+getOCComp(7)+getOCComp(8)+getOCComp(9)+getOCComp(10)+getOCComp(11)+getOCComp(12)
 
 }
-
 

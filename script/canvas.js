@@ -46,7 +46,7 @@ function drawStudyTree() {
   let arr // this is definitely necessary yes it is
 	for (arr in singfunctions) {
 		  singfunctions[arr].prereq.forEach(parent => {
-			if (game.sfEver.includes(parent)) {drawTreeBranch("SF" + parent,"SF"+singfunctions[arr].id.toString());}
+			if (game.sfEver.includes(parent)&&(game.incrementyverse==0||parent>=77)) {drawTreeBranch("SF" + parent,"SF"+singfunctions[arr].id.toString());}
 		}) // prereq is id lmao not the object itself
 	} //  i know that's bad but i mean there's no use for the other stuff also it would be a lot harder to test if the prerequisites were met also you forgot to make it update 
 } // let me check, in the render loop, it draws the study tree also it doesn't update the stuff when you respec

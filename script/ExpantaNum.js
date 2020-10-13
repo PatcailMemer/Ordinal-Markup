@@ -1,6 +1,7 @@
 /* eslint-disable */
 //Code snippets and templates from Decimal.js
 
+
 ;(function (globalScope) {
   "use strict";
 
@@ -33,7 +34,7 @@
       // 1000 means there are at maximum of 1000 elements in array.
       // It is not recommended to make this number too big.
       // `ExpantaNum.maxOps = 1000;`
-      maxOps: 1e2,
+      maxOps: 3,
       
       // Level of debug information printed in console
       // 
@@ -1744,3 +1745,5 @@
     globalScope.ExpantaNum = ExpantaNum;
   }
 })(this);
+
+const EN = ExpantaNum;

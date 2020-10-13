@@ -12,7 +12,9 @@ const keybinds = {
 	},
     c: () => {
 		if (game.collapseUnlock === 1) collapse(1);
-	},
+	}//,
+  //enter: () => {game.incrementyverse == 1?alert("We disabled enter keys in Incrementyverse"):0}
+
 };
 
 // Declaring it once is probably faster

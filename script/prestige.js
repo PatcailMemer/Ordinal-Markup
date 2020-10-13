@@ -1,7 +1,7 @@
 "use strict";
 
 function infinity(manmade = 0) {
-  if (game.canInf) {
+  if (game.canInf && !game.incrementyverse) {
     if (calcOrdPoints(game.ord, game.base, game.over) >= 1e265) {
       game.OP = Math.max(game.OP, calcOrdPoints(game.ord, game.base, game.over));
     } else {
@@ -19,7 +19,7 @@ function infinity(manmade = 0) {
     game.manualClicksLeft = 1000;
   }
   loop(0);
-  if (manmade === 1) render();
+  //if (manmade === 1) render();
 }
 
 // There was "manmade = 0" as the args, but manmade was never used, so I removed it.
