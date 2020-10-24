@@ -446,7 +446,7 @@ function loop(unadjusted, off = 0) {
       ? (ms / 1000) * game.shiftAuto.toNumber()
       : 0;
   if (game.cAutoLoop.shift >= 1) {
-    if (!(game.advAutoShift==1&&game.factorShifts==5&&inChal(8))) factorShift();
+    if (!(game.advAutoShift==1&&game.factorShifts>=5&&inChal(8))) factorShift();
     game.cAutoLoop.shift %= 1;
   }
   game.cAutoLoop.boost +=
@@ -624,7 +624,7 @@ function render() {
     ? "inline-block"
     : "none";
   get("ordinalPointsDisplay").innerHTML =
-    `You have ${fbvps>=10&&game.OP>=1e270?calcOPPS()*game.msint/1000:beautify(game.OP)} Ordinal Points`;
+    `You have ${fbvps>=10&&game.OP>=1e270?beautify(calcOPPS()*game.msint/1000):beautify(game.OP)} Ordinal Points`;
   get("succAutoAmount").innerHTML =
     `You have ${logbeautify(game.succAuto)} successor autoclickers, clicking the successor button ${(game.succAuto > 1e265
       ? logbeautify(game.succAuto)
