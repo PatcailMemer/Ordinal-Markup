@@ -14,7 +14,7 @@ function exitChallenge() {
   if (game.qolSM.abu === 1 && game.leastBoost <= 1.5) {
     refundAction();
   }
-  if (inAnyChal()) {
+  if (inAnyChal() && game.omegaChallenge !== 1) {
     resetEverythingBoostDoes();
   }
 }
