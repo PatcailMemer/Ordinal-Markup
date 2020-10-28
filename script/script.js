@@ -446,7 +446,7 @@ function loop(unadjusted, off = 0) {
       ? (ms / 1000) * game.shiftAuto.toNumber()
       : 0;
   if (game.cAutoLoop.shift >= 1) {
-    if (!(game.advAutoShift==1&&game.factorShifts>=5&&inChal(8))) factorShift();
+    if (!(game.advAutoShift==1&&game.factorShifts==5&&inChal(8))) factorShift();
     game.cAutoLoop.shift %= 1;
   }
   game.cAutoLoop.boost +=
@@ -468,7 +468,7 @@ function loop(unadjusted, off = 0) {
     game.cAutoLoop.boost %= 1;
   }
   if (game.aups.includes(8))
-    cardinalLoop = cardinalLoop.add(game.mostCardOnce.times(ms / 33333));
+    cardinalLoop = cardinalLoop.add(game.mostCardOnce.times(ms * 0.00003));
   if (cardinalLoop.gte(1)) {
     game.cardinals = game.cardinals.add(cardinalLoop.floor());
     cardinalLoop = cardinalLoop.mod(1);
