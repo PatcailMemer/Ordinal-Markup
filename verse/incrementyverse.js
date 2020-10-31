@@ -580,7 +580,7 @@ function arrowIncrease(num,order,rep) { //Apply (10{order})^rep num
 }
 
 function buyFractalEngine(x) {
-  let cost=FGH(game.fractalEngine[x-1].level.add(1),EN(game.fractalBase)).times(EN(game.fractalShift).tetr(3))
+  let cost=FGH(game.fractalEngine[x-1].level.add(1),EN(getFractalBase())).times(EN(game.fractalShift).tetr(3))
   if (game.incrementy.gte(cost)) {
     game.incrementy=game.incrementy.minus(cost)
     game.fractalEngine[x-1].own=game.fractalEngine[x-1].own.add(1)

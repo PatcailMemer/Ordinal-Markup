@@ -11,11 +11,13 @@ const ocGoals = [
 
 
 function exitChallenge() {
-  if (game.qolSM.abu === 1 && game.leastBoost <= 1.5) {
-    refundAction();
-  }
-  if (inAnyChal()) {
-    resetEverythingBoostDoes();
+  if (game.omegaChallenge !== 1){
+    if (game.qolSM.abu === 1 && game.leastBoost <= 1.5) {
+      refundAction();
+    }
+    if (inAnyChal()) {
+      resetEverythingBoostDoes();
+    }
   }
 }
 

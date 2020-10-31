@@ -468,7 +468,7 @@ function loop(unadjusted, off = 0) {
     game.cAutoLoop.boost %= 1;
   }
   if (game.aups.includes(8))
-    cardinalLoop = cardinalLoop.add(game.mostCardOnce.times(ms / 33333));
+    cardinalLoop = cardinalLoop.add(game.mostCardOnce.times(ms * 0.00003));
   if (cardinalLoop.gte(1)) {
     game.cardinals = game.cardinals.add(cardinalLoop.floor());
     cardinalLoop = cardinalLoop.mod(1);
@@ -624,7 +624,7 @@ function render() {
     ? "inline-block"
     : "none";
   get("ordinalPointsDisplay").innerHTML =
-    `You have ${fbvps>=10&&game.OP>=1e270?calcOPPS()*game.msint/1000:beautify(game.OP)} Ordinal Points`;
+    `You have ${fbvps>=10&&game.OP>=1e270?beautify(calcOPPS()*game.msint/1000):beautify(game.OP)} Ordinal Points`;
   get("succAutoAmount").innerHTML =
     `You have ${logbeautify(game.succAuto)} successor autoclickers, clicking the successor button ${(game.succAuto > 1e265
       ? logbeautify(game.succAuto)
