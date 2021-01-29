@@ -154,7 +154,7 @@ function increment(manmade = 0) {
     }
     clickCoolDown = 2;
   }
-  //if (manmade === 1) render();
+  if (manmade === 1) render();
 }
 
 function maximize(manmade = 0) {
@@ -174,7 +174,7 @@ function maximize(manmade = 0) {
     game.over = 0;
     clickCoolDown = 2;
   }
-  //if (manmade === 1) render();
+  if (manmade === 1) render();
 }
 
 let deltaTime;
