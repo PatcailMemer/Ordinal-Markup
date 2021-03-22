@@ -33,7 +33,7 @@ const achieveData = [
       "Reach the ordinal Ψ(Ω)",
       "Reach the ordinal Ψ(Ω^Ω^2)",
       "Reach the ordinal Ψ(Ω^(Ω^2×2))",
-      "Reach the ordinal Ψ(Ω^Ω^Ω)=BHO",
+      "Reach the ordinal Ψ(Ω^Ω^Ω)=LVO",
       "Exceed the BHO limit",
       "Reach the ordinal Ψ(ε(Ω2)^Ω^2)",
     ]
