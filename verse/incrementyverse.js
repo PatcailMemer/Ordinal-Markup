@@ -97,8 +97,8 @@ function incrementyverseRender() {
   incrementyverseButtons()
   const themeSave = `<link rel="stylesheet" href="${["style/light", "style/dark", "style/space"][game.theme]}.css">`;
   if (get("theme").innerHTML !== themeSave) get("theme").innerHTML = themeSave;
-  get("incrementyverseText").textContent=`You have ${beautify(game.incrementy)} incrementy, multiplying Tier 2 by ${beautify(calcIncrementyMult())}x`
-  get("incrementyverseText2").textContent=`You are getting ${beautify(getIncrementyRate(1000))} incrementy per second`
+  get("incrementyverseText").textContent=`You have ${beautify(game.incrementy)} cheater incrementy, multiplying Tier 2 by ${beautify(calcIncrementyMult())}x`
+  get("incrementyverseText2").textContent=`You are getting ${beautify(getIncrementyRate(1000))} cheater incrementy per cheat`
   get("maxAllAutoInc").textContent=beautify(calcIncrementyMult().times(2))
   get("iiup1cost").textContent=beautify(EN(100000).pow(game.iups[0].add(1)))
   get("iiup2cost").textContent=beautify(EN(1000).pow(game.iups[1].add(1)))
@@ -106,7 +106,7 @@ function incrementyverseRender() {
   get("manifoldAmountInc").textContent=beautify(game.multifolds) + "-" + beautify(game.multifolds)
   get("manifoldAmountInc2").textContent=beautify(game.multifolds)
   let OPord = displayHugeOrd(game.bigBrainOrd)
-  let hardyDisplay = "H<sub>" + OPord + "</sub><invisible>l</invisible>(3)"
+  let hardyDisplay = "<b>BIGCHEATER</b><sub>" + OPord + "</sub><invisible>l</invisible>(3)"
   if (game.colors == 1) {
     hardyDisplay=colorWrap(hardyDisplay,"#FF0000")
   }
@@ -114,9 +114,9 @@ function incrementyverseRender() {
     hardyDisplay=colorWrap(hardyDisplay,HSL(Date.now()/100))
   }
   get("hardy").innerHTML=hardyDisplay
-  OPord = `g<sub>${OPord}</sub> (10)`
-  get("incrementyverseSuccAutoAmount").innerHTML=`You have ${OPord} successor autoclickers, clicking the successor button ${OPord} times per second`
-  get("incrementyverseLimAutoAmount").innerHTML=`You have ${OPord} maximize autoclickers, clicking the maximize button ${OPord} times per second`
+  OPord = `gcheater<sub>${OPord}</sub> (10)`
+  get("incrementyverseSuccAutoAmount").innerHTML=`You have ${OPord} successor autoclickers, clicking the successor button ${OPord} times per cheat`
+  get("incrementyverseLimAutoAmount").innerHTML=`You have ${OPord} maximize autoclickers, clicking the maximize button ${OPord} times per cheat`
   get("buysuccInc").innerHTML=`Buy Successor Autobuyer for ${OPord} OP`
   get("buylimInc").innerHTML=`Buy Limit Autobuyer for ${OPord} OP`
   get("OPdisplayInc").innerHTML=`You have ${OPord} Ordinal Points<text class="invisible">____</text>`
@@ -363,11 +363,11 @@ function die() {
       get("enterIncrementyverseButton2").style.color="#000000"
       get("enterIncrementyverseButton2").style["text-shadow"]="none"
     }
-    fancyText(300,anim,"HELLO MORTAL")
+    fancyText(300,anim,"HELLO CHEATER")
     fancyText(500,anim,"YOUR SOUL HAS PASSED THROUGH THE PORTAL")
     fancyText(700,anim,"YOU HAVE EXPERIENCED THE TRUE DIVINE")
     fancyText(900,anim,"AT THE EXPENSE OF ALL OF THOSE MECHANICS")
-    fancyText(1100,anim,"WELCOME TO THE INCREMENTYVERSE")
+    fancyText(1100,anim,"WELCOME TO THE CHEATERVERSE")
     if (anim==1300) {
       incrementyverseActivate()
     }
@@ -385,7 +385,7 @@ function die() {
 
 function displayHugeOrd(x) {
   if (!x.isFinite()) return "Ω"
-  return "ψ(" + realDisplayHugeOrd(x.div(4).floor()) + ")"
+  return "CHEATER(" + realDisplayHugeOrd(x.div(4).floor()) + ")"
 }
 
 function realDisplayHugeOrd(x,layer=0) {
@@ -394,26 +394,26 @@ function realDisplayHugeOrd(x,layer=0) {
   if (x.gte(ordThreshData["hyperoperational cutoff"])) {
     let k=x.clone()
     if (k.layer == 0) {
-      //return `φ<sub>${k.array.length}</sub> (Ω+1)`
+      //return `Φ<sub>${k.array.length}</sub> (Ω+1)`
       return `way too large`
     } else {
       k.layer--
-      //return `φ<sub>${realDisplayHugeOrd(k,nly)}</sub> (Ω+1)`
+      //return `smallcheater<sub>${realDisplayHugeOrd(k,nly)}</sub> (Ω+1)`
       return `way too large`
     }
   }
   if (x.gte(ordThreshData["buchholz e(W2+1)"])&&game.buchholz != 0) {
-    return "Ω<sub>2</sub>Ω2"
+    return "Cheat ordinal<sub>2</sub>Cheat Ordinal2"
   }
   if (x.gte(ordThreshData["madore e(W2+1)"])&&game.buchholz == 0) {
-    return "ε<sub>Ω<sup>2</sup></sub>"
+    return "ε<sub>Cheat Ordinal<sup>2</sup></sub>"
   }
   if (x.gte(3**27)) {
     //return `Ψ<sub>1</sub>(Ψ<sub>2</sub>(Ω)+Ψ<sub>1</sub>(Ψ<sub>2</sub>(Ω)+${realDisplayHugeOrd(x.logBase(3).div(41).floor())}))`
     if (game.buchholz == 0) return `${game.buchholz==2?"ε(Ω2)^(":"ε<sub>Ω2</sub><sup>"}${realDisplayHugeOrd(x.logBase(3).div(27).floor(),nly)}${game.buchholz==2?")":"</sup>"}`
     let ret = x.logBase(3).minus(27)
     if (layer == 0) ret = ret.logBase(3).minus(10/3).floor().times(3).add(0.001) //This 0.001 prevents floating erorr, it;s going to be floored anyways
-    return `${layer==0?"Ω<sub>2</sub>Ω+Ψ<sub>1</sub>(Ω<sub>2</sub>Ω+":""}Ψ<sub>1</sub>(Ω<sub>2</sub>Ω+${realDisplayHugeOrd(ret.floor(),nly)})${layer==0?")":""}`
+    return `${layer==0?"Cheat ordinal<sub>2</sub>Ω+Ψ<sub>1</sub>(Ω<sub>2</sub>Ω+":""}Ψ<sub>1</sub>(Ω<sub>2</sub>Ω+${realDisplayHugeOrd(ret.floor(),nly)})${layer==0?")":""}`
   }
   if (x.gte(3)) {
     return displayOrd(x.toNumber(),3,0,game.maxOrdLength.less-game.maxOrdLength.more).split("ω").join("Ω")
