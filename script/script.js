@@ -23,26 +23,26 @@ let clickCoolDown = 0;
 let infinityButtonText = 0;
 let game;
 const factorShiftCosts = [
-  200,
-  1000,
-  10000,
-  350000,
-  1e12,
-  1e21,
-  1e100,
-  1.095e272,
+  9999,
+  8e8,
+  7e16,
+  6e32,
+  5e100,
+  4e120,
+  3e22,
+  20,
   Infinity
 ];
 const factorCostExp = [2, 2, 2, 3, 3, 6, 30, 100];
 const bupUpgradeCosts = [
-  1,1,1,12,
-  5,4,8,36,
-  72,73,16,108,
-  53,74,66,324,
-  Infinity,Infinity,8e8,1e11,
-  Infinity,Infinity,2e19,1e21
+  1,1,1,1e2,
+  5,4,8,3e6,
+  7e2,7e3,1e6,1e9,
+  5e3,7e4,6e6,3e24,
+  Infinity,Infinity,8e89,1e119,
+  Infinity,Infinity,2e19,1e99
 ];
-const slugMile = [1e10, 20, 15, 12, 10, 1, -1];
+const slugMile = [-1, -2, -3, -4, -5, -6, -7];
 let totalMult = 1;
 let buptotalMute = 1;
 const challengeGoals = [
@@ -75,7 +75,7 @@ const dupCosts = [
   Infinity,
   Infinity
 ];
-const baselessMile = [5**75,5**90,5**115,5**120,Infinity]
+const baselessMile = [1e100,1e150,1e200,1e300,Infinity]
 let ordColor = "no";
 
 const get = x => document.getElementById(x);
@@ -102,11 +102,11 @@ const aupCost = [
   16,
   256,
   65536,
-  2 ** 32,
-  2 ** 64,
-  2 ** 128,
-  2 ** 256,
-  2 ** 512
+  1e32,
+  1e64,
+  1e128,
+  1e256,
+  1e300
 ];
 let AF = 0;
 const d = new Date();
@@ -146,7 +146,7 @@ function increment(manmade = 0) {
       manmade === 1 &&
       (inChal(6)||inChal(7)||inChal(8))
     )
-      game.manualClicksLeft--;
+      game.manualClicksLeft = 0;
     if (game.ord % game.base === game.base - 1) {
       game.over++;
     } else {
