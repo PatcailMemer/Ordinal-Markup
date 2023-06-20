@@ -33,7 +33,7 @@ const achieveData = [
       "Reach the ordinal Ψ(Ω)",
       "Reach the ordinal Ψ(Ω^Ω^2)",
       "Reach the ordinal Ψ(Ω^(Ω^2×2))",
-      "Reach the ordinal Ψ(Ω^Ω^Ω)=LVO",
+      "Reach the ordinal Ψ(Ω^Ω^Ω)=BHO",
       "Exceed the BHO limit",
       "Reach the ordinal Ψ(ε(Ω2)^Ω^2)",
     ]
@@ -101,7 +101,7 @@ const achieveData = [
       "GAS GAS",
       "GAS GAS GAS",
       "GAS GAS GAS GAS",
-      "Not a fart achievementt",
+      "Not a fart achievement",
     ],
     tooltip: [
       "Perform 1 Factor Boost",
