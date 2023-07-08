@@ -1,6 +1,13 @@
 
 
 function project(x) {
+  if(game.omegaChallenge==1){
+    get("nextBulkTime").innerHTML =
+      "You can't Factor Boost or complete a challenge in Omega Challenge 1";
+    get("bulking").innerHTML = 0;
+    get("factorBoostProg").style.width = "100%";
+    get("factorBoostProg").innerHTML = "You're not beating this challenge or preforming a factor boost, are you?";
+  }
   if (game.OP >= V(game.factorBoosts + 3, 1) && game.bulkBoost == 0) {
     get("nextBulkTime").innerHTML =
       "You can do a Factor Boost now, but bulking is currently disabled now";
