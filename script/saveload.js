@@ -126,7 +126,7 @@ function reset() {
 function load() {
   const loadgame = localStorage[(inPublicTesting()?"ordinalMarkupPublicTestingSave":"ordinalMarkupSave")];
   if (loadgame !== undefined && AF === 0) {
-    loadGame(JSON.parse(loadgame);
+    loadGame(JSON.parse(loadgame));
   }
 }
 
