@@ -7,6 +7,7 @@ function project(x) {
     get("bulking").innerHTML = 0;
     get("factorBoostProg").style.width = "100%";
     get("factorBoostProg").innerHTML = "You're not beating this challenge or preforming a factor boost, are you?";
+    return;
   }
   if (game.OP >= V(game.factorBoosts + 3, 1) && game.bulkBoost == 0) {
     get("nextBulkTime").innerHTML =
