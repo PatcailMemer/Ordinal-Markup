@@ -1153,10 +1153,11 @@ They are based on your Singularity level.`
     get("oc" + num).classList.remove("collapse")
     get("oc" + num).classList.add(game.omegaChallenge==num?"OmegaRun":"collapse")
   })
-  get("bup5Cost").textContent=Math.round(5**(0.5**getOCComp(3)))
-  get("bup9Cost").textContent=Math.round(72**(0.5**getOCComp(3)))
-  get("bup13Cost").textContent=Math.round(53**(0.5**getOCComp(3)))
-  get("bup17Cost").textContent=beautify((bupUpgradeCosts[16])**(0.5**getOCComp(3)))
+  let cost;
+	for (let i = 4;i<12;i+=4) {
+		cost = Math.round(bupUpgradeCosts[i]**(0.5**getOCComp(3)));
+		get("bup"+(i+1).toString()+"Cost").textContent = cost.toString()+" Booster"+(cost==1?"":"s");
+	}
   get("totalOmegaChalComp").textContent=`Your ${getSumOC().toFixed(2)} Omega Challenge Completions are multiplying booster gain from milestones and OP gain by ${Math.max(getSumOC(),1).toFixed(2)}`
   get("double").textContent=double().toFixed(2)
   get("omegaChal1Combo").style.display=(game.omegaChallenge===1?"inline":"none")

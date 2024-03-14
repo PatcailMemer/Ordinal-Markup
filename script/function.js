@@ -419,6 +419,7 @@ function OPtoOrd(x, b, trim=0) {
   if (x <= 0.000000000001 || trim >= 12) return 0;
   if (x == 5e270 && b==3) return 3**27
   if (x >= 1e270 && b==3) return x
+  if (x>=1e270&&b<3) return Infinity;
   let exp = Math.floor(Math.log10(x) + 0.000000000001);
   if (validInBase(exp, b)) {
     let coef = Math.floor(x / 10 ** exp + 0.000000000001);
